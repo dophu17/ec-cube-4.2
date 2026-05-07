@@ -147,6 +147,23 @@ file that was distributed with this source code.
                     {{ Order.Payment }}({{ charge|price }})
                 </div>
             </div>
+            {% if is_granted('ROLE_USER') and form.subscription_enabled is defined %}
+            <div class="ec-orderConfirm">
+                <div class="ec-rectHeading">
+                    <h2>Mua định kỳ (Subscription)</h2>
+                </div>
+                <div class="ec-borderedDefs">
+                    <dl>
+                        <dt>{{ form_label(form.subscription_enabled) }}</dt>
+                        <dd>{{ form_widget(form.subscription_enabled) }}</dd>
+                    </dl>
+                    <dl>
+                        <dt>{{ form_label(form.subscription_cycle) }}</dt>
+                        <dd>{{ form_widget(form.subscription_cycle, { attr: { class: 'ec-select form-select' } }) }}</dd>
+                    </dl>
+                </div>
+            </div>
+            {% endif %}
             {% if isGmoDirect %}
                 <div class="ec-orderConfirm">
                     <div class="ec-rectHeading">
