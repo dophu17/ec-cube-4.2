@@ -1,0 +1,19 @@
+{% block javascript %}
+<script type="text/javascript">
+$(function(){
+    $('#form2 > div:first > div').last().after($('#remise_payment_4_ac_saletype_add'));
+
+    $('#remise_payment_4_ac_saletype_add_button').on('click', function() {
+        $('form').attr('action', "{{ url('remise_payment4_masterdata_sale_type_add') }}");
+        $('form').submit();
+    });
+
+});
+</script>
+{% endblock javascript %}
+<div class="d-none">
+    <div id="remise_payment_4_ac_saletype_add" class="card-footer">
+        <button class="btn btn-primary" id="remise_payment_4_ac_saletype_add_button">{{ 'remise_payment4.ac.masterdata.saletype.text.button'|trans }}</button>
+    </div>
+</div>
+

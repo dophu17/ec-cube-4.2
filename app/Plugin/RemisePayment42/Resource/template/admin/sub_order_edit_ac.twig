@@ -1,0 +1,16 @@
+<script>
+    $(function(){
+        $('#orderItem > div.card-body > div').last().before($('#remise_payment4_ac_difference'));
+    });
+</script>
+<div class="d-none">
+    <!-- 差額 -->
+    <div id="remise_payment4_ac_difference" class="row justify-content-end mb-3">
+        <div class="col-auto">
+            <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'ルミーズから取り込んだ定期購買金額がEC-CUBEの金額と差分がある場合に表示されます。EC-CUBEの金額設定を見直してください。'|trans }}"><span class="card-title">{{ 'ルミーズ定期購買金額との差額'|trans }}<i class="fa fa-question-circle fa-lg ml-1"></i></span></div>
+        </div>
+        <div class="col-2 text-end">
+            <span class="h4 align-middle font-weight-normal">{{ difference|price }}</span>
+        </div>
+    </div>
+</div>

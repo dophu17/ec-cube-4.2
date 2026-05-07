@@ -1,0 +1,27 @@
+parameters:
+    env(GMO_API_BASE_URL): 'https://pt01.mul-pay.jp/payment'
+    env(GMO_SHOP_ID): ''
+    env(GMO_SHOP_PASS): ''
+    env(GMO_MOCK_MODE): '1'
+    env(GMO_JOB_CD): 'CAPTURE'
+    env(GMO_TEST_CARD_NO): '4111111111111111'
+    env(GMO_TEST_CARD_EXPIRE): '2912'
+    env(GMO_TEST_CARD_SECURITY_CODE): '123'
+
+services:
+    Customize\Form\Extension\ShoppingOrderTypeExtension:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: form.type_extension }
+
+    Customize\Service\Gmo\GmoApiClient:
+        arguments:
+            $apiBaseUrl: '%env(string:GMO_API_BASE_URL)%'
+            $shopId: '%env(string:GMO_SHOP_ID)%'
+            $shopPass: '%env(string:GMO_SHOP_PASS)%'
+            $mockMode: '%env(bool:GMO_MOCK_MODE)%'
+            $jobCd: '%env(string:GMO_JOB_CD)%'
+            $testCardNo: '%env(string:GMO_TEST_CARD_NO)%'
+            $testCardExpire: '%env(string:GMO_TEST_CARD_EXPIRE)%'
+            $testCardSecurityCode: '%env(string:GMO_TEST_CARD_SECURITY_CODE)%'

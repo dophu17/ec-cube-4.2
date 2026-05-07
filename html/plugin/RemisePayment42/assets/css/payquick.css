@@ -1,0 +1,124 @@
+<style type="text/css">
+    #shopping_order_remise_payment4_use_payquick_info {
+        margin: 10px 0 10px 30px;
+    }
+    #shopping_order_remise_payment4_use_payquick_info:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+    #shopping_order_remise_payment4_use_payquick_info div {
+        float: left;
+    }
+    #shopping_order_remise_payment4_use_payquick_info div label {
+        margin-right: 10px;
+        font-weight: normal;
+        float: left;
+    }
+    #shopping_order_remise_payment4_use_payquick_info div span {
+        margin-right: 20px;
+        background-color: #f8f8f8;
+        display: inline;
+    }
+    @media (max-width: 768px) {
+        #shopping_order_remise_payment4_use_payquick_info div {
+            margin-bottom: 10px;
+        }
+        #shopping_order_remise_payment4_use_payquick_info div:last-child {
+            margin-bottom: 0px;
+        }
+        #shopping_order_remise_payment4_use_payquick_info div:after {
+            clear: both;
+            content: '';
+            display: block;
+        }
+        #shopping_order_remise_payment4_use_payquick_info div label {
+            width: 100px;
+        }
+        label[for="shopping_order_remise_payment4_use_payquick_0"],
+        label[for="shopping_order_remise_payment4_use_payquick_1"],
+        label[for="shopping_order_remise_payment4_regist_payquick_0"] {
+            display: inline;
+        }
+    }
+    #shopping_order_remise_payment4_regist_payquick {
+        float: left;
+    }
+    #shopping_order_remise_payment4_regist_payquick_memo {
+        padding-left: 25px;
+    }
+    #shopping_order_remise_payment4_ptimes {
+        margin-left: 5px;
+        font-weight: normal;
+    }
+
+    #payquick_info:after,
+    #admin_payquick_info:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+    #payquick_info div,
+    #admin_payquick_info div {
+        float: left;
+    }
+    #payquick_info div label,
+    #admin_payquick_info div label {
+        margin-right: 10px;
+        font-weight: normal;
+        float: left;
+    }
+    #payquick_info div span,
+    #admin_payquick_info div span {
+        margin-right: 20px;
+        background-color: #f8f8f8;
+        display: inline;
+    }
+    #remise_payment4_payquick_delete div,
+    #remise_payment4_admin_payquick_delete div {
+        float: none !important;
+    }
+    #remise_payment4_payquick_delete div.modal-header h5,
+    #remise_payment4_payquick_delete_complete div.modal-header h5,
+    #remise_payment4_admin_payquick_delete div.modal-header h5 {
+        font-weight: bold;
+        float: left;
+    }
+    #remise_payment4_payquick_delete div.modal-header button,
+    #remise_payment4_payquick_delete_complete  div.modal-header button,
+    #remise_payment4_admin_payquick_delete div.modal-header button {
+        float: right;
+    }
+    #remise_payment4_admin_payquick_delete_button {
+        position: relative;
+        top: -7px;
+    }
+    @media (max-width: 768px) {
+        #payquick_info div {
+            clear: both;
+        }
+        #payquick_info div:after {
+            clear: both;
+            content: '';
+            display: block;
+        }
+        #payquick_info div label {
+            width: 100px;
+        }
+        #remise_payment4_payquick_delete_button {
+            width: 100%;
+            text-align: left;
+        }
+        #remise_payment4_payquick_delete_button a.btn {
+            width: 100px;
+        }
+    }
+
+    hr.borderline {
+        clear: both;
+        margin: 5px 0 10px 0 !important;
+    }
+    .clearboth {
+        clear: both;
+    }
+</style>

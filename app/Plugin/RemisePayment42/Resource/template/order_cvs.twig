@@ -1,0 +1,25 @@
+<div class="row">
+    <h3>{{ title|raw }}</h3>
+    <div class="ec-orderOrder">
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.common.label.cvs_name'|trans }}</dt>
+            <dd>{{ cvs_name|raw }}</dd>
+        </div>
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.common.label.cvs_paydate'|trans }}</dt>
+            <dd>{{ cvs_paydate|raw }}</dd>
+        </div>
+        {% for key, item in cvs_others %}
+        <div class="ec-definitions--soft">
+            <dt>{{ item[0]|raw }}</dt>
+            {% if 'http://' in item[1] or 'https://' in item[1] %}
+            <dd><a href="{{ item[1]|raw }}" target="_blank" class="btn btn-info">{{ 'remise_payment4.front.button.payment_url'|trans }}</a></dd>
+            {% else %}
+            <dd>{{ item[1]|raw }}</dd>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <br />
+        <div class="ec-reportDescription">{{ cvs_msg|raw|nl2br }}</div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+{% extends 'default_frame.twig' %}
+
+{% set mypageno = 'index' %}
+
+{% set body_class = 'mypage' %}
+
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>{{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.title'|trans }}</h1>
+            </div>
+            {% include 'Mypage/navi.twig' %}
+        </div>
+        <div class="ec-mypageRole">
+            <div class="ec-editRole">
+                <div class="ec-off1Grid">
+                    <div class="ec-off1Grid__cell">
+                        <form method="post" action="{{ url('remise_payment4_ac_mypage_skip',{order_id:order.getId}) }}" novalidate class="h-adr">
+                            {{ form_widget(form._token) }}
+                            {% if process == "complete" %}
+                                <div style="text-align:center;">
+                                {% if dispErrMsg %}
+                                    <h1 style="font-weight: bold;">{{ 'remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.error'|trans }}</h1>
+                                    <p style="color:#ff0000;">{{ dispErrMsg|nl2br }}</p>
+                                {% else %}
+                                    <h1 style="font-weight: bold;">{{ 'remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.success'|trans }}</h1>
+                                {% endif %}
+                                </div>
+                            {% endif %}
+                            {% if process == "complete" and not dispErrMsg%}
+                                {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.text.skipped_info'|trans }}
+                            {% endif %}
+                            {% if process == "init" %}
+                                {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.text.skip_info'|trans|raw }}
+                            {% endif %}
+                            <div class="ec-borderedDefs">
+                                <dl>
+                                    <div class="ec-imageGrid" style="border-top:none;">
+                                        <div class="ec-imageGrid__img">
+                                            {% if orderItem.Product is null %}
+                                                <img src="{{ asset(''|no_image_product, 'save_image') }}"/>
+                                            {% else %}
+                                                <img src="{{ asset(orderItem.Product.MainListImage|no_image_product, 'save_image') }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="ec-imageGrid__content">
+                                            <p class="ec-historyRole__detailTitle">{{ orderItem.product_name }}</p>
+                                            {% if orderItem.class_category_name1 is not empty %}
+                                                {{ orderItem.class_category_name1 }}
+                                            {% endif %}
+                                            {% if orderItem.class_category_name2 is not empty %}
+                                                / {{ orderItem.class_category_name2 }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </dl>
+                                <dl>
+                                    <dt>
+                                        {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.member_id'|trans }}
+                                    </dt>
+                                    <dd>
+                                        {{ remiseACMember.getId }}
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>
+                                        {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.total'|trans }}
+                                    </dt>
+                                    <dd>
+                                        {{ remiseACMember.getTotal|price }}
+                                    </dd>
+                                </dl>
+                                {% if process == "init" %}
+                                <dl>
+                                    <dt>
+                                        {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.skip_next_date_before'|trans }}
+                                    </dt>
+                                    <dd>
+                                        {{ remiseACMember.getNextDate|date("Y/m/d") }}
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>
+                                        {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.skip_next_date_after'|trans }}
+                                    </dt>
+                                    <dd>
+                                        {{ newNextDate|date("Y/m/d") }}
+                                    </dd>
+                                </dl>
+                                {% else %}
+                                <dl>
+                                    <dt>
+                                        {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.next_date'|trans }}
+                                    </dt>
+                                    <dd>
+                                        {{ remiseACMember.getNextDate|date("Y/m/d") }}
+                                    </dd>
+                                </dl>
+                                {% endif %}
+                            </div>
+                            {% if process == "init" %}
+                                <br>
+                                <div style="text-align:center;">
+                                {{ 'remise_payment4.ac.front.sub_mypage_ac_skip.text.skip_confirm'|trans }}
+                                </div>
+                                <div class="ec-RegisterRole__actions">
+                                    <div class="ec-off4Grid">
+                                        <div class="ec-off4Grid__cell">
+                                            <br>
+                                            <button type="submit"
+                                                    class="ec-blockBtn--cancel">{{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.skip'|trans }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ec-role">
+            <a href="{{ url('mypage_history',{order_no:order.getOrderNo}) }}" class="ec-inlineBtn">{{ 'remise_payment4.ac.front.sub_mypage_ac_skip.label.back'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

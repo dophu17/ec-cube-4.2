@@ -1,0 +1,27 @@
+#ac_type_edit_count {
+    width: 60px;
+}
+#ac_type_edit_interval_value {
+    width: 60px;
+}
+#ac_type_edit_after_value {
+    width: 60px;
+}
+#ac_type_edit_skip {
+    width: 250px;
+}
+#ac_type_edit_stop {
+    width: 250px;
+}
+#ac_type_edit_usage_value {
+    width: 60px;
+}
+#ac_type_edit_order_date {
+    width: 160px;
+}
+#ac_type_edit_stop_display {
+    width: 250px;
+}
+.clearboth {
+    clear: both;
+}

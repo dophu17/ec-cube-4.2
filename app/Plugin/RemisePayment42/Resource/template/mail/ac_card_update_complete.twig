@@ -1,0 +1,15 @@
+{{ Order.name01 }} {{ Order.name02 }} 様
+
+定期購買にてご登録のカード情報の更新が完了いたしました。
+今後ともご愛顧賜りますよう、よろしくお願い申し上げます。
+
+************************************************
+　定期購買情報
+************************************************
+
+メンバーID　：{{ RemiseACMember.id }}
+定期購買金額：{{ RemiseACMember.total|number_format }}円
+商品名　　　：{{ OrderItem.product_name }} {% if OrderItem.class_category_name1 is not empty %}{{ OrderItem.class_category_name1 }}{% endif %}{% if OrderItem.class_category_name2 is not empty %} / {{ OrderItem.class_category_name2 }}{% endif %}
+
+
+なお、詳細につきましては、マイページにてご確認ください。

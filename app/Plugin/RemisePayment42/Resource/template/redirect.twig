@@ -1,0 +1,86 @@
+{% extends 'default_frame.twig' %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        #dialog-overlay {
+            width:100%;height:100%;
+            filter:alpha(opacity=50);
+            -moz-opacity:0.5;
+            -khtml-opacity: 0.5;
+            opacity: 0.5;
+            background:#000;
+            position:absolute;
+            top:0;left:0;
+            z-index:99;
+            display:none;
+        }
+        #dialog-box {
+            -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            background:#eee;
+            width:350px;
+            height:200px;
+            position:absolute;
+            z-index:999;
+            display:none;
+        }
+        #dialog-box .dialog-content {
+            text-align:center;
+            vertical-align: middle;
+            margin:70px; padding:10px 5px;
+            color:#666;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script>
+        var wait = false;
+        $(function(){
+            document.charset = "Shift_JIS";
+
+            $(window).resize(function(){
+                if (!$('#dialog-box').is(':hidden')) {
+                    waitscreen();
+                }
+            });
+
+            remiseSubmit();
+        });
+
+        function remiseSubmit() {
+            if (wait) {
+                return false;
+            }
+            wait = true;
+            waitscreen();
+            document.cardform.submit();
+        }
+
+        function waitscreen() {
+            var maskHeight = $(document).height();
+            var maskWidth = $(window).width();
+            var dialogTop =  ($(window).height()/2) - ($('#dialog-box').height());
+            var dialogLeft = (maskWidth/2) - ($('#dialog-box').width()/2);
+            $('#dialog-overlay').css({height:maskHeight, width:maskWidth}).show();
+            $('#dialog-box').css({top:dialogTop, left:dialogLeft}).show();
+            $('#dialog-message').html();
+            scroll(0,0);
+        }
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <div id="dialog-overlay"></div>
+    <div id="dialog-box">
+       <div class="dialog-content">
+          <div id="dialog-message">{{ 'remise_payment4.front.text.processing'|trans|raw }}</div>
+       </div>
+    </div>
+
+    <form name="cardform" id="cardform" method="post" action="{{ send_url|nl2br }}" autocomplete="off" accept-charset="Shift_JIS">
+        {% for key, item in send_data %}
+        <input type="hidden" name="{{ key|nl2br }}" value="{{ item|nl2br }}">
+        {% endfor %}
+    </form>
+{% endblock %}

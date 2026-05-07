@@ -1,0 +1,49 @@
+monolog:
+    channels: ['RemisePayment4']
+    handlers:
+        RemisePayment4:
+            type: fingers_crossed
+            action_level: error
+            passthru_level: info
+            handler: RemisePayment4_rotating_file
+            channels: ['RemisePayment4']
+        RemisePayment4_rotating_file:
+            type: rotating_file
+            max_files: 60
+            path: '%kernel.logs_dir%/%kernel.environment%/RemisePayment4.log'
+            formatter: eccube.log.formatter.line
+            level: debug
+
+parameters:
+    remise_payment4:
+        # EMV3Dセキュア設定値
+        emv3ds:
+            ch_acc_age:
+                no_account: '01'           # 会員なし（ゲスト）
+                this_transaction: '02'     # この取引中
+                less_30days: '03'          # 30日未満
+                less_60days: '04'          # 30～60日
+                more_60days: '05'          # 60日を超える期間
+
+            this_transaction: '01'         # この取引中
+            less_30days: '02'              # 30日未満
+            less_60days: '03'              # 30～60日
+            more_60days: '04'              # 60日を超える期間
+
+            identical: '01'                # カード会員情報と出荷先が同じ
+            different: '02'                # カード会員情報と出荷先が異なる
+
+            no_authentication: '01'        # 認証していない（ゲストログイン）
+            own_credentials: '02'          # 加盟店サイト自身の認証情報でログイン
+
+            first_ordered: '01'            # 初めての注文
+            reordered: '02'                # 再注文
+
+            billing_address: '01'          # カード所有者の請求先住所に発送
+            different_address: '03'        # 加盟店に登録されている別の住所に発送
+
+            matches: 'Y'                   # 配送先住所が請求先住所と一致する
+            does_not_match: 'N'            # 配送先住所が請求先住所と一致しない
+
+            country_codes_jp: '392'        # 国名コード（日本）
+            country_calling_codes_jp: '81' # 国際電話番号（日本）

@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  ec-cube:
+    env_file:
+      - .env.local
+    environment:
+      USER_ID: ${UID:-}
+      GROUP_ID: ${GID:-}
+    volumes:
+      - ".:/var/www/html:cached"

@@ -1,0 +1,40 @@
+<div>
+    <h3>{{ '定期購買情報'|trans|raw|nl2br }}</h3>
+    <div class="ec-orderOrder">
+        <div class="ec-definitions">
+            <dt>{{ 'メンバーID：'|trans|raw|nl2br }}</dt>
+            <dd>{{ RemiseACMember.getId() }}</dd>
+        </div>
+        <div>
+            <div>{{ 'ご案内'|trans|raw|nl2br }}</div>
+            <div style="padding-left: 10px;">
+             {{ 'こちらの商品は定期購買商品です。'|trans|raw|nl2br }}<br />
+            {% if Order.payment_total > 0 %}
+                本取引では{{ Order.payment_total|number_format }}円を課金し、以下の内容で自動継続課金の登録を行いました。
+            {% else %}
+                以下の内容で自動継続課金の登録を行いました。
+            {% endif %}
+            </div>
+        </div>
+        <div class="ec-definitions">
+            <dt>課金額：</dt>
+            <dd>{{ RemiseACMember.getTotal|number_format }}円</dd>
+        </div>
+        <div class="ec-definitions">
+            <dt>次回課金日：</dt>
+            <dd>{{ RemiseACMember.getNextDateStr("Y年m月d日") }}</dd>
+        </div>
+        {% if RemiseACMember.getCount != 1 %}
+            <div class="ec-definitions">
+                <dt>課金間隔：</dt>
+                <dd>{{ interval }}</dd>
+            </div>
+        {% endif %}
+        {% if RemiseACMember.getCount != null and RemiseACMember.getCount != "" and RemiseACMember.getCount > 0 %}
+            <div class="ec-definitions">
+                <dt>課金回数：</dt>
+                <dd>{{ remiseAcCount }}</dd>
+            </div>
+        {% endif %}
+    </div>
+</div>

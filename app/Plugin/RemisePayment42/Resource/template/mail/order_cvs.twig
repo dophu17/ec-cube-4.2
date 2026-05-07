@@ -1,0 +1,8 @@
+************************************************
+　{{ title|raw }}
+************************************************
+
+{{ 'remise_payment4.common.label.cvs_name'|trans }}{{ cvs_name|raw }}
+{{ 'remise_payment4.common.label.cvs_paydate'|trans }}{{ cvs_paydate|raw }}
+{% for key, item in cvs_others %}{{ item[0]|raw }}{{ item[1]|raw }}{{ "\n" }}{% endfor %}
+{{ cvs_msg|raw }}

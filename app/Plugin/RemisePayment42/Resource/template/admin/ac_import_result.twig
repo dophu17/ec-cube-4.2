@@ -1,0 +1,135 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'remisePayment4AcNavImport'] %}
+
+{% block title %}{{ 'remise_payment4.ac.admin_import_index.label.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.ac.admin_import_index.label.sub_title'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script>
+    $(function() {
+    });
+</script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <form id="form_bulk" method="POST" action="">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block">
+                                        <span class="card-title">{{ 'remise_payment4.ac.admin_import_result.label.table.title'|trans }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="import_contents">
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0 pl-3 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column1'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column2'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column3'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column4'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column5'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column6'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_result.label.table.th.column7'|trans }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for remiseACImportInfo in remiseACImportInfoList %}
+                                        <tr id="ex-remise-ac-import-{{ remiseACImportInfo.getMemberId }}">
+                                            <td class="align-middle pl-3">
+                                            {% if remiseACImportInfo.getOrderId != null or remiseACImportInfo.getOrderId != 0 %}
+                                                <a href="{{ url('remise_payment4_ac_management_edit', { 'id': remiseACImportInfo.getMemberId }) }}">
+                                                {{ remiseACImportInfo.getMemberId }}
+                                                </a>
+                                            {% else %}
+                                                {{ remiseACImportInfo.getMemberId }}
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImportInfo.getOrderId != null or remiseACImportInfo.getOrderId != 0 %}
+                                                {% if remiseACImportInfo.getSKaiinNo != null or remiseACImportInfo.getSKaiinNo != "" %}
+                                                    <a href="{{ url('admin_customer_edit', { 'id': remiseACImportInfo.getSKaiinNo }) }}">
+                                                    {{ remiseACImportInfo.getSKaiinNo }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ 'remise_payment4.ac.admin_import_result.text.s_kaiin_no.null'|trans }}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if remiseACImportInfo.getSKaiinNo != null or remiseACImportInfo.getSKaiinNo != "" %}
+                                                    {{ remiseACImportInfo.getSKaiinNo }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImportInfo.getOrderId != null or remiseACImportInfo.getOrderId != 0 %}
+                                                <a class="action-edit" href="{{ url('admin_order_edit', { id : remiseACImportInfo.getOrderId }) }}">
+                                                {{ remiseACImportInfo.getOrderNo }}
+                                                </a>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImportInfo.getAcAmount }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImportInfo.getAcResult == 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.key'|trans  %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.name'|trans }}
+                                            {% else %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.failure.name'|trans }}
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImportInfo.getStatus == 'remise_payment4.ac.admin_import_result.text.import.key'|trans  %}
+                                                {{ 'remise_payment4.ac.admin_import_result.text.import.value'|trans }}
+                                            {% else %}
+                                                <span style="color:#ff0000;">{{ 'remise_payment4.ac.admin_import_result.text.not_import.value'|trans }}</span>
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImportInfo.getNote != null %}
+                                                {{ remiseACImportInfo.getNote|raw }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="c-conversionArea">
+        <div class="c-conversionArea__container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-6">
+                    <div class="c-conversionArea__leftBlockItem">
+                        <a class="c-baseLink" href="{{ url('remise_payment4_ac_import_index') }}">
+                            <i class="fa fa-backward" aria-hidden="true"></i>
+                            <span>{{ 'remise_payment4.ac.admin_import_index.label.title'|trans }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% block stylesheet %}
+<style type="text/css">
+#autochargeData{
+    width:100%;
+}
+#autochargeData table{
+    border-collapse:  collapse;
+    width:100%;
+}
+#autochargeData caption{
+    text-align:left;
+}
+#autochargeData th {
+    border-bottom: solid 1px;
+}
+#autochargeData td {
+    border-bottom: dotted 1px;
+}
+.orderIdTh{
+    width:20%;
+}
+.productNameTh{
+    width:80%;
+    text-align:left;
+    padding-left: 20px;
+}
+.productNameTd{
+    text-align:left;
+    padding-left: 20px;
+}
+</style>
+{% endblock %}
+<script>
+    $(function(){
+        $('.ec-withdrawRole > form').html($('#remise_payment4_autochrage').html());
+        $('#remise_payment4_autochrage').html("");
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment4_autochrage">
+        <div class="ec-off3Grid">
+            <div class="ec-off3Grid__cell">
+                <div style="font-size:100px;text-align:center;">
+                    <div class="ec-icon"><img src="{{ asset('assets/icon/exclamation.svg') }}" alt=""></div>
+                </div>
+                <p class="ec-withdrawRole__title">{{ 'remise_payment4.ac.front.sub_mypage_withdraw.text.info1'|trans|raw }}
+                </p>
+                <p class="ec-withdrawRole__description">{{ 'remise_payment4.ac.front.sub_mypage_withdraw.text.info2'|trans|raw }}
+                </p>
+                <p class="ec-withdrawRole__description">{{ 'remise_payment4.ac.front.sub_mypage_withdraw.text.info3'|trans|raw }}
+                </p>
+                <div id="autochargeData">
+                    <table>
+                        <tr>
+                            <th class="orderIdTh">{{ 'remise_payment4.ac.front.sub_mypage_withdraw.text.table.th1'|trans }}</th>
+                            <th class="productNameTh">{{ 'remise_payment4.ac.front.sub_mypage_withdraw.text.table.th2'|trans }}</th>
+                        </tr>
+                        {% for RemiseACMember in RemiseACMembers %}
+                            {% set orderResultCards = RemiseACMember.getOrderResultCards %}
+                            {% set latestOrderResultCard = orderResultCards[0] %}
+                            {% set latestOrderResult = latestOrderResultCard.getOrderResult %}
+                            {% set latestOrder = latestOrderResult.getOrder %}
+                            {% set latestOrderItems = latestOrder.getOrderItems %}
+                            {% set latestOrderItem = null %}
+                            {% for tempLatestOrderItem in latestOrderItems %}
+                                {% if tempLatestOrderItem.isProduct %}
+                                {% set latestOrderItem = tempLatestOrderItem %}
+                                {% endif %}
+                            {% endfor %}
+                            <tr>
+                                <td class="align-middle">
+                                    <a class="action-edit" href="{{ url('mypage_history', { 'order_no' : latestOrder.getId }) }}">
+                                    {{ latestOrder.getId }}
+                                    </a>
+                                </td>
+                                <td class="productNameTd">
+                                    {{ latestOrderItem.getProductName }}
+                                    {% if latestOrderItem.getClassCategoryName1 %}
+                                        {{ latestOrderItem.getClassCategoryName1 }}
+                                    {% endif %}
+                                    {% if latestOrderItem.getClassCategoryName2 %}
+                                        / {{ latestOrderItem.getClassCategoryName2 }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

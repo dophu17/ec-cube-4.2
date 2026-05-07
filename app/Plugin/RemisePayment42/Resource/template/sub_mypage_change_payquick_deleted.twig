@@ -1,0 +1,26 @@
+<script>
+    $(function(){
+        alert("{{ 'remise_payment4.front.text.card_info.delete.complete'|trans }}");
+    });
+</script>
+<div class="d-none">
+    <span data-bs-toggle="tooltip" data-placement="top">
+        <a data-bs-toggle="modal" id="remise_payment4_payquick_delete_complete_link" data-bs-target="#remise_payment4_payquick_delete_complete"></a>
+        <div class="modal fade" id="remise_payment4_payquick_delete_complete" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_payquick_delete_complete" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold">{{ 'remise_payment4.front.label.card_info.delete'|trans }}</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        <p class="text-start">{{ 'remise_payment4.front.text.card_info.delete.complete'|trans }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" type="button" data-bs-dismiss="modal">{{ 'common.close'|trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </span>
+</div>

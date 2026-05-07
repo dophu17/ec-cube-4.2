@@ -1,0 +1,925 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'remisePayment4AcNavManagement'] %}
+
+{% block title %}{{ 'remise_payment4.ac.admin_management_edit.label.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.ac.admin_management_edit.label.sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+    <style type="text/css">
+        {{ include('RemisePayment42/Resource/assets/css/admin/acManagementEdit.css') }}
+        {{ include('RemisePayment42/Resource/assets/css/remise_wait_screen.css') }}
+
+        .datepicker-days th.dow:first-child,
+        .datepicker-days td:first-child {
+            color: #f00;
+        }
+
+        .datepicker-days th.dow:last-child,
+        .datepicker-days td:last-child {
+            color: #00f;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        {{ include('RemisePayment42/Resource/assets/js/admin/acManagementEdit.js') }}
+        {{ include('RemisePayment42/Resource/assets/js/remise_wait_screen.js') }}
+        $(function() {
+            if ($('[type="date"]').prop('type') != 'date') {
+                // input type属性でdateが利用できるかどうか(カレンダー表示できないブラウザ対応)
+                $.when(
+                    $.getScript("{{ asset('assets/js/vendor/moment.min.js', 'admin') }}"),
+                    $.getScript("{{ asset('assets/js/vendor/moment-with-locales.min.js', 'admin') }}"),
+                    $.getScript("{{ asset('assets/js/vendor/tempusdominus-bootstrap-4.min.js', 'admin') }}")
+                ).done(function() {
+                    $('#ac_management_edit_next_date').datetimepicker({
+                        locale: '{{ eccube_config.locale }}',
+                        format: 'YYYY-MM-DD',
+                        useCurrent: false,
+                        buttons: {
+                            showToday: true,
+                            showClose: true
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    {% set orderResultCards = remiseACMember.getOrderResultCards %}
+    {% set latestOrderResultCard = orderResultCards[0] %}
+    {% set latestOrderResult = latestOrderResultCard.getOrderResult %}
+    {% set latestOrder = latestOrderResult.getOrder %}
+    {% set latestOrderItems = latestOrder.getOrderItems %}
+    {% set latestOrderItem = null %}
+
+    {# 受注情報明細のソート処理 start #}
+    {% set tempLatestOrderItems = [] %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isProduct) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isDeliveryFee) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isCharge) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isDiscount) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isTax) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% for tempLatestOrderItem in latestOrderItems|filter(tempLatestOrderItem => tempLatestOrderItem.isPoint) %}
+        {% set tempLatestOrderItems = tempLatestOrderItems|merge([tempLatestOrderItem]) %}
+    {% endfor %}
+    {% set latestOrderItems = tempLatestOrderItems %}
+    {# 受注情報明細のソート処理 end #}
+
+    {% for tempLatestOrderItem in latestOrderItems %}
+        {% if tempLatestOrderItem.isProduct %}
+        {% set latestOrderItem = tempLatestOrderItem %}
+        {% endif %}
+    {% endfor %}
+    {% set latestCustomer = latestOrder.getCustomer %}
+    {% set latestShippings = latestOrder.getShippings %}
+    {% if latestShippings != null %}
+        {% set latestShipping = latestShippings[0] %}
+    {% else %}
+        {% set latestShipping = null %}
+    {% endif %}
+
+    <form role="form" method="post">
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.mode) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+
+                <!--現在の定期購買の状態-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="collapse show ec-cardCollapse" id="basic_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ 'remise_payment4.ac.admin_management_edit.label.status.status'|trans }}：
+                                        {% if remiseACMember.isStatus == true %}
+                                        <strong>{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_member.status.1'|trans }}</strong>
+                                        {% elseif remiseACMember.isStatus == false %}
+                                        <strong>{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_member.status.0'|trans }}</strong>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="fa fa-clock-o"></i>{{ 'remise_payment4.ac.admin_management_edit.label.status.next_order_date'|trans }}：
+                                        {% if remiseACMember.getNextDate != null %}
+                                            {{ remiseACMember.getNextDate|date("Y/m/d") }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                    <div class="col">
+                                        <i class="fa fa-clock-o"></i>{{ 'remise_payment4.ac.admin_management_edit.label.status.first_order_date'|trans }}：
+                                        {% if remiseACMember.getStartDate != null %}
+                                            {{ remiseACMember.getStartDate|date("Y/m/d") }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="fa fa-clock-o"></i>{{ 'remise_payment4.ac.admin_management_edit.label.status.final_order_date'|trans }}：
+                                        {% if remiseACMember.getStopDate != null %}
+                                            {{ remiseACMember.getStopDate|date("Y/m/d") }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                    <div class="col">
+                                        <i class="fa fa-clock-o"></i>{{ 'remise_payment4.ac.admin_management_edit.label.status.update_date'|trans }}：
+                                        {% if remiseACMember.getUpdateDate != null %}
+                                            {{ remiseACMember.getUpdateDate|date("Y/m/d H:i:s") }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--定期購買情報-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="acmember_toggle" href="#acmember_contents" aria-expanded="false" aria-controls="acmember_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="acmember_contents">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col">
+                                        {% if remiseACMember.isStatus == true %}
+                                            <table><tr>
+                                                <td style="vertical-align: top;">
+                                                    <button class="btn btn-danger" id="stop_button">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.status.stop'|trans }}</button>
+                                                </td>
+                                                <td>
+                                                    <a id="detailView_ac_management_edit_stop_option" href="javascript:void(0);">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.stop_option.title1'|trans }}</a>
+                                                    <br>
+                                                    <span id ="sapn_ac_management_edit_stop_option" style="visibility : hidden;">
+                                                        <input type="checkbox" id="ac_management_edit_stop_option" name="ac_management_edit[stop_option]" value="1" checked>
+                                                        &nbsp;
+                                                        <label for="ac_management_edit_stop_option">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.stop_option.value'|trans }}</label>
+                                                    </span>
+                                                </td>
+                                            </tr></table>
+                                        {% elseif remiseACMember.isStatus == false %}
+                                            <table><tr>
+                                                <td style="vertical-align: top;">
+                                                    <button class="btn btn-info" id="restart_button">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.status.restart'|trans }}</button>
+                                                </td>
+                                                <td>
+                                                {% if useKeizokuEditExtend == true %}
+                                                    <a id="detailView_ac_management_edit_restart_option" href="javascript:void(0);">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.title1'|trans }}</a>
+                                                    <br>
+                                                    <span id ="sapn_ac_management_edit_restart_option" style="visibility : hidden;">
+                                                        <input type="checkbox" id="ac_management_edit_restart_option" name="ac_management_edit[restart_option]" value="1" checked>
+                                                        &nbsp;
+                                                        <label for="ac_management_edit_restart_option">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.value'|trans }}</label>
+                                                    </span>
+                                                {% else %}
+                                                    {{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.note'|trans }}
+                                                {% endif %}
+                                                </td>
+                                            </tr></table>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col mb-2">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.member_id.caption'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {{ remiseACMember.getId }}
+                                    <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.member_id.caption2'|trans }}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.next_date.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {{ form_widget(form.next_date) }}
+                                    {{ form_errors(form.next_date) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.total.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {{ form_widget(form.total) }}
+                                    {{ form_errors(form.total) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption1'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <table>
+                                        <tr>
+                                        <td>
+                                        {{ form_widget(form.limitless) }}
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <td>
+                                            <span style="float:left;">{{ form_widget(form.count) }}</span>
+                                            <span style="position:relative;top:5px;">&nbsp;{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption2'|trans }}</span>
+                                        </td>
+                                        </table>
+                                        {{ form_errors(form.count) }}
+                                        {{ form_errors(form.limitless) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.interval.caption1'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(form.interval_value) }}</td>
+                                            <td>{{ form_widget(form.interval_mark) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.interval.caption2'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        {{ form_errors(form.interval_value) }}
+                                        {{ form_errors(form.interval_mark) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.skip.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                        {{ form_widget(form.skip) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_management_edit.text.block.acmember.skip.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.skip) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.stop.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                        {{ form_widget(form.stop) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_management_edit.text.block.acmember.stop.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.stop) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.usage.caption1'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(form.usage_value) }}</td>
+                                            <td>{{ form_widget(form.usage_mark) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.usage.caption2'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        {{ form_errors(form.usage_value) }}
+                                        {{ form_errors(form.usage_mark) }}
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.note.caption'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.note) }}
+                                        {{ form_errors(form.note) }}
+                                        <div style="margin-top:5px;">
+                                            <button class="btn btn-warning" id="note_button">{{ 'remise_payment4.ac.admin_management_edit.label.block.acmember.note.button'|trans }}</button>
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_management_edit.text.block.acmember.note.explain'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--更新オプション-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.option.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="option_toggle" href="#option_contents" aria-expanded="false" aria-controls="option_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="option_contents">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.option.update_option'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.update_option) }}
+                                        {{ form_errors(form.update_option) }}
+                                        <div class="small clearboth">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain1'|trans }}</span><br>
+                                        <span>　{{ 'remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain2'|trans }}</span><br>
+                                        <span>　{{ 'remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain3'|trans }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--注文者情報-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="customer_toggle" href="#customer_contents" aria-expanded="false" aria-controls="customer_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="customer_contents">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.id'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestCustomer != null %}
+                                            {{ latestCustomer.getId }}
+                                        {% else %}
+                                            {{ 'remise_payment4.ac.common.text.nonmember'|trans }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.name'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {{ latestCustomer.getName01 }}　{{ latestCustomer.getName02 }}
+                                    {% else %}
+                                        {{ latestOrder.getName01 }}　{{ latestOrder.getName02 }}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.kana'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {{ latestCustomer.getKana01 }}　{{ latestCustomer.getKana02 }}
+                                    {% else %}
+                                        {{ latestOrder.getKana01 }}　{{ latestOrder.getKana02 }}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.address'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {{ 'admin.common.postal_symbol'|trans }}{{ latestCustomer.getPostalCode }}<br>
+                                        {{ latestCustomer.getPref }}　{{ latestCustomer.getAddr01 }}　{{ latestCustomer.getAddr02 }}
+                                    {% else %}
+                                        {{ 'admin.common.postal_symbol'|trans }}{{ latestOrder.getPostalCode }}<br>
+                                        {{ latestOrder.getPref }}　{{ latestOrder.getAddr01 }}　{{ latestOrder.getAddr02 }}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.mail_address'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {{ latestCustomer.getEmail }}
+                                    {% else %}
+                                        {{ latestOrder.getEmail }}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.phone_number'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {{ latestCustomer.getPhoneNumber }}
+                                    {% else %}
+                                        {{ latestOrder.getPhoneNumber }}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.customer.company_name'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                    {% if latestCustomer != null %}
+                                        {% if latestCustomer.getCompanyName != null %}
+                                            {{ latestCustomer.getCompanyName }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% else %}
+                                        {% if latestOrder.getCompanyName != null %}
+                                            {{ latestOrder.getCompanyName }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--受注商品情報-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.order.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="order_toggle" href="#order_contents" aria-expanded="false" aria-controls="order_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="order_contents">
+                            <div class="card-body">
+                                <table id="table-order-field" class="table table-striped table-sm mb-0">
+                                    <thead class="table-active">
+                                        <tr class="text-nowrap">
+                                            <th class="pt-2 pb-2 pl-3">{{ 'admin.product.product_name_and_code'|trans }}</th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'admin.order.amount'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'admin.order.quantity'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'admin.order.tax_rate'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'admin.order.tax_type'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2 pr-3">
+                                                <div class="col-8">{{ 'admin.order.subtotal'|trans }}</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for OrderItem in latestOrderItems %}
+                                        <tr>
+                                            <!-- 商品名 -->
+                                            <td class="align-middle w-25 pl-3">
+                                                <p class="mb-0 font-weight-bold">
+                                                    {% if OrderItem.isProduct or OrderItem.isPoint %}
+                                                        {% if OrderItem.isProduct %}
+                                                            <a href="{{ url('admin_product_product_edit', {id: OrderItem.ProductClass.Product.id}) }}" target="_blank">
+                                                                {{ OrderItem.product_name }}
+                                                            </a>
+                                                        {% else %}
+                                                            {{ OrderItem.product_name }}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {{ OrderItem.product_name }}
+                                                    {% endif %}
+                                                </p>
+                                                <span>
+                                                    {{ OrderItem.product_code }}
+                                                    {% if OrderItem.class_category_name1 is not empty %}
+                                                        / (
+                                                        {{ OrderItem.class_name1 }}：
+                                                        {{ OrderItem.class_category_name1 }}
+                                                        {% if OrderItem.class_category_name2 is not empty %}
+                                                            /
+                                                            {{ OrderItem.class_name2 }}：
+                                                            {{ OrderItem.class_category_name2 }}
+                                                        {% endif %}
+                                                        )
+                                                    {% endif %}
+                                                </span>
+                                            </td>
+                                            <!-- 金額 -->
+                                            <td class="align-middle">
+                                                <div class="col mt-3">
+                                                    {{ OrderItem.price|price }}
+                                                    <div class="text-start small">({{ OrderItem.TaxDisplayType }})</div>
+                                                </div>
+                                            </td>
+                                            <!-- 数量 -->
+                                            <td class="align-middle">
+                                                <div class="col-12 col-xl-8">
+                                                    {{ OrderItem.quantity }}
+                                                </div>
+                                            </td>
+                                            <!-- 税率 -->
+                                            <td class="align-middle">
+                                                <div class="col">
+                                                    {{ OrderItem.tax_rate }}%
+                                                </div>
+                                            </td>
+                                            <!-- 課税区分 -->
+                                            <td class="align-middle">
+                                                <div class="col">
+                                                    {{ OrderItem.tax_type }}
+                                                </div>
+                                            </td>
+                                            <!-- 小計 -->
+                                            <td class="align-middle">
+                                                <div class="col">
+                                                    <span>{{ OrderItem.total_price|price }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <hr class="mt-0">
+                                <!-- 小計 -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.subtotal'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle font-weight-normal">{{ latestOrder.subtotal|price }}</span></div>
+                                </div>
+                                <!-- 内値引き -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.discount'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle text-danger font-weight-normal">{{ (0 - latestOrder.discount)|price }}</span></div>
+                                </div>
+                                <!-- 内送料 -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.delivery_fee'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle font-weight-normal">{{ latestOrder.delivery_fee_total|price }}</span></div>
+                                </div>
+                                <!-- 内手数料 -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.common.charge'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle font-weight-normal">{{ latestOrder.charge|price }}</span></div>
+                                </div>
+                                <!-- 加算ポイント -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.add_point'|trans }}</span></div>
+                                    <div class="col-2 text-end">
+                                        <span class="h4 align-middle font-weight-normal">
+                                            {{ latestOrder.add_point }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- 利用ポイント -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.use_point'|trans }}</span></div>
+                                    <div class="col-2 text-end">
+                                        <span class="h4 align-middle font-weight-normal">
+                                            {{ latestOrder.use_point }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <!-- 小計 -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.total'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle font-weight-normal">{{ latestOrder.total|price }}</span></div>
+                                </div>
+                                <!-- 合計 -->
+                                <div class="row justify-content-end mb-3">
+                                    <div class="col-auto"><span class="align-middle">{{ 'admin.order.payment_total'|trans }}</span></div>
+                                    <div class="col-2 text-end"><span class="h4 align-middle font-weight-normal">{{ latestOrder.payment_total|price }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--お届け先情報-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="shipping_toggle" href="#shipping_contents" aria-expanded="false" aria-controls="shipping_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="shipping_contents">
+                            <div class="card-body">
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.name'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null %}
+                                            {{ latestShipping.name01 }}　{{ latestShipping.name02 }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.kana'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null %}
+                                            {{ latestShipping.kana01 }}　{{ latestShipping.kana02 }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.company_name'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null and latestShipping.getCompanyName != null %}
+                                            {{ latestShipping.getCompanyName }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.address'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null %}
+                                            {{ 'admin.common.postal_symbol'|trans }}{{ latestShipping.getPostalCode }}<br>
+                                            {{ latestShipping.getPref }}　{{ latestShipping.getAddr01 }}　{{ latestShipping.getAddr02 }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.phone_number'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null and latestShipping.getPhoneNumber != null %}
+                                            {{ latestShipping.getPhoneNumber }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_name'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null and latestShipping.getShippingDeliveryName != null %}
+                                            {{ latestShipping.getShippingDeliveryName }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_time'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null and latestShipping.getShippingDeliveryTime != null %}
+                                            {{ latestShipping.getShippingDeliveryTime }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_date'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {% if latestShipping != null and latestShipping.getShippingDeliveryDate != null%}
+                                            {{ latestShipping.getShippingDeliveryDate|date("Y/m/d") }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--購入履歴-->
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.title'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="order_history_toggle" href="#order_history_contents" aria-expanded="false" aria-controls="order_history_contents"><i class="fa fa-lg fa-angle-up"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="order_history_contents">
+                            <div class="card-body">
+                                <table id="table-order-field" class="table table-striped table-sm mb-0">
+                                    <thead class="table-active">
+                                        <tr class="text-nowrap">
+                                            <th class="pt-2 pb-2 pl-3">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.ac_result'|trans }}</th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.order_date'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.order_id'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.order_total'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2">
+                                                <div class="col-8">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.order_shipping_date'|trans }}</div>
+                                            </th>
+                                            <th class="pt-2 pb-2 pr-3">
+                                                <div class="col-8">{{ 'remise_payment4.ac.admin_management_edit.label.block.order_history.order_status'|trans }}</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for orderResultCard in orderResultCards %}
+                                        {% set remiseACResult = orderResultCard.getRemiseACResult %}
+                                        {% set orderResult = orderResultCard.getOrderResult %}
+                                        {% set order = orderResult.getOrder %}
+                                        {% set shippings = order.getShippings %}
+                                        {% if shippings != null %}
+                                            {% set shipping = shippings[0] %}
+                                        {% else %}
+                                            {% set shipping = null %}
+                                        {% endif %}
+                                        <tr>
+                                            <!-- 課金結果 -->
+                                            <td class="align-middle pl-3">
+                                            {% if remiseACResult != null %}
+                                                {% if remiseACResult.getResult == 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.failure.key'|trans %}
+                                                    {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.failure.name'|trans }}
+                                                {% elseif remiseACResult.getResult == 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.key'|trans %}
+                                                    {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.name'|trans }}
+                                                {% elseif remiseACResult.getResult == 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.first.key'|trans %}
+                                                    {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.first.name'|trans }}
+                                                {% else %}
+                                                    -
+                                                {% endif %}
+                                            {% endif %}
+                                            </td>
+                                            <!-- 購入日時 -->
+                                            <td class="align-middle">
+                                                <div class="col-8">
+                                                    {% if order.getOrderDate != null%}
+                                                        {{ order.getOrderDate|date("Y/m/d") }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <!-- 注文番号 -->
+                                            <td class="align-middle">
+                                                <div class="col-8">
+                                                    <a class="action-edit" href="{{ url('admin_order_edit', { id : order.getId }) }}">
+                                                    {{ order.getOrderNo }}
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <!-- 購入金額 -->
+                                            <td class="align-middle">
+                                                <div class="col-8">
+                                                    {{ order.getPaymentTotal|price }}
+                                                </div>
+                                            </td>
+                                            <!-- 発送日 -->
+                                            <td class="align-middle">
+                                                <div class="col-8">
+                                                    {% if shipping != null and shipping.getShippingDate != null%}
+                                                        {{ shipping.getShippingDate|date("Y/m/d") }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <!-- 対応状況 -->
+                                            <td class="align-middle">
+                                                <div class="col-8">
+                                                    <span class="badge badge-ec-blue" style="background-color: #fff; color: {{ order.OrderStatusColor }}; border-color: {{ order.OrderStatusColor }}">
+                                                    {{ order.OrderStatus }}
+                                                    {% if orderResultCard.getState == 'remise_payment4.common.label.card.state.result'|trans %}
+                                                         <br/>({{ 'remise_payment4.common.text.card.state.result'|trans }})
+                                                    {% elseif orderResultCard.getState == 'remise_payment4.common.label.card.state.result.deleted'|trans %}
+                                                         <br/>({{ 'remise_payment4.common.text.card.state.result.deleted'|trans }})
+                                                    {% elseif orderResultCard.getState == 'remise_payment4.common.label.card.state.result.deleted'|trans %}
+                                                         <br/>({{ 'remise_payment4.common.text.card.state.result.ac.failed'|trans }})
+                                                    {% elseif orderResultCard.getState == 'remise_payment4.common.label.card.state.result.ac.success'|trans %}
+                                                         <br/>({{ 'remise_payment4.common.text.card.state.result.ac.success'|trans }})
+                                                    {% endif %}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('remise_payment4_ac_management_index') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'remise_payment4.ac.admin_management_index.label.title'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" id="submit_button">{{ 'admin.common.registration'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dialog-area">
+            <div id="dialog-overlay"></div>
+            <div id="dialog-box">
+               <div class="dialog-content">
+                  <div id="dialog-message">{{ 'remise_payment4.front.text.processing'|trans|raw }}</div>
+               </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

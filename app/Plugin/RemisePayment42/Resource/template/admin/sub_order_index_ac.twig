@@ -1,0 +1,24 @@
+{% block javascript %}
+<script type="text/javascript">
+$(function(){
+    $('#searchDetail > div').last().after($('#remise_payment_4_ac_search_area'));
+});
+</script>
+{% endblock javascript %}
+<div class="d-none">
+    <div id="remise_payment_4_ac_search_area">
+        <div class="row">
+            <div class="col">
+                <label class="col-form-label">{{ 'remise_payment4.ac.admin_order_index.label.remise_payment4_ac_result_status'|trans }}</label>
+                {{ form_widget(searchForm.remise_payment4_ac_result_status,  { 'label_attr': { 'class': 'checkbox-inline' }}) }}
+                {{ form_errors(searchForm.remise_payment4_ac_result_status) }}
+            </div>
+            <div class="col">
+                <label class="col-form-label">{{ 'remise_payment4.ac.admin_order_index.label.remise_payment4_ac_member_id'|trans }}</label>
+                {{ form_widget(searchForm.remise_payment4_ac_member_id) }}
+                {{ form_errors(searchForm.remise_payment4_ac_member_id) }}
+            </div>
+        </div>
+    </div>
+</div>
+

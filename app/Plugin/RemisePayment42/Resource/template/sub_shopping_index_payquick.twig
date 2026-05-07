@@ -1,0 +1,123 @@
+<script>
+    $(function(){
+        $('input[name="_shopping_order[remise_payment4_use_payquick]"]').change(function(){
+            changeRemisePayment4UsePayquick();
+        });
+        $('input[name="_shopping_order[remise_payment4_method]"]').change(function(){
+            changeRemisePayment4Method();
+        });
+
+        $('.ec-orderPayment').first().after($('#remise_payment4_payquick'));
+
+        {% if Payquick %}
+            {% if PayquickInfo.use_payquick == "1" %}
+            $('#shopping_order_remise_payment4_use_payquick_0').prop('checked', true);
+            {% else %}
+            $('#shopping_order_remise_payment4_use_payquick_1').prop('checked', true);
+            {% endif %}
+            {% if PayquickInfo.regist_payquick == "1" %}
+            $('#shopping_order_remise_payment4_regist_payquick_0').prop('checked', true);
+            {% endif %}
+            {% if PayquickInfo.method %}
+            $('input[name="_shopping_order[remise_payment4_method]"]').each(function(){
+                if ($(this).val() == '{{ PayquickInfo.method }}') {
+                    $(this).prop('checked', true);
+                }
+            });
+            {% endif %}
+        {% else %}
+            {% if PayquickInfo.regist_payquick == "1" %}
+            $('#shopping_order_remise_payment4_regist_payquick_0').prop('checked', true);
+            {% endif %}
+        {% endif %}
+
+        changeRemisePayment4UsePayquick();
+        changeRemisePayment4Method();
+    });
+    function changeRemisePayment4UsePayquick() {
+        if ($('#shopping_order_remise_payment4_use_payquick_0').prop('checked')) {
+            $('#shopping_order_remise_payment4_regist_payquick_0').prop('checked', true);
+            $('#shopping_order_remise_payment4_regist_payquick_0').attr('disabled', true);
+        }
+        else if ($('#shopping_order_remise_payment4_use_payquick_1').prop('checked')) {
+            $('#shopping_order_remise_payment4_regist_payquick_0').attr('disabled', false);
+        }
+    }
+    function changeRemisePayment4Method() {
+        var isPtimes = false;
+        $('input[name="_shopping_order[remise_payment4_method]"]').each(function(){
+            if ($(this).val() == "61" && $(this).prop('checked')) {
+                isPtimes = true;
+            }
+        });
+        if (isPtimes) {
+            $('#shopping_order_remise_payment4_ptimes').attr('disabled', false);
+            $('#shopping_order_remise_payment4_ptimes').css('background-color', '');
+        } else {
+            $('#shopping_order_remise_payment4_ptimes').attr('disabled', true);
+            $('#shopping_order_remise_payment4_ptimes').css('background-color', '#f0f0f0');
+        }
+    }
+</script>
+<div class="d-none">
+    <div id="remise_payment4_payquick" class="ec-orderPayment">
+        <div class="ec-rectHeading">
+            <h2>{{ 'remise_payment4.front.label.card_info'|trans }}</h2>
+        </div>
+        {% if Payquick %}
+        <div class="ec-radio">
+            <div style="display: block;">
+                {{ form_widget(form.remise_payment4_use_payquick[0]) }}
+            </div>
+            <div style="display: block;" id="shopping_order_remise_payment4_use_payquick_info">
+                <div>
+                    <label>{{ 'remise_payment4.common.label.card'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispCardParts }}</span>
+                </div>
+                <div>
+                    <label>{{ 'remise_payment4.common.label.expire'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispExpire }}</span>
+                </div>
+            </div>
+            <div style="display: block;">
+                {{ form_widget(form.remise_payment4_use_payquick[1]) }}
+            </div>
+        </div>
+        <hr class="borderline"/>
+        <div class="ec-radio">
+            <label for="shopping_order_remise_payment4_regist_payquick_0">
+                {{ form_widget(form.remise_payment4_regist_payquick) }}
+            </label>
+        </div>
+        <hr class="borderline"/>
+        <div class="ec-radio">
+            <label>{{ 'remise_payment4.front.label.method'|trans }}</label>
+            {% for key, item in useMethod %}
+            <div style="display: block;">
+                <input type="radio" id="shopping_order_remise_payment4_method_{{ loop.index0 }}" name="_shopping_order[remise_payment4_method]" value="{{ item }}">
+                <label for="shopping_order_remise_payment4_method_{{ loop.index0 }}">
+                    <span>{{ key }}</span>
+                    {% if item == "61" %}
+                    <select id="shopping_order_remise_payment4_ptimes" name="_shopping_order[remise_payment4_ptimes]">
+                        {% for key2, item2 in usePtimes %}
+                        <option value="{{ item2 }}">{{ key2 }}</option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="ec-radio">
+            <div style="display: block;">
+                {{ form_widget(form.remise_payment4_regist_payquick) }}
+            </div>
+        </div>
+        <div id="shopping_order_remise_payment4_regist_payquick_memo" class="text-primary small clearboth">
+            {{ 'remise_payment4.front.text.payquick'|trans|nl2br }}
+        </div>
+        {% endif %}
+    </div>
+</div>

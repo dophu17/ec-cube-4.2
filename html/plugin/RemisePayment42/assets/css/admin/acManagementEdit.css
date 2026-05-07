@@ -1,0 +1,24 @@
+#ac_management_edit_count {
+    width: 60px;
+}
+#ac_management_edit_interval_value {
+    width: 60px;
+}
+#ac_management_edit_after_value {
+    width: 60px;
+}
+#ac_management_edit_skip {
+    width: 200px;
+}
+#ac_management_edit_stop {
+    width: 250px;
+}
+#ac_management_edit_usage_value {
+    width: 60px;
+}
+#ac_management_edit_order_date {
+    width: 160px;
+}
+.clearboth {
+    clear: both;
+}

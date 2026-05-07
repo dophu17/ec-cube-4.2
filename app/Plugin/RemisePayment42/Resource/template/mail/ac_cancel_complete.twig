@@ -1,0 +1,15 @@
+{{ Order.name01 }} {{ Order.name02 }} 様
+
+以下の定期購買のご注文につきまして、解約処理が完了いたしました。
+
+************************************************
+　定期購買情報
+************************************************
+
+メンバーID　：{{ RemiseACMember.id }}
+定期購買金額：{{ RemiseACMember.total|number_format }}円
+商品名　　　：{{ OrderItem.product_name }} {% if OrderItem.class_category_name1 is not empty %}{{ OrderItem.class_category_name1 }}{% endif %}{% if OrderItem.class_category_name2 is not empty %} / {{ OrderItem.class_category_name2 }}{% endif %}
+
+
+定期購買サービスをご利用いただき誠にありがとうございました。
+またのご利用を心よりお待ち申し上げます。

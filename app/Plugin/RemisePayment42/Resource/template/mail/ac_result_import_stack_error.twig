@@ -1,0 +1,6 @@
+定期購買の結果取込処理でエラーが発生しました。
+
+取込対象日　：{{ remiseACImportStack.getImportDate()|date_format('', 'Y年m月d日') }}
+取込開始件数：{{ remiseACImportStack.getStartNum() }}
+取込終了件数：{{ remiseACImportStack.getEndNum() }}
+エラー内容　：{{ errMsg }}

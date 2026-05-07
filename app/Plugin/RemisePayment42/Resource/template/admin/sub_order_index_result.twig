@@ -1,0 +1,80 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'order_master'] %}
+
+{% block title %}{{ 'admin.order.order_list'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.extset.admin_order_index_result.label.sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_layout.html.twig' %}
+
+{% block stylesheet %}
+{% endblock stylesheet %}
+
+{% block javascript %}
+{% endblock javascript %}
+
+{% block main %}
+    <form name="subOrderIndexResultForm" id="subOrderIndexResultForm" method="post" action="">
+
+        {{ form_widget(form._token) }}
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top">
+                                    {{ 'remise_payment4.extset.admin_order_index_result.label.card_title'|trans }}
+                                    <span class="pl-3">
+                                        <strong>{{ totalCount }}&nbsp;{{ 'remise_payment4.extset.admin_order_index_result.label.count_inf1'|trans }}</strong>
+                                        {{ 'remise_payment4.extset.admin_order_index_result.label.count_inf2'|trans }}
+                                        <strong>{{ errorCount }}&nbsp;{{ 'remise_payment4.extset.admin_order_index_result.label.count_inf1'|trans }}</strong>
+                                        {{ 'remise_payment4.extset.admin_order_index_result.label.count_inf3'|trans }}
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="standardConfig">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead class="table-active">
+                                    <th class="pl-3 pt-2 pb-2">{{ 'remise_payment4.extset.admin_order_index_result.label.table.colname1'|trans }}</th>
+                                    <th class="pt-2 pb-2">{{ 'remise_payment4.extset.admin_order_index_result.label.table.colname2'|trans }}</th>
+                                    <th class="pt-2 pb-2">{{ 'remise_payment4.extset.admin_order_index_result.label.table.colname3'|trans }}</th>
+                                    <th class="pt-2 pb-2">{{ 'remise_payment4.extset.admin_order_index_result.label.table.colname4'|trans }}</th>
+                                    <th class="pr-3 pt-2 pb-2">{{ 'remise_payment4.extset.admin_order_index_result.label.table.colname5'|trans }}</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for responceResult in responceResultList %}
+                                        <tr>
+                                            <td class="pl-3">{{ responceResult.createDate }}</td>
+                                            <td>{{ responceResult.orderId }}</td>
+                                            <td>{{ responceResult.name }}</td>
+                                            <td>{{ responceResult.paymentTotal }}</td>
+                                            <td class="pr-3">{{ responceResult.result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- コンバージョンエリア -->
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('admin_order', { 'resume': 1 }) }}"><i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'admin.order.order_list'|trans }}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% block stylesheet %}
+<style type="text/css">
+{{ include('RemisePayment42/Resource/assets/css/remise_wait_screen.css') }}
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script type="text/javascript">
+{{ include('RemisePayment42/Resource/assets/js/remise_wait_screen.js') }}
+</script>
+{% endblock javascript %}
+<script>
+    $(function(){
+        //$('body').append($('#remise_payment_extset4_div'));
+        $('#search_result').parent().parent().before($("#remise_payment_extset4_button"));
+        $("#remise_payment_extset4_button_area").css("visibility","hidden");
+        $("#search_form").append($('#remise_payment_extset4_div'));
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment_extset4_button">
+        <div id="remise_payment_extset4_button_area" class="" style="display: block;margin-bottom:3px;">
+            <label class="mr-2" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'remise_payment4.extset.admin_order_index.label.tooltip.description'|trans }}">{{ 'remise_payment4.extset.admin_order_index.label.tooltip.title'|trans }}<i class="fa fa-question-circle fa-lg ml-1"></i></label>
+            <button type="button" id="remise_payment_extset4_select_sales" class="btn btn-ec-regular mr-2">{{ 'remise_payment4.extset.admin_order_index.label.remise_payment_extset4_select_sales'|trans }}</button>
+        </div>
+    </div>
+    <div id="remise_payment_extset4_div">
+        <input type="hidden" id="remise_option_extset_order_ids" name="remise_option_extset[order_ids]" value="">
+        <input type="hidden" id="remise_option_extset_page_no" name="remise_option_extset[page_no]" value="{{page_no}}">
+        <div id="dialog-area">
+            <div id="dialog-overlay"></div>
+            <div id="dialog-box">
+               <div class="dialog-content">
+                  <div id="dialog-message">{{ 'remise_payment4.front.text.processing'|trans|raw }}</div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>

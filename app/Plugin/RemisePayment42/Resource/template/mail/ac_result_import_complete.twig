@@ -1,0 +1,7 @@
+定期購買の結果取込処理が完了しました。
+
+取込対象日　　：{{ remiseACImport.getExecDateStr("Y年m月d日") }}
+取込成功件数　：{{ importCnt }}
+取込失敗件数　：{{ importNotCnt }}
+取込総処理件数：{{ importTotalCnt }}
+取込結果　　　：{% if attach %}詳細は添付ファイルをご確認ください。{% else %}詳細はEC-CUBEの受注管理画面からご確認ください。{% endif %}

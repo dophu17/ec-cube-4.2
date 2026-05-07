@@ -1,0 +1,47 @@
+<script>
+    $(function(){
+        $('.ec-borderedDefs').append($('#remise_payment4_payquick'));
+    });
+</script>
+<div class="d-none">
+    <dl id="remise_payment4_payquick">
+        <dt>
+            <label class="ec-label">{{ 'remise_payment4.front.label.card_info'|trans }}</label>
+        </dt>
+        <dd>
+            <div id="payquick_info">
+                <div>
+                    <label>{{ 'remise_payment4.common.label.card'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispCardParts }}</span>
+                </div>
+                <div>
+                    <label>{{ 'remise_payment4.common.label.expire'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispExpire }}</span>
+                </div>
+
+                <div id="remise_payment4_payquick_delete_button">
+                    <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#remise_payment4_payquick_delete">
+                        {{ 'common.delete'|trans }}
+                    </a>
+                    <div class="modal fade" id="remise_payment4_payquick_delete" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_payquick_delete" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title font-weight-bold">{{ 'remise_payment4.front.label.card_info.delete'|trans }}</h5>
+                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <p class="text-start">{{ 'remise_payment4.front.text.card_info.delete'|trans }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">{{ 'common.cancel'|trans }}</button>
+                                    <a class="btn btn-danger" href="{{ url('remise_payment4_delete_payquick', {'id': Payquick.id}) }}" data-method="delete" data-confirm="false">{{ 'common.delete'|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dd>
+    </dl>
+</div>

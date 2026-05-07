@@ -1,0 +1,89 @@
+{% block javascript %}
+<script type="text/javascript">
+$(function(){
+    $('#remise_payment4_acinfo').hide();
+    $('#form1 > div.c-contentsArea__cols > div.c-contentsArea__primaryCol > div.c-primaryCol > div.card:eq(0)').after($('#remise_payment4_acinfo'));
+
+    $('#admin_product_class_sale_type').change(function(){
+        checkAcProductInfo();
+    });
+    checkAcProductInfo();
+
+});
+function checkAcProductInfo() {
+    $('#remise_payment4_acinfo').hide();
+    $('#admin_product_remise_payment4_ac_amount').prop("disabled", true);
+    $('#admin_product_remise_payment4_ac_actype_id').prop("disabled", true);
+    {% for RemiseSaleType in RemiseSaleTypes %}
+        if ($('#admin_product_class_sale_type').val() == "{{ RemiseSaleType.getId() }}") {
+            $('#admin_product_remise_payment4_ac_amount').prop("disabled", false);
+            $('#admin_product_remise_payment4_ac_actype_id').prop("disabled", false);
+            $('#remise_payment4_acinfo').show();
+        }
+    {% endfor %}
+}
+</script>
+{% endblock javascript %}
+<div class="d-none">
+    <div class="card rounded border-0 mb-4" id="remise_payment4_acinfo">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                         title="{{ 'remise_payment4.ac.admin_product.text.tooltip'|trans }}">
+                        <span class="card-title">{{ 'remise_payment4.ac.admin_product.label.title'|trans }}</span>
+                        <i class="fa fa-question-circle fa-lg ml-1"></i>
+                    </div>
+                </div>
+                <div class="col-4 text-end">
+                    <a data-bs-toggle="collapse" href="#freeArea" aria-expanded="false"
+                       aria-controls="freeArea">
+                        <i class="fa fa-angle-up fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show ec-cardCollapse" id="freeArea">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ 'remise_payment4.ac.admin_product.label.amount.caption'|trans }}</span>
+                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                    </div>
+                    <div class="col-9">
+                        {{ form_widget(form.remise_payment4_ac_amount) }}
+                        {{ form_errors(form.remise_payment4_ac_amount) }}
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ 'remise_payment4.ac.admin_product.label.actype.caption'|trans }}</span>
+                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        <div>
+                            {{ form_widget(form.remise_payment4_ac_actype_id) }}
+                            {{ form_errors(form.remise_payment4_ac_actype_id) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <span>{{ 'remise_payment4.ac.admin_product.label.acpoint.caption'|trans }}</span>
+                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                    </div>
+                    <div class="col mb-2">
+                        <div>
+                            {{ form_widget(form.remise_payment4_ac_point_flg) }}
+                            {{ form_errors(form.remise_payment4_ac_point_flg) }}
+                        </div>
+                        <div class="text-primary small clearboth">
+                            {{ 'remise_payment4.ac.admin_product.text.acpoint.note'|trans|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

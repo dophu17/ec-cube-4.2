@@ -1,0 +1,64 @@
+<script>
+    $(function(){
+        $('.ec-orderPayment').first().after($('#remise_payment4_payquick'));
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment4_payquick" class="ec-orderPayment">
+        <div class="ec-rectHeading">
+            <h2>{{ 'remise_payment4.front.label.card_info'|trans }}</h2>
+        </div>
+        {% if PayquickInfo.payquick_state == "2" %}
+        <div class="ec-blockRadio">
+            {% if PayquickInfo.use_payquick == "1" %}
+            <span>{{ 'remise_payment4.front.label.use_payquick.use'|trans }}</span>
+            <div id="shopping_order_remise_payment4_use_payquick_info">
+                <div>
+                    <label>{{ 'remise_payment4.common.label.card'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispCardParts }}</span>
+                </div>
+                <div>
+                    <label>{{ 'remise_payment4.common.label.expire'|trans }}</label>
+                    <span class="form-control">{{ Payquick.getDispExpire }}</span>
+                </div>
+            </div>
+            {% else %}
+            <span>{{ 'remise_payment4.front.label.use_payquick.notuse'|trans }}</span>
+            {% endif %}
+            <input type="hidden" id="shopping_order_remise_payment4_use_payquick" name="_shopping_order[remise_payment4_use_payquick]" value="{{ PayquickInfo.use_payquick }}">
+        </div>
+        <hr class="borderline"/>
+        <div class="ec-blockRadio">
+            {% if PayquickInfo.regist_payquick == "1" %}
+            <span>{{ 'remise_payment4.front.label.regist_payquick'|trans }}</span>
+            <input type="hidden" id="shopping_order_remise_payment4_regist_payquick" name="_shopping_order[remise_payment4_regist_payquick][]" value="1">
+            {% else %}
+            <span>{{ 'remise_payment4.front.label.not_regist_payquick'|trans }}</span>
+            <input type="hidden" id="shopping_order_remise_payment4_regist_payquick" name="_shopping_order[remise_payment4_regist_payquick][]" value="">
+            {% endif %}
+        </div>
+        <hr class="borderline"/>
+        <div class="ec-blockRadio">
+            <span>
+                {{ PayquickInfo.method_name }}
+                {% if PayquickInfo.method == "61" %}
+                （{{ PayquickInfo.ptimes_name }}）
+                {% endif %}
+            </span>
+            <input type="hidden" id="shopping_order_remise_payment4_method" name="_shopping_order[remise_payment4_method]" value="{{ PayquickInfo.method }}">
+            <input type="hidden" id="shopping_order_remise_payment4_ptimes" name="_shopping_order[remise_payment4_ptimes]" value="{{ PayquickInfo.ptimes }}">
+        </div>
+
+        {% elseif PayquickInfo.payquick_state == "1" %}
+        <div class="ec-blockRadio">
+            {% if PayquickInfo.regist_payquick == "1" %}
+            <span>{{ 'remise_payment4.front.label.regist_payquick'|trans }}</span>
+            <input type="hidden" id="shopping_order_remise_payment4_regist_payquick" name="_shopping_order[remise_payment4_regist_payquick][]" value="1">
+            {% else %}
+            <span>{{ 'remise_payment4.front.label.not_regist_payquick'|trans }}</span>
+            <input type="hidden" id="shopping_order_remise_payment4_regist_payquick" name="_shopping_order[remise_payment4_regist_payquick][]" value="">
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>

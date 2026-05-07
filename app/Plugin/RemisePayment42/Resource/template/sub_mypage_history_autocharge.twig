@@ -1,0 +1,128 @@
+<script>
+    $(function(){
+        $('.ec-orderOrder').first().after($('#remise_payment4_autochrage'));
+    });
+</script>
+<div>
+    <div class="ec-orderDelivery" id="remise_payment4_autochrage">
+        <!--タイトル-->
+        <div class="ec-rectHeading">
+            <h2>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.title'|trans }}</h2>
+        </div>
+        <!--購買情報-->
+        <div class="ec-orderDelivery__title">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.sub_title.autocharge_info'|trans }}</div>
+        <!--メンバーID-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.member_id'|trans }}</dt>
+            <dd>{{ RemiseACMember.getId }}</dd>
+        </div>
+        <!--定期購買金額-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.total'|trans }}</dt>
+            <dd>{{ RemiseACMember.getTotal|price }}</dd>
+        </div>
+        <!--課金開始日-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.start_date'|trans }}</dt>
+            <dd>{{ RemiseACMember.getStartDate|date("Y/m/d") }}</dd>
+        </div>
+        {% if RemiseACMember.isLimitless == false %}
+        <!--購買回数-->
+        <div class="ec-definitions--soft"
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.count'|trans }}</dt>
+            <dd>{{ RemiseACMember.getCount }}</dd>
+        </div>
+        {% endif %}
+        <!--課金間隔-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.interval'|trans }}</dt>
+            {% if RemiseACMember.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.key'|trans %}
+            <dd>{{ RemiseACMember.getIntervalValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.value'|trans }}</dd>
+            {% elseif RemiseACMember.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.key'|trans %}
+            <dd>{{ RemiseACMember.getIntervalValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.value'|trans }}</dd>
+            {% endif %}
+        </div>
+        {% if RemiseACMember.isStatus and useKeizokuEditExtend and useKeizokuResultExtend %}
+        <!--次回課金日-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.next_date'|trans }}</dt>
+            <dd>{{ RemiseACMember.getNextDate|date("Y/m/d") }}</dd>
+        </div>
+        {% endif %}
+        {% if RemiseACMember.isStatus and RemiseACMember.getStopDate %}
+        <!--課金停止予定日-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.stop_date'|trans }}</dt>
+            <dd>{{ RemiseACMember.getStopDate|date("Y/m/d") }}</dd>
+        </div>
+        {% endif %}
+        {% if RemiseACMember.isStatus and useKeizokuEditExtend and useKeizokuResultExtend and RemiseACMember.getSkip == 1 %}
+        <!--スキップボタン-->
+        <div>
+        {% if skippingFlg == 1 %}
+            <a href="{{ url('remise_payment4_ac_mypage_skip',{order_id:Order.getId}) }}" class="ec-inlineBtn ec-font-bold">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.skip_button'|trans }}</a>
+        {% else %}
+            <button class="ec-inlineBtn ec-font-bold" disabled>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.skip_button'|trans }}</button>
+        {% endif %}
+        </div>
+        {% endif %}
+        {% if RemiseACMember.getStop == 2 %}
+        <!--最低利用期間-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.usage'|trans }}</dt>
+            <dd>
+            {% if 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.m.key'|trans == RemiseACMember.getUsageMark %}
+                {{ RemiseACMember.getUsageValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.m.value'|trans }}
+            {% elseif 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.d.key'|trans == RemiseACMember.getUsageMark %}
+                {{ RemiseACMember.getUsageValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.d.value'|trans }}
+            {% endif %}
+            </dd>
+        </div>
+        {% endif %}
+        {% if RemiseACMember.isStatus %}
+        {% if RemiseACMember.getStop != 1 %}
+        <!--解約について-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.stop'|trans }}</dt>
+            <dd>{{ dispAcStopFlg }}</dd>
+        </div>
+        {% endif %}
+        {% else %}
+        <!--解約状態-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.status'|trans }}</dt>
+            <dd><span style="color:#ff0000;">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.stoped'|trans }}</span></dd>
+        </div>
+        {% endif %}
+        {% if refusalFlg != 0 %}
+        <!--解約ボタン-->
+        <div>
+        {% if refusalFlg == 1 %}
+            <a href="{{ url('remise_payment4_ac_mypage_cancel',{order_id:Order.getId}) }}" class="ec-inlineBtn ec-font-bold">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.stop_button'|trans }}</a>
+        {% elseif refusalFlg == 2 %}
+            <button class="ec-inlineBtn ec-font-bold" disabled>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.stop_button'|trans }}</button>
+        {% endif %}
+        </div>
+        {% endif %}
+        {% if RemiseACMember.isStatus %}
+        <!--カード情報-->
+        <div class="ec-orderDelivery__title">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.sub_title.card_info'|trans }}</div>
+        {% if RemiseACMember.getCardparts != "" %}
+        <!--カード番号-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.cardparts'|trans }}</dt>
+            <dd>{{ RemiseACMember.getCardpartsProcessing }}</dd>
+        </div>
+        <!--有効期限-->
+        <div class="ec-definitions--soft">
+            <dt>{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.expire'|trans }}</dt>
+            <dd>{{ RemiseACMember.getExpireProcessing }}</dd>
+        </div>
+        <!--カード情報更新ボタン-->
+        <div">
+            <a href="{{ url('remise_payment4_ac_mypage_card_update',{order_id:Order.getId}) }}" class="ec-inlineBtn ec-font-bold">{{ 'remise_payment4.ac.front.mypage_history_autocharge.label.card_update_button'|trans }}</a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>

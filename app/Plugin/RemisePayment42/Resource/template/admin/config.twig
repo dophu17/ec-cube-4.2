@@ -1,0 +1,817 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}{{ 'remise_payment4.admin_config.label.title'|trans }}{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+<style type="text/css">
+    .datepicker-days th.dow:first-child,
+    .datepicker-days td:first-child {
+        color: #f00;
+    }
+
+    .datepicker-days th.dow:last-child,
+    .datepicker-days td:last-child {
+        color: #00f;
+    }
+</style>
+<style type="text/css">
+{{ include('RemisePayment42/Resource/assets/css/admin/config.css') }}
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script type="text/javascript">
+{{ include('RemisePayment42/Resource/assets/js/admin/config.js') }}
+{{ include('RemisePayment42/Resource/assets/js/admin/jquery.validate.js') }}
+$(function(){
+
+    if ($('[type="datetime-local"]').prop('type') != 'datetime-local') {
+        // 適用日時のカレンダー設定
+        $.when(
+            $.getScript("{{ asset('assets/js/vendor/moment.min.js', 'admin') }}"),
+            $.getScript("{{ asset('assets/js/vendor/moment-with-locales.min.js', 'admin') }}"),
+            $.getScript("{{ asset('assets/js/vendor/tempusdominus-bootstrap-4.min.js', 'admin') }}")
+        ).done(function() {
+        {%  for remiseTaxRate in allTaxRateArray %}
+            $('input[id$=__apply_date]').datetimepicker({
+                locale: '{{ eccube_config.locale }}',
+                format: 'YYYY/MM/DD HH:mm',
+                useCurrent: false,
+                buttons: {
+                    showToday: true,
+                    showClose: true
+                }
+            });
+            $('#config_tax_remise_tax_rate__{{remiseTaxRate.getId}}__apply_date').val("{{ remiseTaxRate.getApplyDate|date('Y/m/d H:i') }}");
+        {% endfor %}
+        });
+    }
+
+    // 税率設定入力チェック追加
+    remise_valitation();
+});
+
+function remise_valitation() {
+    $.validator.addMethod("selectCheck", function(value, element, origin){
+        return origin != value;
+    });
+    $('form').validate({
+        rules: {
+            {%  for remiseTaxRate in allTaxRateArray %}
+            "config_tax[remise_tax_rate][{{remiseTaxRate.id}}][tax_rate]" :{
+                required: {
+                    depends: function (element) {
+                        if($('#config_tax_remise_tax_rate__{{remiseTaxRate.getId}}__mode').val() != "del"){
+                            return $('#config_use_payment_1').is(':checked');
+                        }else{
+                            return false;
+                        }
+                     }
+                },
+                min: 1,
+                max: 100,
+            },
+            "config_tax[remise_tax_rate][{{remiseTaxRate.id}}][calc_rule]" :{
+                required: {
+                    depends: function (element) {
+                        if($('#config_tax_remise_tax_rate__{{remiseTaxRate.getId}}__mode').val() != "del"){
+                            return $('#config_use_payment_1').is(':checked');
+                        }else{
+                            return false;
+                        }
+                     }
+                },
+            },
+            "config_tax[remise_tax_rate][{{remiseTaxRate.id}}][apply_date]" :{
+                required: {
+                    depends: function (element) {
+                        if($('#config_tax_remise_tax_rate__{{remiseTaxRate.getId}}__mode').val() != "del"){
+                            return $('#config_use_payment_1').is(':checked');
+                        }else{
+                            return false;
+                        }
+                     }
+                },
+            },
+            {% endfor %}
+        },
+        messages: {
+            {%  for remiseTaxRate in allTaxRateArray %}
+            "config_tax[remise_tax_rate][{{remiseTaxRate.getId}}][tax_rate]" :{
+                required: "※ 消費税率が入力されていません。",
+                min: '※ 消費税率は1～100の数値で入力してください。',
+                max: '※ 消費税率は1～100の数値で入力してください。',
+            },
+            "config_tax[remise_tax_rate][{{remiseTaxRate.getId}}][calc_rule]" :{
+                required: "※ 課税規則が選択されていません。",
+            },
+            "config_tax[remise_tax_rate][{{remiseTaxRate.getId}}][apply_date]" :{
+                required: "※ 適用日時が入力されていません。",
+            },
+            {% endfor %}
+        },
+        errorPlacement: function(error, element) {
+            var objName = element.attr("name");
+            var errId = objName.replace(/\[\]/g, "").replace(/\[/g, "_").replace(/\]/g, "_") + "err";
+            $('#' + errId).empty();
+            error.appendTo('#' + errId);
+        }
+    });
+    $('form').data("validator").settings.ignore = "input[type='hidden']";
+}
+
+
+// 消費税率設定 新規追加
+$('[id^="config_tax_remise_tax_rate_add"]').click(function () {
+
+    $("#cvs_tax_id_count").val( Number($("#cvs_tax_id_count").val()) + 1 );
+    var newTaxId = "new_" + $("#cvs_tax_id_count").val();
+
+    var taxData = "";
+    taxData = '<tr id="tax_rule_list__item--' + newTaxId + '">';
+        // ID
+        taxData += '<td id="tax_rule_list__id--' + newTaxId + '">-</td>';
+        // 消費税率
+        taxData += '<td id="tax_rule_list__tax_rate--' + newTaxId + '">';
+        taxData += '<div class="input-group">';
+        taxData += '<input type="number" id="config_tax_remise_tax_rate__' + newTaxId + '__tax_rate" name="config_tax[remise_tax_rate][' + newTaxId + '][tax_rate]" class="col-auto text-end form-control" value="">';
+        taxData += '<div class="input-group-append">';
+        taxData += '<span class="input-group-text">%</span>';
+        taxData += '</div>';
+        taxData += '</div>';
+        taxData += '<div class="clearboth text-danger small" id="config_tax_remise_tax_rate__' + newTaxId + '__tax_rate_err"></div>';
+        taxData += '</td>';
+        // 課税規則
+        taxData += '<td id="tax_rule_list__calc_rule--' + newTaxId + '">';
+        taxData += '<select id="config_tax_remise_tax_rate__' + newTaxId + '__calc_rule" name="config_tax[remise_tax_rate][' + newTaxId + '][calc_rule]" class="form-control">';
+        taxData += '<option value="1" selected>{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.1'|trans }}</option>';
+        taxData += '<option value="2">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.2'|trans }}</option>';
+        taxData += '<option value="3">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.3'|trans }}</option>';
+        taxData += '</select>';
+        taxData += '<div class="clearboth text-danger small" id="config_tax_remise_tax_rate__' + newTaxId + '__calc_rule_err"></div>';
+        taxData += '</td>';
+        // 適用日時
+        taxData += '<td id="tax_rule_list__apply_date--' + newTaxId + '">';
+        taxData += '<input type="datetime-local" id="config_tax_remise_tax_rate__' + newTaxId + '__apply_date" name="config_tax[remise_tax_rate][' + newTaxId + '][apply_date]" class="datetimepicker-input form-control" style="position: relative;" data-bs-target="#config_tax_remise_tax_rate__' + newTaxId + '__apply_date" data-bs-toggle="datetimepicker" value=""/>';
+        taxData += '<div class="clearboth text-danger small" id="config_tax_remise_tax_rate__' + newTaxId + '__apply_date_err"></div>';
+        taxData += '</td>';
+        // 適用状態
+        taxData += '<td id="tax_rule_list__status--' + newTaxId + '"><span style="color:red">{{ 'remise_payment4.admin_config.label.tax_rate_status.4'|trans }}</span></td>';
+        // 変更
+        taxData += '<td id="tax_rule_list__edit--' + newTaxId + '">';
+        taxData += '<input type="button" id="config_tax_remise_tax_rate__' + newTaxId + '__del" class="btn btn-ec-regular" value="{{ 'remise_payment4.admin_config.label.tax_rate_button.del'|trans }}" onClick="remiseTaxRateDel(' + "'" + newTaxId + "'" + ')">';
+        taxData += '<input type="hidden" id="config_tax_remise_tax_rate__' + newTaxId + '__mode" name="config_tax[remise_tax_rate][' + newTaxId + '][mode]" value="new">';
+        taxData += '</td>';
+    taxData += "</tr>";
+    $('#tax_rule_list_tbody').append(taxData);
+
+    // 入力チェック追加　消費税率
+    $('#config_tax_remise_tax_rate__' + newTaxId + '__tax_rate').rules('add', {
+        required: {
+            depends: function (element) {
+                if($('#config_tax_remise_tax_rate__' + newTaxId + '__mode').val() != "del"){
+                    return $('#config_use_payment_1').is(':checked');
+                }else{
+                    return false;
+                }
+             }
+        },
+        min: 1,
+        max: 100,
+        messages: {
+            required: '※ 消費税率が入力されていません。',
+            min: '※ 消費税率は1～100の数値で入力してください。',
+            max: '※ 消費税率は1～100の数値で入力してください。',
+        }
+    });
+
+    // 入力チェック追加　課税規則
+    $('#config_tax_remise_tax_rate__' + newTaxId + '__calc_rule').rules('add', {
+        required: {
+            depends: function (element) {
+                if($('#config_tax_remise_tax_rate__' + newTaxId + '__mode').val() != "del"){
+                    return $('#config_use_payment_1').is(':checked');
+                }else{
+                    return false;
+                }
+             }
+        },
+        messages: {
+          required: '※ 課税規則が選択されていません。',
+        }
+    });
+
+    // 入力チェック追加　適用日時
+    $('#config_tax_remise_tax_rate__' + newTaxId + '__apply_date').rules('add', {
+        required: {
+            depends: function (element) {
+                if($('#config_tax_remise_tax_rate__' + newTaxId + '__mode').val() != "del"){
+                    return $('#config_use_payment_1').is(':checked');
+                }else{
+                    return false;
+                }
+             }
+        },
+        messages: {
+          required: '※ 適用日時が入力されていません。'
+        }
+    });
+
+    // カレンダー表示追加　適用日時
+    $('#config_tax_remise_tax_rate__' + newTaxId + '__apply_date').datetimepicker({
+        locale: 'ja',
+        format: 'YYYY-MM-DD HH:mm',
+        useCurrent: false,
+        showTodayButton: true
+    });
+
+});
+
+// 消費税率削除
+function remiseTaxRateDel(id)
+{
+    if($("#config_tax_remise_tax_rate__" + id + "__mode").val() != "del")
+    {
+        $("#config_tax_remise_tax_rate__" + id + "__tax_rate").prop("disabled", true);
+        $("#config_tax_remise_tax_rate__" + id + "__calc_rule").prop("disabled", true);
+        $("#config_tax_remise_tax_rate__" + id + "__apply_date").prop("disabled", true);
+        $("#config_tax_remise_tax_rate__" + id + "__del").val("削除解除");
+        $("#config_tax_remise_tax_rate__" + id + "__mode").val("del");
+    }else{
+        $("#config_tax_remise_tax_rate__" + id + "__tax_rate").prop("disabled", false);
+        $("#config_tax_remise_tax_rate__" + id + "__calc_rule").prop("disabled", false);
+        $("#config_tax_remise_tax_rate__" + id + "__apply_date").prop("disabled", false);
+        $("#config_tax_remise_tax_rate__" + id + "__del").val("削除");
+        if(id.indexOf("new") !== -1){
+            $("#config_tax_remise_tax_rate__" + id + "__mode").val("new");
+        }else{
+            $("#config_tax_remise_tax_rate__" + id + "__mode").val("upd");
+        }
+    }
+}
+
+</script>
+{% endblock javascript %}
+
+{% block main %}
+    <form role="form" method="post">
+
+        {{ form_widget(form._token) }}
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.admin_config.label.about_plugin'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" href="#about_plugin_contents" aria-expanded="false" aria-controls="about_plugin_contents"><i class="fa fa-angle-up fa-lg"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="about_plugin_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3"><span>{{ 'remise_payment4.admin_config.label.info'|trans }}</span></div>
+                                    <div class="col mb-2">
+                                        {{ 'remise_payment4.admin_config.text.info'|trans|raw }}<br />
+                                        <a href="https://www.remise.co.jp/" target="remise_site" class="btn btn-info">{{ 'remise_payment4.admin_config.button.homepage'|trans }}</a><br/>
+                                        <br/>
+                                        <a href="http://www.remise.jp/data/ec-cube/" target="remise_eccube_manual" class="btn btn-info">{{ 'remise_payment4.admin_config.button.manual'|trans }}</a><br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.admin_config.label.basic_setting'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" href="#basic_setting_contents" aria-expanded="false" aria-controls="basic_setting_contents"><i class="fa fa-angle-up fa-lg"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="basic_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.shopco'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.shopco) }}
+                                        {{ form_errors(form.shopco) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.shopco'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.hostid'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.hostid) }}
+                                        {{ form_errors(form.hostid) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.hostid'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.use_payment'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.use_payment) }}
+                                        <div class="clearboth">{{ form_errors(form.use_payment) }}</div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.use_option'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.use_option) }}
+                                        <div class="clearboth">{{ form_errors(form.use_option) }}</div>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.use_option'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.admin_config.label.card_setting'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="card_setting_toggle" href="#card_setting_contents" aria-expanded="false" aria-controls="card_setting_contents"><i class="fa fa-lg fa-angle-down"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="ec-cardCollapse collapse" id="card_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.recv_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <input type="text" id="config_recv_url" name="config[recv_url]" class="form-control refurl" value="{{ url('remise_payment4_result') }}" readonly>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.recv_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.card_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.card_url) }}
+                                        {{ form_errors(form.card_url) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.job'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div id="config_job">
+                                        {{ form_widget(form.job[0]) }}
+                                        {{ form_widget(form.job[1]) }}
+                                        </div>
+                                        <div class="clearboth">{{ form_errors(form.job) }}</div>
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.job.auth'|trans }}<br/>
+                                            {{ 'remise_payment4.admin_config.text.job.capture'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.payquick_flag'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div id="config_payquick_flag">
+                                        {{ form_widget(form.payquick_flag[0]) }}
+                                        {{ form_widget(form.payquick_flag[1]) }}
+                                        </div>
+                                        <div class="clearboth">{{ form_errors(form.payquick_flag) }}</div>
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.payquick_flag'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="config_use_method_area">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.use_method'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.use_method) }}
+                                        <div class="clearboth">{{ form_errors(form.use_method) }}</div>
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.use_method'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="config_ptimes_area">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.ptimes'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div id="config_ptimes">
+                                            {{ form_widget(form.ptimes) }}
+                                        </div>
+                                        <div class="clearboth">{{ form_errors(form.ptimes) }}</div>
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.ptimes'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.admin_config.label.cvs_setting'|trans }}</span></div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="cvs_setting_toggle" href="#cvs_setting_contents" aria-expanded="false" aria-controls="cvs_setting_contents"><i class="fa fa-lg fa-angle-down"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="ec-cardCollapse collapse" id="cvs_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.acpt_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <input type="text" id="config_acpt_url" name="config[acpt_url]" class="form-control refurl" value="{{ url('remise_payment4_receipt') }}" readonly>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.acpt_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.cvs_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.cvs_url) }}
+                                        {{ form_errors(form.cvs_url) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.pay_date'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.pay_date) }}
+                                        {{ form_errors(form.pay_date) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.acpt_mail_flag'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div id="config_acpt_mail_flag">
+                                        {{ form_widget(form.acpt_mail_flag[0]) }}
+                                        {{ form_widget(form.acpt_mail_flag[1]) }}
+                                        </div>
+                                        <div class="clearboth">{{ form_errors(form.acpt_mail_flag) }}</div>
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.admin_config.text.acpt_mail_flag'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.admin_config.label.tax_rate'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <table class="table tabel-sm">
+                                            <colgroup>
+                                                <col width="5%">
+                                                <col width="15%">
+                                                <col width="15%">
+                                                <col width="20%">
+                                                <col width="15%">
+                                                <col width="">
+                                            </colgroup>
+                                            <thead>
+                                            <tr>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'remise_payment4.admin_config.label.tax_rate_id'|trans }}</th>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'remise_payment4.admin_config.label.tax_rate_tax_rate'|trans }}</th>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule'|trans }}</th>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'remise_payment4.admin_config.label.tax_rate_apply_date'|trans }}</th>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'remise_payment4.admin_config.label.tax_rate_status'|trans }}</th>
+                                                <th class="border-top-0 pt-2 pb-2 pl-3 pr-5"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tax_rule_list_tbody">
+                                                {%  for remiseTaxRate in allTaxRateArray %}
+                                                    <tr id="tax_rule_list__item--{{ remiseTaxRate.getId }}">
+                                                        <td id="tax_rule_list__id--{{ remiseTaxRate.getId }}">{{ remiseTaxRate.getId }}</td>
+                                                        <td id="tax_rule_list__tax_rate--{{ remiseTaxRate.getId }}">
+                                                            <div class="input-group">
+                                                                <input type="number" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__tax_rate" name="config_tax[remise_tax_rate][{{ remiseTaxRate.getId }}][tax_rate]" class="col-auto text-end form-control" value="{{ remiseTaxRate.getTaxRate }}"/>
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="clearboth text-danger small" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__tax_rate_err"></div>
+                                                        </td>
+                                                        <td id="tax_rule_list__calc_rule--{{ remiseTaxRate.getId }}">
+                                                            <select id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__calc_rule" name="config_tax[remise_tax_rate][{{ remiseTaxRate.getId }}][calc_rule]" class="form-control">
+                                                            {% if remiseTaxRate.getCalcRule == 1 %}
+                                                                <option value="1" selected>{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.1'|trans }}</option>
+                                                                <option value="2">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.2'|trans }}</option>
+                                                                <option value="3">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.3'|trans }}</option>
+                                                            {% elseif remiseTaxRate.getCalcRule == 2 %}
+                                                                <option value="1">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.1'|trans }}</option>
+                                                                <option value="2" selected>{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.2'|trans }}</option>
+                                                                <option value="3">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.3'|trans }}</option>
+                                                            {% elseif remiseTaxRate.getCalcRule == 3 %}
+                                                                <option value="1">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.1'|trans }}</option>
+                                                                <option value="2">{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.2'|trans }}</option>
+                                                                <option value="3" selected>{{ 'remise_payment4.admin_config.label.tax_rate_calc_rule.3'|trans }}</option>
+                                                            {% endif %}
+                                                            </select>
+                                                            <div class="clearboth text-danger small" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__calc_rule_err"></div>
+                                                        </td>
+                                                        <td id="tax_rule_list__apply_date--{{ remiseTaxRate.getId }}">
+                                                            <input type="datetime-local" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__apply_date" name="config_tax[remise_tax_rate][{{ remiseTaxRate.getId }}][apply_date]" class="datetimepicker-input form-control" style="position: relative;" data-bs-target="#config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__apply_date" data-bs-toggle="datetimepicker" value="{{ remiseTaxRate.getApplyDate|date('Y-m-d') }}T{{ remiseTaxRate.getApplyDate|date('H:i') }}"/>
+                                                            <div class="clearboth text-danger small" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__apply_date_err"></div>
+                                                        </td>
+                                                        <td id="tax_rule_list__status--{{ remiseTaxRate.getId }}">
+                                                            {% if remiseTaxRate.getId == currentTaxRate.getId %}
+                                                                {{ 'remise_payment4.admin_config.label.tax_rate_status.1'|trans }}
+                                                            {% elseif remiseTaxRate.getApplyDate|date('Y/m/d  H:i') > "now"|date('Y/m/d  H:i') %}
+                                                                {{ 'remise_payment4.admin_config.label.tax_rate_status.2'|trans }}
+                                                            {% else %}
+                                                                {{ 'remise_payment4.admin_config.label.tax_rate_status.3'|trans }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td id="tax_rule_list__edit--{{ remiseTaxRate.getId }}">
+                                                            <input type="button" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__del" class="btn btn-ec-regular" value="{{ 'remise_payment4.admin_config.label.tax_rate_button.del'|trans }}" onClick="remiseTaxRateDel('{{ remiseTaxRate.getId }}')">
+                                                            <input type="hidden" id="config_tax_remise_tax_rate__{{ remiseTaxRate.getId }}__mode" name="config_tax[remise_tax_rate][{{ remiseTaxRate.getId }}][mode]" value="upd">
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr id="tax_rule_list__item">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><input type="button" class="btn btn-ec-regular" id="config_tax_remise_tax_rate_add" value="{{ 'remise_payment4.admin_config.label.tax_rate_button.add'|trans }}"></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                        <div class="text-primary small" style="clear: both;">
+                                            {{ 'remise_payment4.admin_config.label.tax_rate_primary'|trans|raw }}
+                                        </div>
+                                        <input type="hidden" id="cvs_tax_id_count" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top">
+                                    <span class="card-title">{{ 'remise_payment4.extset.admin_config.label.extset_setting'|trans }}</span>
+                                    <span class="text-danger">{{ 'remise_payment4.extset.admin_config.label.extset_setting.note'|trans }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="extset_setting_toggle" href="#extset_setting_contents" aria-expanded="false" aria-controls="extset_setting_contents"><i class="fa fa-lg fa-angle-down"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse ec-cardCollapse" id="extset_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.extset.admin_config.label.extset_hostid'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.extset_hostid) }}
+                                        {{ form_errors(form.extset_hostid) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.extset.admin_config.text.extset_hostid'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.extset.admin_config.label.extset_recv_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <input type="text" id="config_extset_recv_url" name="config[extset_recv_url]" class="form-control refurl" value="{{ url('remise_payment_extset4_result') }}" readonly>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.extset.admin_config.text.extset_recv_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.extset.admin_config.label.extset_card_url'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.extset_card_url) }}
+                                        {{ form_errors(form.extset_card_url) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.extset.admin_config.text.extset_card_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top">
+                                    <span class="card-title">{{ 'remise_payment4.ac.admin_config.label.setting'|trans }}</span>
+                                    <span class="text-danger">{{ 'remise_payment4.ac.admin_config.label.setting.note'|trans }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end"><a data-bs-toggle="collapse" id="ac_setting_toggle" href="#ac_setting_contents" aria-expanded="false" aria-controls="ac_setting_contents"><i class="fa fa-lg fa-angle-down"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="collapse ec-cardCollapse" id="ac_setting_contents">
+                            <div class="card-body">
+                                <div class="row" style="border-bottom: 1px solid rgba(0, 0, 0, 0.125);">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_recv_url'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <input type="text" id="config_ac_recv_url" name="config[ac_recv_url]" class="form-control refurl" value="{{ url('remise_payment4_ac_result') }}" readonly>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_recv_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <br>
+                                        <div>
+                                            <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
+                                            {{ 'remise_payment4.ac.admin_config.label.info.1'|trans }}
+                                        </div>
+                                        <ul style="padding-left: 20px; list-style-type: none;">
+                                            <li>{{ 'remise_payment4.ac.admin_config.label.info.2'|trans }}</li>
+                                            <li>{{ 'remise_payment4.ac.admin_config.label.info.3'|trans }}</li>
+                                        </ul>
+                                        <br />
+                                        <div>{{ 'remise_payment4.ac.admin_config.label.info.4'|trans }}</div>
+                                        <br />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_appid'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_appid) }}
+                                        {{ form_errors(form.ac_appid) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_password'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_password) }}
+                                        {{ form_errors(form.ac_password) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_result_url'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_result_url) }}
+                                        {{ form_errors(form.ac_result_url) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_result_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_edit_url'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_edit_url) }}
+                                        {{ form_errors(form.ac_edit_url) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_edit_url'|trans }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_acquisition_method'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_acquisition_method) }}
+                                        <div class="text-primary small clearboth">
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_acquisition_method_real'|trans }}<br/>
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_acquisition_method_batch'|trans }}
+                                        </div>
+                                        <div class="text-danger small clearboth">
+                                            {{ 'remise_payment4.ac.admin_config.text.ac_acquisition_method.note'|trans|raw }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_config.label.ac_max_number_acquisitions'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.ac_max_number_acquisitions) }}
+                                        {{ form_errors(form.ac_max_number_acquisitions) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'remise_payment4.admin_config.button.pluginlist'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" id="submit_button">{{ 'remise_payment4.admin_config.button.regist'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

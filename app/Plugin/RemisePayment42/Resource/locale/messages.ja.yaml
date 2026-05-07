@@ -1,0 +1,1158 @@
+# const
+remise_payment4.common.label.plugin_code: RemisePayment42
+remise_payment4.common.label.plugin_name: ルミーズ決済プラグイン
+remise_payment4.common.label.payment.kind.card: 1
+remise_payment4.common.label.payment.card: クレジットカード決済
+remise_payment4.common.label.payment.kind.cvs: 2
+remise_payment4.common.label.payment.cvs: コンビニ・電子マネー・QRコード・銀行決済
+remise_payment4.common.label.card.state.payment: 1
+remise_payment4.common.label.card.state.result: 2
+remise_payment4.common.label.card.state.complete: 3
+remise_payment4.common.label.card.state.result.deleted: 4
+remise_payment4.common.label.card.state.result.ac.failed: 5
+remise_payment4.common.label.card.state.result.ac.success: 6
+remise_payment4.common.text.card.state.payment: 決済処理中
+remise_payment4.common.text.card.state.result: 受注未確定
+remise_payment4.common.text.card.state.result.customer: 入金確認中
+remise_payment4.common.text.card.state.complete: 決済完了
+remise_payment4.common.text.card.state.result.deleted: 受注確定処理済
+remise_payment4.common.text.card.state.result.ac.failed: 課金失敗
+remise_payment4.common.text.card.state.result.ac.success: 課金処理済
+remise_payment4.common.label.mail_template.kind.acpt: 1
+remise_payment4.common.label.mail_template.name.acpt: 入金お知らせメール（REMISEマルチ決済）
+remise_payment4.common.label.mail_template.subject.acpt: ご入金が確認できました
+remise_payment4.common.label.mail_template.kind.ac_order: 2
+remise_payment4.common.label.mail_template.name.ac_order: 定期購買注文受付メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.ac_order: ご注文ありがとうございます
+remise_payment4.common.label.mail_template.kind.mypage.card_update: 3
+remise_payment4.common.label.mail_template.name.mypage.card_update: 定期購買カード情報更新通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.mypage.card_update: ご登録カードの更新が完了しました
+remise_payment4.common.label.mail_template.kind.mypage.cancel: 4
+remise_payment4.common.label.mail_template.name.mypage.cancel: 定期購買解約通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.mypage.cancel: 定期購買の解約処理が完了しました
+remise_payment4.common.label.mail_template.kind.mypage.skip: 5
+remise_payment4.common.label.mail_template.name.mypage.skip: 定期購買スキップ通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.mypage.skip: 定期購買のスキップ処理が完了しました
+remise_payment4.common.label.mail_template.kind.result_import.success: 6
+remise_payment4.common.label.mail_template.name.result_import.success: 定期購買結果取込通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.result_import.success: 定期購買の結果取込処理が完了しました
+remise_payment4.common.label.mail_template.kind.result_import.error: 7
+remise_payment4.common.label.mail_template.name.result_import.error: 定期購買結果取込エラー通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.result_import.error: 定期購買の結果取込処理でエラーが発生しました
+remise_payment4.common.label.mail_template.kind.result_import_stack.accept: 8
+remise_payment4.common.label.mail_template.name.result_import_stack.accept: 定期購買結果バッチ取込受付通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.result_import_stack.accept: 定期購買の結果取込処理を受付しました
+remise_payment4.common.label.mail_template.kind.result_import_stack.error: 9
+remise_payment4.common.label.mail_template.name.result_import_stack.error: 定期購買結果バッチ取込エラー通知メール（REMISE定期購買）
+remise_payment4.common.label.mail_template.subject.result_import_stack.error: 定期購買の結果取込処理でエラーが発生しました
+
+remise_payment4.common.label.r_code.success: 0:0000
+remise_payment4.common.label.errinfo.success: 000000000
+remise_payment4.common.label.errlevel.success: 0
+remise_payment4.common.label.result.card.success: "<SDBKDATA>STATUS=800</SDBKDATA>"
+remise_payment4.common.label.receipt.cvs.success: "<SDBKDATA>STATUS=800</SDBKDATA>"
+remise_payment4.common.label.pay_csv.D001: セブンイレブン
+remise_payment4.common.label.pay_csv.D002: ローソン
+remise_payment4.common.label.pay_csv.D005: ミニストップ
+remise_payment4.common.label.pay_csv.D015: セイコーマート
+remise_payment4.common.label.pay_csv.D405: ペイジー
+remise_payment4.common.label.pay_csv.D003: サンクス
+remise_payment4.common.label.pay_csv.D004: サークルＫ
+remise_payment4.common.label.pay_csv.D010: デイリーヤマザキ
+remise_payment4.common.label.pay_csv.D011: ヤマザキデイリーストア
+remise_payment4.common.label.pay_csv.D030: ファミリーマート
+remise_payment4.common.label.pay_csv.D401: 楽天Ｅｄｙ
+remise_payment4.common.label.pay_csv.D403: モバイルSuica
+remise_payment4.common.label.pay_csv.D404: 楽天銀行
+remise_payment4.common.label.pay_csv.D406: PayPay銀行
+remise_payment4.common.label.pay_csv.D407: Suicaインターネットサービス
+remise_payment4.common.label.pay_csv.D451: ウェブマネー
+remise_payment4.common.label.pay_csv.D452: ビットキャッシュ
+remise_payment4.common.label.pay_csv.D453: JCBプレモカード
+remise_payment4.common.label.pay_csv.P901: コンビニ払込票
+remise_payment4.common.label.pay_csv.P902: コンビニ払込票（郵便局・ゆうちょ銀行）
+remise_payment4.common.label.pay_csv.P903: コンビニ払込票（ハガキ）
+remise_payment4.common.label.pay_csv.P904: コンビニ払込票（ハガキ）
+remise_payment4.common.label.pay_csv.P905: コンビニ払込票（ハガキ）
+remise_payment4.common.label.pay_csv.P906: コンビニ払込票（ハガキ）
+remise_payment4.common.label.pay_csv.C501: クレジットカード
+remise_payment4.common.label.pay_csv.C502: クレジットカード
+remise_payment4.common.label.pay_csv.C511: PayPal
+remise_payment4.common.label.pay_csv.M601: ドコモ払い
+remise_payment4.common.label.pay_csv.M602: ドコモ払い
+remise_payment4.common.label.pay_csv.M603: ドコモ払い（継続課金）
+remise_payment4.common.label.pay_csv.M611: auかんたん決済
+remise_payment4.common.label.pay_csv.M612: auかんたん決済
+remise_payment4.common.label.pay_csv.M613: auかんたん決済（継続課金）
+remise_payment4.common.label.pay_csv.M621: ソフトバンクまとめて支払い
+remise_payment4.common.label.pay_csv.M622: ソフトバンクまとめて支払い
+remise_payment4.common.label.pay_csv.M623: ソフトバンクまとめて支払い（継続課金）
+remise_payment4.common.label.pay_csv.E201: PayPayオンライン決済
+remise_payment4.common.label.pay_csv.E202: PayPayオンライン決済
+remise_payment4.common.label.cvs_name: お支払い先：
+remise_payment4.common.label.cvs_paydate: お支払い期限：
+remise_payment4.common.label.payment_no: 払込票番号：
+remise_payment4.common.label.receipt_no: 受付番号：
+remise_payment4.common.label.confirm_no: 確認番号：
+remise_payment4.common.label.regist_telno: 登録電話番号：
+remise_payment4.common.label.online_no: オンライン決済番号：
+remise_payment4.common.label.company_code: 企業コード：
+remise_payment4.common.label.order_no: 注文番号：
+remise_payment4.common.label.receiving_no: 収納機関番号：
+remise_payment4.common.label.customer_no: お客様番号：
+remise_payment4.common.label.receiving_no.D405: 58091
+remise_payment4.common.label.payment_url: お支払い方法：
+remise_payment4.common.label.dsk_url: http://www.remise.jp/data/paycvs/dsk/index.html
+remise_payment4.common.label.message_seveneleven: |
+    上記URLのページを表示の上プリントアウトされるか、払込票番号(13桁)をメモして頂いてセブン－イレブンのレジでお支払いください。
+    手書きメモの場合、「インターネットの代金支払」とレジにてお申し出の上、払込票番号を記したメモをご提示ください。
+remise_payment4.common.label.message_lawson: |
+    以下のいずれかの方法で、画面に従って申込券を発行の上、レジへご提示ください。
+    ＜Loppi専用バーコードでのお支払いの場合＞
+    上記支払方法案内URLのページをプリントアウトした書面、もしくは携帯・スマートフォン画面に表示されたLoppi専用バーコードを、店頭のLoppi専用バーコードリーダーにかざしてください。
+    ＜受付番号と確認番号を利用してのお支払いの場合＞
+    店頭のLoppi端末のトップ画面から「各種番号をお持ちの方」を選択し、番号検索画面で受付番号を入力後、モバライ☆お支払い画面で確認番号を入力してください。
+remise_payment4.common.label.message_seikomart: |
+    店舗レジにて「インターネット支払い」であることをお申し出いただき、以下のいずれかの方法でお手続きを行ってください。
+    　
+    ＜番号でのお支払いの場合＞
+    　レジ操作画面にて「受付番号」を入力、次画面で「登録電話番号」をご入力ください。確認画面にて内容をご確認のうえ、お支払いください。
+    　
+    ＜バーコードでのお支払いの場合＞
+    　支払方法案内URLのお支払方法案内画面にバーコードが表示されます。バーコードを印刷した紙、またはバーコードを表示したスマートフォンをご提示ください。
+    　店員がバーコードをスキャン後、レジ操作画面に確認画面が表示されますので、内容をご確認のうえ、お支払いください。
+remise_payment4.common.label.message_payeasy: |
+    「Pay-easy」マークが貼付されているATM、インターネットバンキング、モバイルバンキングでのお支払いができます。
+    各収納機関の画面指示に従ってお支払いください。
+    なお、支払方法案内URLからログインされた場合は「収納機関番号」・「お客様番号」・「確認番号」の入力は不要になります。
+remise_payment4.common.label.message_circlek: |
+    店頭のカルワザステーション端末のメニュー画面から「各種支払い」を選択し、次に「6ケタの番号をお持ちの方」を選択してください。
+    受付番号、登録電話番号を入力して、画面に従い受付票を発行の上、レジへご提示ください。
+remise_payment4.common.label.message_yamazaki: |
+    上記URLのページを表示の上プリントアウトされるか、オンライン決済番号(11桁)をメモして頂いてデイリーヤマザキ・ヤマザキデイリーストアのレジにご提示いただき、手順に従ってお支払いください。
+    手書きメモの場合、「オンライン決済」とレジにてお申し出の上、オンライン決済番号を記したメモをご提示ください。
+remise_payment4.common.label.message_familymart: |
+    店頭のFamiポートの画面から「代金支払い・チャージ」→「収納票発行」を選択してください。
+    企業コード(5桁)、注文番号(12桁)を入力して申込券を発行し、レジへご提示ください。
+remise_payment4.common.label.message_paperpay: |
+    コンビニ払込票は、後日、郵送にてお送りさせて頂きますので、お近くのコンビニエンスストアでお支払手続きをお願いいたします。
+    なお、ご利用店舗によっては、コンビニ払込票が商品に同梱される場合もございます。予め、ご了承ください。
+remise_payment4.common.label.message_other: 上記URLのページを表示の上、画面の指示に従ってお支払いください。
+remise_payment4.common.label.card_method.10: 一括払い
+remise_payment4.common.label.card_method.61: 分割払い
+remise_payment4.common.label.card_method.80: リボルビング
+remise_payment4.common.label.card_ptimes: "2"
+remise_payment4.common.label.card_ptimes_count: 回
+remise_payment4.common.label.card: カード番号
+remise_payment4.common.label.expire: 有効期限
+remise_payment4.common.label.month: 月
+remise_payment4.common.label.year: 年
+
+# front
+remise_payment4.front.payment.label.flow: お支払い
+remise_payment4.front.button.payment: 決済する
+remise_payment4.front.text.processing: 只今、処理中です。<br />しばらくお待ちください。
+remise_payment4.front.text.notfound.order: 注文情報が見つかりません。
+remise_payment4.front.text.invalid.payment: 支払方法が正しくありません。
+remise_payment4.front.text.unsetting.plugin: プラグインの設定に不備があります。管理者にご連絡ください。
+remise_payment4.front.text.payment.error: 決済処理エラー
+remise_payment4.front.text.r_code.1:0000: 提携サイトの一時的なサーバ負荷により受付できませんでした。
+remise_payment4.front.text.r_code.2:0000: 提携サイトのメンテナンス中により受付できませんでした。
+remise_payment4.front.text.r_code.5:1000: 結果通知トランザクションにおいて正常なステータスが取得できませんでした。
+remise_payment4.front.text.r_code.5:2000: 結果通知トランザクションにおいて原因不明なエラーが発生しました。
+remise_payment4.front.text.r_code.8:1xxx: 送信データにおいて設定されていない項目が存在します。
+remise_payment4.front.text.r_code.8:2xxx: 送信データにおいて桁不足もしくは桁あふれの項目が存在します。
+remise_payment4.front.text.r_code.8:3xxx: 送信データにおいて不正なデータが設定されている項目が存在します。
+remise_payment4.front.text.r_code.8:x008: メールアドレスのご変更をお願いいたします。
+remise_payment4.front.text.r_code.8:4003: メンテナンス中により受付できませんでした。
+remise_payment4.front.text.r_code.8:5801: 取引停止中により受付できませんでした。
+remise_payment4.front.text.r_code.8:5804: お取扱できないカードです。
+remise_payment4.front.text.r_code.8:5805: お取扱できないカードです。
+remise_payment4.front.text.r_code.8:5810: 売上対象のトランザクションが見つかりませんでした。
+remise_payment4.front.text.r_code.8:5812: キャンセル対象のトランザクションが見つかりませんでした。
+remise_payment4.front.text.r_code.8:5819: このカード番号での送信は制限されました。
+remise_payment4.front.text.r_code.8:5820: この取引は制限されました。既に決済が済んでいます。
+remise_payment4.front.text.r_code.8:5821: 3-D Secure取引中に原因不明なエラーが発生しました。お客様には大変ご迷惑をおかけしますが、しばらく時間を置いて、再度お手続きをお願い致します。
+remise_payment4.front.text.r_code.8:5822: オーソリ保持期限を過ぎています。
+remise_payment4.front.text.r_code.8:5823: 取消可能期限を過ぎています。
+remise_payment4.front.text.r_code.8:5824: 継続課金の受付において原因不明なエラーが発生しました。
+remise_payment4.front.text.r_code.8:5825: 継続課金の会員が見つかりませんでした。
+remise_payment4.front.text.r_code.8:5826: 同一リモートIPアドレスによる送信制限がかかっています。
+remise_payment4.front.text.r_code.9:0000: 原因不明なエラーが発生しました。
+remise_payment4.front.text.r_code.9:0001: 原因不明なエラーが発生しました。
+remise_payment4.front.text.r_code.error: クレジットカード決済においてエラーが発生しました。
+remise_payment4.front.button.payment_url: こちらよりご確認ください
+remise_payment4.front.label.card_info: カードご利用情報
+remise_payment4.front.label.use_payquick.use: 登録されているクレジットカードを利用する
+remise_payment4.front.label.use_payquick.notuse: 新しいクレジットカードを利用する
+remise_payment4.front.label.method: お支払方法
+remise_payment4.front.label.ptimes: 分割回数
+remise_payment4.front.label.regist_payquick: 今回利用するクレジットカードを登録する
+remise_payment4.front.label.not_regist_payquick: クレジットカードは登録しない
+remise_payment4.front.text.payquick: |
+    登録を行うと、次回のお買い物からクレジットカード情報の入力を省略することができます。
+    カード情報は当サイトには保持しません。
+remise_payment4.front.label.card_info.delete: カードご利用情報の削除
+remise_payment4.front.text.card_info.delete: カードご利用情報を削除します。よろしいですか？
+remise_payment4.front.text.card_info.delete.complete: カードご利用情報を削除しました。
+
+# admin
+remise_payment4.admin_config.label.title: ルミーズ決済プラグイン
+remise_payment4.admin_config.label.about_plugin: 本プラグインについて
+remise_payment4.admin_config.button.manual: 設定マニュアルはこちら
+remise_payment4.admin_config.label.info: お知らせ
+remise_payment4.admin_config.text.info: |
+    ルミーズ決済プラグインをご利用頂く為には、ユーザ様ご自身でルミーズ株式会社とご契約を行っていただく必要があります。<br/>
+    お申し込みにつきましては、下記のページから、お申し込みを行ってください。
+remise_payment4.admin_config.button.homepage: ルミーズ株式会社オフィシャルサイト
+remise_payment4.admin_config.label.basic_setting: 基本設定
+remise_payment4.admin_config.label.required: 必須
+remise_payment4.admin_config.label.example: 例
+remise_payment4.admin_config.label.shopco: 加盟店コード
+remise_payment4.admin_config.text.shopco: 「設定情報連絡票」に記載の「加盟店コード」を設定してください。
+remise_payment4.admin_config.text.shopco.blank: 「加盟店コード」を入力してください。
+remise_payment4.admin_config.text.shopco.unmatch.length: 「加盟店コード」は"RMS"+5文字の英数字で入力してください。
+remise_payment4.admin_config.label.hostid: ホスト番号
+remise_payment4.admin_config.text.hostid: ルミーズ加盟店バックヤードシステムにて初期設定後、発番されるホスト番号を入力してください。
+remise_payment4.admin_config.text.hostid.blank: 「ホスト番号」を入力してください。
+remise_payment4.admin_config.text.hostid.unmatch.length: 「ホスト番号」は5文字の英数字+3文字の数字で入力してください。
+remise_payment4.admin_config.label.use_payment: ご利用の決済方法
+remise_payment4.admin_config.label.use_payment.card: カード決済
+remise_payment4.admin_config.label.use_payment.cvs: マルチ決済
+remise_payment4.admin_config.text.use_payment.blank: 「ご利用の決済方法」を選択してください。
+remise_payment4.admin_config.label.use_option: ご利用の追加オプション
+remise_payment4.admin_config.label.use_option.extset: カード決済拡張セット
+remise_payment4.admin_config.label.use_option.ac: 定期購買
+remise_payment4.admin_config.text.use_option: 追加オプションをご利用頂くにはご契約が必要です。ご契約がない状態で設定した場合、正常に動作致しません。
+remise_payment4.admin_config.label.card_setting: カード決済設定
+remise_payment4.admin_config.label.recv_url: 結果通知URL
+remise_payment4.admin_config.text.recv_url: 上記URLをルミーズ加盟店バックヤードシステムの「各種設定」-「ホスト設定」-「カード決済設定」タブ -「結果通知URL」に設定してください。
+remise_payment4.admin_config.label.card_url: 決済情報送信先URL
+remise_payment4.admin_config.label.card_url.blank: 「決済情報送信先URL」を入力してください。
+remise_payment4.admin_config.label.job: 処理区分
+remise_payment4.admin_config.label.job.auth: AUTH(仮売上)
+remise_payment4.admin_config.label.job.capture: CAPTURE(売上)
+remise_payment4.admin_config.text.job.auth: AUTH：与信枠を確保します。後で実売上処理が必要です。
+remise_payment4.admin_config.text.job.capture: CAPTURE：売上処理を行います。
+remise_payment4.admin_config.label.job.blank: 「処理区分」を選択してください。
+remise_payment4.admin_config.label.payquick_flag: ペイクイック
+remise_payment4.admin_config.label.payquick_flag.use: 利用する
+remise_payment4.admin_config.label.payquick_flag.notuse: 利用しない
+remise_payment4.admin_config.label.payquick_flag.blank: 「ペイクイック」の利用可否を選択してください。
+remise_payment4.admin_config.text.payquick_flag: 「利用する」を選択した場合、2回目以降のお買い物でカード情報入力画面を省略できます。
+remise_payment4.admin_config.label.use_method: 支払方法
+remise_payment4.admin_config.label.use_method.blank: 「支払方法」を選択してください。
+remise_payment4.admin_config.text.use_method: ペイクイック「利用する」を選択した場合、ご契約済の「支払方法」を選択してください。
+remise_payment4.admin_config.label.ptimes: 分割回数
+remise_payment4.admin_config.label.ptimes.blank: 「分割回数」を選択してください。
+remise_payment4.admin_config.text.ptimes: 「支払方法」に分割払いを選択した場合は、分割回数を選択してください。
+remise_payment4.admin_config.label.cvs_setting: マルチ決済設定
+remise_payment4.admin_config.label.acpt_url: 収納情報通知URL
+remise_payment4.admin_config.text.acpt_url: 上記URLをルミーズ加盟店バックヤードシステムの「各種設定」-「マルチ決済設定」-「収納情報通知URL」に設定してください。
+remise_payment4.admin_config.label.cvs_url: 決済情報送信先URL
+remise_payment4.admin_config.label.cvs_url.blank: 「決済情報送信先URL」を入力してください。
+remise_payment4.admin_config.label.pay_date: 支払期限
+remise_payment4.admin_config.label.pay_date.blank: 「支払期限」を選択してください。
+remise_payment4.admin_config.label.acpt_mail_flag: 入金お知らせメール
+remise_payment4.admin_config.label.acpt_mail_flag.use: 利用する
+remise_payment4.admin_config.label.acpt_mail_flag.notuse: 利用しない
+remise_payment4.admin_config.label.acpt_mail_flag.blank: 「入金お知らせメール」の利用可否を選択してください。
+remise_payment4.admin_config.text.acpt_mail_flag: ルミーズより収納情報通知があった際に入金に関するお知らせメールが顧客宛て(Bcc:管理者)に送信されます。
+remise_payment4.admin_config.label.tax_rate: 税率設定
+remise_payment4.admin_config.label.tax_rate_id: ID
+remise_payment4.admin_config.label.tax_rate_tax_rate: 消費税率（%）
+remise_payment4.admin_config.label.tax_rate_calc_rule: 課税規則
+remise_payment4.admin_config.label.tax_rate_apply_date: 適用日時
+remise_payment4.admin_config.label.tax_rate_status: 適用状態
+remise_payment4.admin_config.label.tax_rate_calc_rule.1: 四捨五入
+remise_payment4.admin_config.label.tax_rate_calc_rule.2: 切り捨て
+remise_payment4.admin_config.label.tax_rate_calc_rule.3: 切り上げ
+remise_payment4.admin_config.label.tax_rate_status.1: 適用中
+remise_payment4.admin_config.label.tax_rate_status.2: 適用予定
+remise_payment4.admin_config.label.tax_rate_status.3: 無効
+remise_payment4.admin_config.label.tax_rate_status.4: 新規追加
+remise_payment4.admin_config.label.tax_rate_button.add: 新規追加
+remise_payment4.admin_config.label.tax_rate_button.del: 削除
+remise_payment4.admin_config.label.tax_rate_button.del_cancel: 削除解除
+remise_payment4.admin_config.label.tax_rate_primary: 送料、手数料に対する税率設定を行います。商品に対する税率設定とは異なります。<br>コンビニ払込票、コンビニ払込票（郵便局・ゆうちょ銀行）をご利用の場合に、収入印紙の要・不要を判定するために利用されます。<br>詳しくはマニュアルをご確認ください。
+remise_payment4.admin_config.text.tax_rate_errmsg.1: マルチ決済設定＞税率設定が設定されていません。
+remise_payment4.admin_config.text.tax_rate_errmsg.2: 'マルチ決済設定＞税率設定に不正な値が設定されています。(id=%errId%)'
+remise_payment4.admin_config.text.tax_rate_errmsg.3: 'マルチ決済設定＞税率設定が設定されていません。(id=%errId%)'
+remise_payment4.admin_config.text.tax_rate_errmsg.4: 'マルチ決済設定＞税率設定の消費税率が正しく設定されていません。(id=%errId%)'
+remise_payment4.admin_config.text.tax_rate_errmsg.5: 'マルチ決済設定＞税率設定の課税規則が正しく設定されていません。(id=%errId%)'
+remise_payment4.admin_config.text.tax_rate_errmsg.6: 'マルチ決済設定＞税率設定の適用日時が正しく設定されていません。(id=%errId%)'
+remise_payment4.admin_config.text.tax_rate_errmsg.7: マルチ決済設定＞税率設定に適用中となる設定がありません。
+remise_payment4.admin_config.button.pluginlist: プラグイン一覧
+remise_payment4.admin_config.button.regist: 登録
+remise_payment4.admin_config.text.complete: 登録しました。
+remise_payment4.admin_config.text.warning.card: カード決済設定欄に値が入力されていますが、カード決済は有効になっていません。
+remise_payment4.admin_config.text.warning.cvs: マルチ決済設定欄に値が入力されていますが、マルチ決済は有効になっていません。
+remise_payment4.admin_config.text.warning.extset: カード決済拡張セット設定欄に値が入力されていますが、カード決済拡張セットは有効になっていません。
+remise_payment4.admin_config.text.warning.ac: 定期購買設定欄に値が入力されていますが、定期購買は有効になっていません。
+remise_payment4.admin_payment.button.copy_payment: 支払方法複製
+remise_payment4.admin_payment.text.copy_complete: 支払方法を複製しました。
+remise_payment4.admin_order_edit.label.payment: ルミーズ決済情報
+remise_payment4.admin_order_edit.label.card.job: 処理区分
+remise_payment4.admin_order_edit.label.card.job.auth: 仮売上
+remise_payment4.admin_order_edit.label.card.job.capture: 売上
+remise_payment4.admin_order_edit.label.card.job.sales: 売上済
+remise_payment4.admin_order_edit.label.card.job.void: キャンセル
+remise_payment4.admin_order_edit.label.card.job.return: キャンセル
+remise_payment4.admin_order_edit.label.card.job.other: ―
+remise_payment4.admin_order_edit.label.card.salesdate: 売上日
+remise_payment4.admin_order_edit.label.card.canceldate: 取消日
+remise_payment4.admin_order_edit.label.card.tranid: トランザクションID
+remise_payment4.admin_order_edit.label.cvs.acpt_state: 収納状況
+remise_payment4.admin_order_edit.label.cvs.acpt_state.done: 済
+remise_payment4.admin_order_edit.label.cvs.acpt_state.notyet: 未
+remise_payment4.admin_order_edit.label.cvs.recdate: 収納日
+remise_payment4.admin_order_edit.label.cvs.jobid: ジョブID
+remise_payment4.admin_order_edit.button.cvs.detail: お支払情報詳細
+remise_payment4.admin_order_edit.label.card.state.result.delete: 受注確定処理
+remise_payment4.admin_order_edit.label.card.state.result.ac.failed: 状態変更処理（課金失敗⇒課金成功）
+remise_payment4.admin_order_edit.text.card.state.result.warning: 受注未確定の状態です。ルミーズ決済情報を確認してください。
+remise_payment4.admin_order_edit.text.card.state.result.ac.failed.warning: 課金失敗の状態です。ルミーズ決済情報を確認してください。
+remise_payment4.admin_order_edit.text.card.state.result.help: EC-CUBE 上で正常に注文処理が完了していない状態です。消費者様や管理者様への注文受付メールは送信されておりません。
+remise_payment4.admin_order_edit.text.card.state.result.ac.failed.help: ルミーズの課金処理が失敗しています。 エラーの詳細はルミーズ加盟店バックヤードシステムにてご確認ください。
+remise_payment4.admin_order_edit.text.card.state.result.delete: |
+    「受注未確定」の状態を「受注確定済み」に変更します。よろしいですか？
+
+    ルミーズ加盟店バックヤードシステムにて対象となる決済が正常に成立している事を確認の上、実行ボタンを押して確定処理を行ってください。
+    また、加盟店様からの注文完了メールが消費者様に届いていないため、消費者様によっては2回決済をしてしまうことも想定されますので、メールの再送信やご購入意思の確認等のご対応をお願いいたします。
+
+    ※一度確定を行うと、「受注未確定」の状態には戻せません。
+
+    ＜受注未確定とは＞
+    注文手続きが正常に終了していない状態です。
+    EC-CUBE 上で正常に注文処理が完了していないため、消費者様や管理者様への注文受付メールは送信されておりません。
+    受注未確定となる原因は、消費者様が完了画面を見る前にブラウザを閉じてしまった、通信エラーで完了画面が表示できなかった等の理由が考えられます。
+remise_payment4.admin_order_edit.text.card.state.result.ac.failed: |
+    「課金失敗」の状態を「課金成功」に変更します。よろしいですか？
+
+    課金失敗した受注情報について、消費者様から料金のお支払いが確認できましたら、課金成功に変更してください。
+
+    ※一度確定を行うと、「課金失敗」の状態には戻せません。
+
+    ＜課金失敗となる原因＞
+    「与信限度額のオーバー」、「有効期限切れ」などの、登録されているクレジットカードに問題がある場合が考えられます。
+    エラーの詳細は、ルミーズ加盟店バックヤードシステムにてご確認ください。
+
+    ＜課金失敗した場合の対応方法＞
+    代表的な対応方法は以下の通りです。
+    ・消費者様にクレジットカードを利用可能な状態にしていただき、
+    　ルミーズ加盟店バックヤードシステムにて再決済処理を行う。
+    　（クレジットカード情報の更新はマイページより行えます。）
+    ・クレジットカード決済以外の手段で料金の請求を消費者様へ行う。
+
+remise_payment4.admin_order_edit.button.card.state.result.delete: 解除
+remise_payment4.admin_order_edit.text.card.state.result.delete.completed: 受注確定処理が完了しました。
+remise_payment4.admin_order_edit.text.card.state.result.ac.success: 状態変更処理（課金失敗⇒課金成功）が完了しました。
+remise_payment4.admin_customer_edit.label.payquick: カードご利用情報
+remise_payment4.admin_customer_edit.text.payquick_delete.completed: カードご利用情報を削除しました。
+
+
+# 拡張セット用定義 ####################################################################################################
+
+### コントローラ: プラグイン設定画面-プラグイン情報
+remise_payment4.extset.common.label.plugin_code: RemisePaymentExtset4
+remise_payment4.extset.common.label.plugin_name: ルミーズカード決済拡張セットプラグイン
+
+### コントローラ: 受注一覧画面-一括売上処理
+remise_payment4.extset.admin_order_index.text.warning.plugin: 拡張セットの設定情報がありません。プラグインの設定を見直してください。
+remise_payment4.extset.admin_order_index.text.warning.bat_request: リクエストデータが正しくありません。
+remise_payment4.extset.admin_order_index.text.warning.notfound_card: カード決済情報が見つかりません。
+remise_payment4.extset.admin_order_index.text.warning.not_auth: 状態が「仮売上」でないため、処理できません。
+remise_payment4.extset.admin_order_index.text.success.sales: 売上処理が完了しました。
+remise_payment4.extset.admin_order_index.text.failed.sales: 一括売上処理においてエラーが発生しました。
+remise_payment4.extset.admin_order_index.text.failed.url: 「ルミーズカード決済拡張セットプラグイン」で設定された決済情報送信先URLに接続できません。
+
+### コントローラ: 受注編集画面-売上・キャンセル・金額変更処理
+remise_payment4.extset.admin_order_edit.text.warning.plugin: 拡張セットの設定情報がありません。プラグインの設定を見直してください。
+remise_payment4.extset.admin_order_edit.text.warning.bat_request: リクエストデータが正しくありません。
+remise_payment4.extset.admin_order_edit.text.warning.notfound_card: カード決済情報が見つかりません。
+remise_payment4.extset.admin_order_edit.text.warning.not_auth: 状態が「仮売上」でないため、処理できません。
+remise_payment4.extset.admin_order_edit.text.warning.not_auth_or_capture: 状態が「仮売上」または「売上」でないため、処理できません。
+remise_payment4.extset.admin_order_edit.text.success.sales: 売上処理が完了しました。
+remise_payment4.extset.admin_order_edit.text.success.void: 即日取消処理が完了しました。
+remise_payment4.extset.admin_order_edit.text.success.return: 返品処理が完了しました。
+remise_payment4.extset.admin_order_edit.text.success.change: 金額変更処理が完了しました。
+remise_payment4.extset.admin_order_edit.text.failed.error: エラーが発生しました。
+remise_payment4.extset.admin_order_edit.text.failed.sales: 売上処理においてエラーが発生しました。
+remise_payment4.extset.admin_order_edit.text.failed.void: 即日取消処理においてエラーが発生しました。
+remise_payment4.extset.admin_order_edit.text.failed.return: 返品処理においてエラーが発生しました。
+remise_payment4.extset.admin_order_edit.text.failed.change: 金額変更処理においてエラーが発生しました。
+remise_payment4.extset.admin_order_edit.text.failed.url: 「ルミーズカード決済拡張セットプラグイン」で設定された決済情報送信先URLに接続できません。
+
+### 画面表示: 受注一覧画面
+remise_payment4.extset.admin_order_index.label.tooltip.description: チェックを入れた受注に対して、ルミーズの一括処理を行います。充分に確認をしてから実行してください。
+remise_payment4.extset.admin_order_index.label.tooltip.title: ルミーズ一括操作
+remise_payment4.extset.admin_order_index.label.remise_payment_extset4_select_sales: ルミーズ一括売上処理
+remise_payment4.extset.admin_order_index.text.remise_payment_extset4_select_sales.nocheck: チェックボックスが選択されていません
+remise_payment4.extset.admin_order_index.text.remise_payment_extset4_select_sales.confirm_msg1: 選択された
+remise_payment4.extset.admin_order_index.text.remise_payment_extset4_select_sales.confirm_msg2: 件の売上処理を行います。よろしいですか？
+
+### 画面表示: 一括売上処理結果
+remise_payment4.extset.admin_order_index_result.label.sub_title: 一括売上処理結果
+remise_payment4.extset.admin_order_index_result.label.card_title: 処理結果
+remise_payment4.extset.admin_order_index_result.label.count_inf1: 件
+remise_payment4.extset.admin_order_index_result.label.count_inf2: (エラー
+remise_payment4.extset.admin_order_index_result.label.count_inf3: )処理されました
+remise_payment4.extset.admin_order_index_result.label.table.colname1: 受注日
+remise_payment4.extset.admin_order_index_result.label.table.colname2: 注文番号
+remise_payment4.extset.admin_order_index_result.label.table.colname3: お名前
+remise_payment4.extset.admin_order_index_result.label.table.colname4: 購入金額(円)
+remise_payment4.extset.admin_order_index_result.label.table.colname5: 処理結果
+
+### 画面表示: 受注編集画面
+remise_payment4.extset.admin_order_edit.label.button.sales: 売上を行う
+remise_payment4.extset.admin_order_edit.label.button.cancel: キャンセルを行う
+remise_payment4.extset.admin_order_edit.label.button.change: 金額変更を行う
+remise_payment4.extset.admin_order_edit.text.order_status.alert: |
+    こちらの注文をキャンセルする場合は、クレジットカード決済のキャンセル処理を行ってください。
+    クレジットカード決済のキャンセル処理は自動では行われません。
+remise_payment4.extset.admin_order_edit.text.order_payment.alert: |
+    お支払方法を変更する場合は、クレジットカード決済のキャンセル処理を行ってください。
+    クレジットカード決済のキャンセル処理は自動では行われません。
+remise_payment4.extset.admin_order_edit.text.sales.alert: |
+    金額が変更されています。
+    「金額変更を行う」後に再実行してください。
+remise_payment4.extset.admin_order_edit.text.change.alert: |
+    金額は変更されていません。
+    計算結果の更新後、再実行してください。
+remise_payment4.extset.admin_order_edit.text.sales.confirm_msg: 売上処理を行います。よろしいですか？
+remise_payment4.extset.admin_order_edit.text.cancel.confirm_msg: キャンセルを行います。よろしいですか？
+remise_payment4.extset.admin_order_edit.text.change.confirm_msg: |
+    金額変更を行います。よろしいですか？
+    ※編集画面で変更された各設定値は更新されます。
+
+### 画面表示: プラグイン設定画面-タイトル
+remise_payment4.extset.admin_config.label.extset_setting: カード決済拡張セット設定
+remise_payment4.extset.admin_config.label.extset_setting.note: （※この機能をご利用するには、「拡張セット」オプションのご契約が必要です。）
+
+### 画面表示: プラグイン設定画面-ホスト番号
+remise_payment4.extset.admin_config.label.extset_hostid: ホスト番号
+remise_payment4.extset.admin_config.text.extset_hostid: ルミーズ加盟店バックヤードシステムにて、拡張セット専用のホストを作成いただき、そのホスト番号を入力してください。
+remise_payment4.extset.admin_config.text.extset_hostid.blank: 「ホスト番号」を入力してください。
+remise_payment4.extset.admin_config.text.extset_hostid.unmatch.length: 「ホスト番号」は5文字の英数字+3文字の数字で入力してください。
+
+### 画面表示: プラグイン設定画面-結果通知URL
+remise_payment4.extset.admin_config.label.extset_recv_url: 結果通知URL
+remise_payment4.extset.admin_config.text.extset_recv_url: ルミーズ加盟店バックヤードシステムにて拡張セット専用に作成いただいたホストの「カード決済設定」タブ -「結果通知URL」に、上記URLを設定してください。
+
+### 画面表示: プラグイン設定画面-決済情報送信先URL
+remise_payment4.extset.admin_config.label.extset_card_url: 決済情報送信先URL
+remise_payment4.extset.admin_config.text.extset_card_url: 「設定情報連絡票」に記載の「カード決済情報送信先URL-拡張セット用」を設定してください。
+remise_payment4.extset.admin_config.text.extset_card_url.blank: 「決済情報送信先URL」を入力してください。
+
+### 結果通知:応答結果（正常）
+remise_payment4.extset.common.label.result.card.success: "<SDBKDATA>STATUS=800</SDBKDATA>"
+
+# 定期購買用定義 ####################################################################################################
+
+### 共通
+remise_payment4.ac.common.const.remise_autocharge_complete_ok: <SDBKDATA>STATUS=800</SDBKDATA>
+remise_payment4.ac.common.text.nonmember: 非会員
+remise_payment4.ac.common.text.warning.plugin: 定期購買の設定情報がありません。プラグインの設定を見直してください。
+remise_payment4.ac.common.text.warning.plugin.ac_result_url: 定期購買結果取込用URLの設定がありません。プラグインの設定を見直してください。
+remise_payment4.ac.common.text.warning.plugin.ac_edit_url: 定期購買更新用URLの設定がありません。プラグインの設定を見直してください。
+remise_payment4.ac.common.text.failed.not_connect.ac_result_url:  定期購買結果取込用URLに接続できません。
+remise_payment4.ac.common.text.failed.not_connect.ac_edit_url:  定期購買結果取込用URLに接続できません。
+remise_payment4.ac.common.text.failed.keizoku_result_extend.rcode_error: アプリケーションID／パスワード、または加盟店コードが間違っています。
+remise_payment4.ac.common.text.failed.keizoku_result_extend.notfound: 該当の「自動継続課金」の結果は存在しませんでした。
+remise_payment4.ac.common.text.failed.keizoku_result_extend.rcode_error_else: 'ルミーズの「自動継続課金」の結果が取得できませんでした。(%rcode%)'
+remise_payment4.ac.common.text.failed.keizoku_edit_extend.rcode_error: アプリケーションID／パスワード、または加盟店コードが間違っています。
+remise_payment4.ac.common.text.failed.keizoku_edit_extend.rcode_error_else: 'ルミーズの「自動継続課金」情報が取得できませんでした。(%rcode%)'
+
+### コントローラ: 定期購買設定編集画面
+remise_payment4.ac.admin_type_edit.text.warning.notfound: 対象の定期購買設定が見つかりませんでした。
+
+### 販売種別（mtb_sale_type）追加レコード
+remise_payment4.ac.sale_type: 1
+remise_payment4.ac.sale_type.name: 定期購買商品
+
+### 配送先（dtb_delivery）追加レコード
+remise_payment4.ac.delivery.name: 定期購買配送業者
+remise_payment4.ac.delivery.service_name: 定期購買配送
+remise_payment4.ac.delivery_fee.fee: 1000
+
+### CSV種別（mtb_csv_type）追加レコード
+remise_payment4.ac.csv_type: 1
+remise_payment4.ac.csv_type.name: 定期購買商品
+remise_payment4.ac.csv_type.ac_result: 2
+remise_payment4.ac.csv_type.ac_result.name: 自動継続課金取込結果
+
+### 定期購買種別（plg_remise_payment4_remise_ac_type）
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.key: M
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.value: ヵ月ごと
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.key: D
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.value: 日ごと
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.day_of_month.99.value: 購入した
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.m.key: M
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.m.value: ヵ月後
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.d.key: D
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.d.value: 日後
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.skip.true.key: 1
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.skip.true.value: スキップを許可
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.skip.false.key: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.skip.false.value: スキップを不許可
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.true.key: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.true.value: いつでも解約を許可
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.false.key: 1
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.false.value: 解約を不許可
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.usage.key: 2
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.stop.usage.value: 最低利用期間中は解約を不許可
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.m.key: M
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.m.value: ヵ月
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.d.key: D
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.d.value: 日
+remise_payment4.ac.plg_remise_payment4_remise_ac_type.count.value: 回
+
+### 定期購買メンバー（plg_remise_payment4_remise_ac_member）
+remise_payment4.ac.plg_remise_payment4_remise_ac_member.status.0: 停止
+remise_payment4.ac.plg_remise_payment4_remise_ac_member.status.1: 継続中
+
+### 定期購買メンバー（plg_remise_payment4_remise_ac_result）
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.failure.key: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.failure.name: 失敗
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.key: 1
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.success.name: 成功
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.first.key: 9
+remise_payment4.ac.plg_remise_payment4_remise_ac_result.result.first.name: 初回購入
+
+# ルミーズ定期購買取込情報(plg_remise_payment4_remise_ac_import)
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_ini: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_ini.value: 未取込
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_cmp: 1
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_cmp.value: 取込済
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_prs: 2
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_prs.value: 取込中
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_err: 9
+remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_err.value: 取込失敗
+
+### ルミーズ定期購買バッチ取込管理情報(plg_remise_payment4_remise_ac_import_stack)
+remise_payment4.ac.plg_remise_payment4_remise_ac_import_stack.exec_flg.false: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_import_stack.exec_flg.true: 1
+remise_payment4.ac.plg_remise_payment4_remise_ac_import_stack.complete_flg.false: 0
+remise_payment4.ac.plg_remise_payment4_remise_ac_import_stack.complete_flg.true: 1
+
+### 管理画面ナビ
+remise_payment4.ac.nav.management.title: ルミーズ定期購買管理
+remise_payment4.ac.nav.import.title: ルミーズ定期購買取込
+remise_payment4.ac.nav.type.edit.title: ﾙﾐｰｽﾞ定期購買設定
+
+### 画面表示: プラグイン設定画面-タイトル
+remise_payment4.ac.admin_config.label.setting: 定期購買設定
+remise_payment4.ac.admin_config.label.setting.note: （※この機能をご利用するには、「 定期購買」オプションのご契約が必要です。）
+
+### 画面表示: プラグイン設定画面-結果通知URL
+remise_payment4.ac.admin_config.label.ac_recv_url: 継続課金結果通知URL
+remise_payment4.ac.admin_config.text.ac_recv_url: ルミーズの「自動継続課金」の結果通知を受け取る場合は、上記URLをルミーズ加盟店バックヤードシステムの「各種設定」-「カード決済設定」-「自動継続課金結果通知URL」に設定してください。
+
+### 画面表示: プラグイン設定画面-説明
+remise_payment4.ac.admin_config.label.info.1: 以下は、オプション機能となります。
+remise_payment4.ac.admin_config.label.info.2: ・ルミーズの「自動継続課金」の結果を受注情報として取り込む
+remise_payment4.ac.admin_config.label.info.3: ・定期購買の設定をルミーズの「自動継続課金」に連動させる
+remise_payment4.ac.admin_config.label.info.4: ルミーズから提供される設定資料を元に以下を設定してください。
+
+### 画面表示: プラグイン設定画面-アプリケーションID
+remise_payment4.ac.admin_config.label.ac_appid: アプリケーションID
+remise_payment4.ac.admin_config.text.ac_appid.unmatch.length: 「アプリケーションID」は8文字で入力してください。
+remise_payment4.ac.admin_config.text.ac_appid.blank: 「アプリケーションID」を入力してください。
+
+### 画面表示: プラグイン設定画面-パスワード
+remise_payment4.ac.admin_config.label.ac_password: パスワード
+remise_payment4.ac.admin_config.text.ac_password.blank: 「パスワード」を入力してください。
+
+### 画面表示: プラグイン設定画面-定期購買結果取込用URL
+remise_payment4.ac.admin_config.label.ac_result_url: 定期購買結果取込用URL
+remise_payment4.ac.admin_config.text.ac_result_url: ルミーズの「自動継続課金」の結果を受注情報として取り込む場合は、上記URLを設定してください。
+
+### 画面表示: プラグイン設定画面-定期購買更新用URL
+remise_payment4.ac.admin_config.label.ac_edit_url: 定期購買更新用URL
+remise_payment4.ac.admin_config.text.ac_edit_url: EC-CUBE上の定期購買の情報を変更する際、ルミーズの「自動継続課金」と連動させる場合は、上記URLを設定してください。
+
+### 画面表示: プラグイン設定画面-取込設定
+remise_payment4.ac.admin_config.label.ac_acquisition_method: 取込設定
+remise_payment4.ac.admin_config.label.ac_acquisition_method_real: リアルタイム取込
+remise_payment4.ac.admin_config.label.ac_acquisition_method_batch: バッチ取込
+remise_payment4.ac.admin_config.text.ac_acquisition_method_real: リアルタイム取込：ルミーズの「自動継続課金」の結果通知を受け、リアルタイムで受注情報として取り込みます。
+remise_payment4.ac.admin_config.text.ac_acquisition_method_batch: バッチ取込：ルミーズの「自動継続課金」の結果を「１回の処理あたりの取込件数」、受注情報として取り込みます。
+remise_payment4.ac.admin_config.text.ac_acquisition_method.note: 「バッチ取込」を選択した場合、コマンドの定期実行の設定が必要です。<br>また、環境により「１回の処理あたりの取込件数」を調整する必要があります。<br>詳しくは<a href="http://www.remise.jp/data/ec-cube/" target="_blank">マニュアル</a>をご覧ください。
+
+### 画面表示: プラグイン設定画面-１回の処理あたりの取込件数
+remise_payment4.ac.admin_config.label.ac_max_number_acquisitions: １回の処理あたりの取込件数
+remise_payment4.ac.admin_config.label.ac_max_number_acquisitions.blank: 「１回の処理あたりの取込件数」を入力してください。
+remise_payment4.ac.admin_config.label.ac_max_number_acquisitions.length: 「１回の処理あたりの取込件数」は1以上9999以下で入力してください。
+
+### 画面表示: マスターデータ画面
+remise_payment4.ac.masterdata.saletype.text.success: ルミーズ定期購買用の販売種別を追加しました。
+remise_payment4.ac.masterdata.saletype.text.button: ルミーズ定期購買用の販売種別を追加する
+
+### 画面表示: 受注一覧画面
+remise_payment4.ac.admin_order_index.label.remise_payment4_ac_result_status: 自動継続課金結果
+remise_payment4.ac.admin_order_index.label.remise_payment4_ac_member_id: メンバーID(ルミーズ発番のID)
+remise_payment4.ac.admin_order_index.label.remise_payment4_ac_member_id.regex: 「メンバーID」は半角英数字で入力してください。
+
+### 画面表示: 定期購買管理一覧画面
+remise_payment4.ac.admin_management_index.label.title: ルミーズ定期購買一覧
+remise_payment4.ac.admin_management_index.label.sub_title: 受注管理
+remise_payment4.ac.admin_management_index.label.search.multi: 会員番号・会員名・メンバーID
+remise_payment4.ac.admin_management_index.label.search.status: 定期購買の状態
+remise_payment4.ac.admin_management_index.label.search.member_id: メンバーID(ルミーズ発番のID)
+remise_payment4.ac.admin_management_index.label.search.member_id.regex: 「メンバーID」は半角英数字で入力してください。
+remise_payment4.ac.admin_management_index.label.search.order_no: 注文番号
+remise_payment4.ac.admin_management_index.label.search.order_no.regex: 「注文番号」は半角数字で入力してください。
+remise_payment4.ac.admin_management_index.label.search.customer_id: 会員番号
+remise_payment4.ac.admin_management_index.label.search.customer_id.regex: 「会員番号」は半角数字で入力してください。
+remise_payment4.ac.admin_management_index.label.search.customer_name: 会員名
+remise_payment4.ac.admin_management_index.label.search.customer_kana: 会員名(フリガナ)
+remise_payment4.ac.admin_management_index.label.search.customer_kana.regex: 「会員名(フリガナ)」はカタカナで入力してください。
+remise_payment4.ac.admin_management_index.label.search.customer_mail: メールアドレス
+remise_payment4.ac.admin_management_index.label.search.customer_tel: 電話番号(ハイフンなし)
+remise_payment4.ac.admin_management_index.label.search.customer_tel.regex: 「電話番号」は半角数字で入力してください。
+remise_payment4.ac.admin_management_index.label.search.product_name: 購入商品名
+remise_payment4.ac.admin_management_index.label.search.total: 定期購買金額
+remise_payment4.ac.admin_management_index.label.search.total_start: 定期購買金額(下限)
+remise_payment4.ac.admin_management_index.label.search.total_end: 定期購買金額(上限)
+remise_payment4.ac.admin_management_index.label.search.order_date: 受注日
+remise_payment4.ac.admin_management_index.label.search.order_date_start: 受注日(下限)
+remise_payment4.ac.admin_management_index.label.search.order_date_end: 受注日(上限)
+remise_payment4.ac.admin_management_index.label.search.next_date: 次回課金日
+remise_payment4.ac.admin_management_index.label.search.next_date_start: 次回課金日(下限)
+remise_payment4.ac.admin_management_index.label.search.next_date_end: 次回課金日(上限)
+remise_payment4.ac.admin_management_index.label.table.colname1: メンバーID
+remise_payment4.ac.admin_management_index.label.table.colname2: 会員番号
+remise_payment4.ac.admin_management_index.label.table.colname3: 会員名
+remise_payment4.ac.admin_management_index.label.table.colname4: 商品名
+remise_payment4.ac.admin_management_index.label.table.colname5: 初回注文番号
+remise_payment4.ac.admin_management_index.label.table.colname6: 最新注文番号
+remise_payment4.ac.admin_management_index.label.table.colname7: 定期購買金額(円)
+remise_payment4.ac.admin_management_index.label.table.colname8: 次回課金日
+remise_payment4.ac.admin_management_index.label.table.colname9: 状態
+
+### 画面表示: 定期購買管理編集画面
+remise_payment4.ac.admin_management_edit.label.title: ルミーズ定期購買編集
+remise_payment4.ac.admin_management_edit.label.sub_title: 受注管理
+
+remise_payment4.ac.admin_management_edit.label.status.status: 定期購買の状態
+remise_payment4.ac.admin_management_edit.label.status.next_order_date: 次回課金日
+remise_payment4.ac.admin_management_edit.label.status.first_order_date: 初回課金日
+remise_payment4.ac.admin_management_edit.label.status.final_order_date: 最終課金予定日
+remise_payment4.ac.admin_management_edit.label.status.update_date: 更新日時
+
+remise_payment4.ac.admin_management_edit.label.block.acmember.title: 定期購買情報
+remise_payment4.ac.admin_management_edit.label.block.acmember.status.stop: 定期購買を停止する
+remise_payment4.ac.admin_management_edit.label.block.acmember.status.restart: 定期購買を再開する
+remise_payment4.ac.admin_management_edit.label.block.acmember.stop_option.title1: ＋停止オプション
+remise_payment4.ac.admin_management_edit.label.block.acmember.stop_option.title2: －停止オプション
+remise_payment4.ac.admin_management_edit.label.block.acmember.stop_option.value: ルミーズの「自動継続課金」も停止
+remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.title1: ＋再開オプション
+remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.title2: －再開オプション
+remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.value: ルミーズの「自動継続課金」も再開
+remise_payment4.ac.admin_management_edit.label.block.acmember.restart_option.note: ※定期購買を再開する場合、「ルミーズ加盟店バックヤードシステム」でも再開処理が必要です。
+remise_payment4.ac.admin_management_edit.label.block.acmember.member_id.caption: メンバーID
+remise_payment4.ac.admin_management_edit.label.block.acmember.member_id.caption2: （ルミーズ発番のID）
+remise_payment4.ac.admin_management_edit.label.block.acmember.next_date.caption: 次回課金日
+remise_payment4.ac.admin_management_edit.label.block.acmember.next_date.error: 次回課金日は明日以降の日付を設定してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.total.caption: 定期購買金額
+remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption1: 購買回数
+remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption2: 回、継続して購入します。
+remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption3: 回数を指定せず、無制限とする
+remise_payment4.ac.admin_management_edit.label.block.acmember.count.caption4: 回数を指定する
+remise_payment4.ac.admin_management_edit.text.block.acmember.count.blank: 「購買回数」を入力してください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.count.unmatch.length: 「購買回数」は1以上999以下で入力してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.interval.caption1: 課金間隔
+remise_payment4.ac.admin_management_edit.label.block.acmember.interval.caption2: に課金を行います。
+remise_payment4.ac.admin_management_edit.text.block.acmember.interval.blank1: 「課金間隔」を入力してください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.interval.blank2: 「課金間隔」の単位を選択してください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.interval.unmatch.length: 「課金間隔」は1以上999以下で入力してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.day_of_month.caption1: 課金日
+remise_payment4.ac.admin_management_edit.label.block.acmember.day_of_month.caption2: 毎月
+remise_payment4.ac.admin_management_edit.label.block.acmember.day_of_month.caption3: 日
+remise_payment4.ac.admin_management_edit.text.block.acmember.day_of_month.explain1: ※月単位で決済を行う場合の課金日となります。
+remise_payment4.ac.admin_management_edit.text.block.acmember.day_of_month.explain2: ※課金日が 28 ～ 30 日となる場合、月によっては設定された日付で課金が行われない可能性がございます。 詳しくは<a href="http://www.remise.jp/data/ec-cube/" target="_blank">マニュアル</a>をご覧ください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.day_of_month.blank: 「課金日」の日付を選択してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.skip.caption: スキップ
+remise_payment4.ac.admin_management_edit.text.block.acmember.skip.explain: ※スキップは、会員がマイページのご注文履歴詳細から次回購入分をスキップすることが可能となる機能です。
+remise_payment4.ac.admin_management_edit.text.block.acmember.skip.blank: 「スキップ」の種別を選択してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.stop.caption: 定期購買の解約
+remise_payment4.ac.admin_management_edit.text.block.acmember.stop.explain: ※定期購買の解約は、会員がマイページのご注文履歴詳細から定期購買の解約をすることが可能となる機能です。
+remise_payment4.ac.admin_management_edit.text.block.acmember.stop.blank: 「定期購買の解約」のリストを選択してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.usage.caption1: 最低利用期間
+remise_payment4.ac.admin_management_edit.label.block.acmember.usage.caption2: の間、解約をできなくします。
+remise_payment4.ac.admin_management_edit.text.block.acmember.usage.blank1: 「最低利用期間」を入力してください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.usage.blank2: 「最低利用期間」の単位を選択してください。
+remise_payment4.ac.admin_management_edit.text.block.acmember.usage.unmatch.length: 「最低利用期間」は0以上999以下で入力してください。
+remise_payment4.ac.admin_management_edit.label.block.acmember.note.caption: メモ
+remise_payment4.ac.admin_management_edit.label.block.acmember.note.button: メモを保存する
+remise_payment4.ac.admin_management_edit.text.block.acmember.note.explain: ※メモのみを保存します。メモ以外の情報は保存されません。
+remise_payment4.ac.admin_management_edit.text.block.acmember.note.confirm_msg: メモの保存を行います。よろしいですか？
+
+remise_payment4.ac.admin_management_edit.label.block.option.title: 更新オプション
+remise_payment4.ac.admin_management_edit.label.block.option.update_option: ルミーズとの連携
+remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain1: ※この機能はプラグイン設定画面にて自動継続課金APIを設定している場合のみご利用できます。
+remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain2: 設定変更時にルミーズの「自動継続課金」と連動させます。
+remise_payment4.ac.admin_management_edit.text.block.option.update_option.explain3: 無効の場合、ECCUBE上の設定のみ更新され、ルミーズの「自動継続課金」は更新されません。ルミーズ加盟店バックヤードシステムから変更を行う必要があります。
+remise_payment4.ac.admin_management_edit.text.block.option.update_option.error: 自動継続課金APIの設定が無いため、有効にできません。
+
+remise_payment4.ac.admin_management_edit.label.block.customer.title: 注文者情報
+remise_payment4.ac.admin_management_edit.label.block.customer.id: 会員ID
+remise_payment4.ac.admin_management_edit.label.block.customer.name: お名前
+remise_payment4.ac.admin_management_edit.label.block.customer.kana: お名前(フリガナ)
+remise_payment4.ac.admin_management_edit.label.block.customer.address: 住所
+remise_payment4.ac.admin_management_edit.label.block.customer.mail_address: メールアドレス
+remise_payment4.ac.admin_management_edit.label.block.customer.phone_number: 電話番号
+remise_payment4.ac.admin_management_edit.label.block.customer.company_name: 会社名
+
+remise_payment4.ac.admin_management_edit.label.block.order.title: 受注商品情報
+remise_payment4.ac.admin_management_edit.label.block.shipping.title: お届け先情報
+remise_payment4.ac.admin_management_edit.label.block.shipping.name: お名前
+remise_payment4.ac.admin_management_edit.label.block.shipping.kana: お名前(フリガナ)
+remise_payment4.ac.admin_management_edit.label.block.shipping.company_name: 会社名
+remise_payment4.ac.admin_management_edit.label.block.shipping.address: 住所
+remise_payment4.ac.admin_management_edit.label.block.shipping.phone_number: 電話番号
+remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_name: 配送業者
+remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_time: お届け時間
+remise_payment4.ac.admin_management_edit.label.block.shipping.delivery_date: お届け日
+
+remise_payment4.ac.admin_management_edit.label.block.order_history.title: 購入履歴
+remise_payment4.ac.admin_management_edit.label.block.order_history.ac_result: 課金結果
+remise_payment4.ac.admin_management_edit.label.block.order_history.order_date: 購入日時
+remise_payment4.ac.admin_management_edit.label.block.order_history.order_id: 注文番号
+remise_payment4.ac.admin_management_edit.label.block.order_history.order_total: 購入金額
+remise_payment4.ac.admin_management_edit.label.block.order_history.order_shipping_date: 出荷日
+remise_payment4.ac.admin_management_edit.label.block.order_history.order_status: 対応状況
+
+remise_payment4.ac.admin_management_edit.text.submit.confirm_msg1: ルミーズの「自動継続課金」と合わせて、定期購買を更新します。\nよろしいですか？
+remise_payment4.ac.admin_management_edit.text.submit.confirm_msg2: 定期購買情報を更新します。\nよろしいですか？\n\n※ルミーズの「自動継続課金」は連動しません。\n「ルミーズ加盟店バックヤードシステム」から変更を行ってください。
+remise_payment4.ac.admin_management_edit.text.submit.stop.confirm_msg1: ルミーズの「自動継続課金」と合わせて、定期購買を停止します。\nよろしいですか？\n\n※ルミーズの「自動継続課金」が既に停止している場合は、“ルミーズの「自動継続課金」も停止”のチェックを外して実行してください。
+remise_payment4.ac.admin_management_edit.text.submit.stop.confirm_msg2: 定期購買を停止します。\n≪　ルミーズの「自動継続課金」は停止処理を行いません。　≫\n\nよろしいですか？
+remise_payment4.ac.admin_management_edit.text.submit.restart.confirm_msg1: ルミーズの「自動継続課金」と合わせて、定期購買を再開します。\nよろしいですか？\n\n※ルミーズの「自動継続課金」が既に再開している場合は、“ルミーズの「自動継続課金」も再開”のチェックを外して実行してください。
+remise_payment4.ac.admin_management_edit.text.submit.restart.confirm_msg2: 定期購買を再開します。\n≪　ルミーズの「自動継続課金」は再開処理を行いません。　≫\n\nよろしいですか？
+
+
+### コントローラ: 定期購買管理編集画面
+remise_payment4.ac.admin_management_edit.text.warning.plugin: 定期購買の設定情報がありません。プラグインの設定を見直してください。
+remise_payment4.ac.admin_management_edit.text.warning.plugin.ac_edit_url: 定期購買更新用URLの設定がありません。プラグインの設定を見直してください。
+remise_payment4.ac.admin_management_edit.text.failed.url:  定期購買更新用URLに接続できません。
+remise_payment4.ac.admin_management_edit.text.failed.noupdate:  'ルミーズの「自動継続課金」が更新できませんでした。(%rcode%)'
+remise_payment4.ac.admin_management_edit.text.success.stop: 定期購買の停止処理が完了しました。
+remise_payment4.ac.admin_management_edit.text.success.restart: 定期購買の再開処理が完了しました。
+remise_payment4.ac.admin_management_edit.text.success.update: 定期購買の更新処理が完了しました。
+remise_payment4.ac.admin_management_edit.text.success.note: メモの保存が完了しました。
+remise_payment4.ac.admin_management_edit.text.stop.warning.plugin: プラグインの設定がありません。プラグインの設定を見直してください。
+remise_payment4.ac.admin_management_edit.text.stop.warning.plugin.card_url: カード決済設定の決済情報送信先URLの設定がありません。プラグインの設定を見直してください。
+
+### 画面表示: 定期購買取込一覧画面
+remise_payment4.ac.admin_import_index.label.title: ルミーズ定期購買取込一覧
+remise_payment4.ac.admin_import_index.label.sub_title: 受注管理
+remise_payment4.ac.admin_import_index.label.import_form.title: ルミーズの「自動継続課金」の結果取込条件
+remise_payment4.ac.admin_import_index.label.import_form.member_id: メンバーID（ルミーズ発番のID）
+remise_payment4.ac.admin_import_index.label.import_form.member_id.note: メンバー個別で結果取込を行う場合は、上記を設定してください。
+remise_payment4.ac.admin_import_index.label.import_form.member_id.regex: 「メンバーID」は半角英数字で入力してください。
+remise_payment4.ac.admin_import_index.label.import_form.import_date: 取込対象の課金日
+remise_payment4.ac.admin_import_index.label.import_form.import_date.blank: 「取込対象の課金日」を選択してください。
+remise_payment4.ac.admin_import_index.label.import_form.import_count: 取込件数
+remise_payment4.ac.admin_import_index.label.import_form.import_count_all: 全件
+remise_payment4.ac.admin_import_index.label.import_form.import_count_set: 件数指定
+remise_payment4.ac.admin_import_index.label.import_form.import_count_start: 取込開始件数
+remise_payment4.ac.admin_import_index.label.import_form.import_count_end: 取込終了件数
+remise_payment4.ac.admin_import_index.label.import_form.import_count_start.length: 「取込開始件数」は1以上9999以下で入力してください。
+remise_payment4.ac.admin_import_index.label.import_form.import_count_end.length: 「取込終了件数」は1以上9999以下で入力してください。
+remise_payment4.ac.admin_import_index.label.import_form.import_count_start.blank: 「取込開始件数」を入力してください。
+remise_payment4.ac.admin_import_index.label.import_form.import_count_end.blank: 「取込終了件数」を入力してください。
+
+remise_payment4.ac.admin_import_index.label.import_form.import_button: 自動継続課金の結果を受注情報に取り込む
+remise_payment4.ac.admin_import_index.label.import_form.submit.confirm_msg: ルミーズの自動継続課金の結果を受注情報に取り込みます。\nよろしいですか？
+remise_payment4.ac.admin_import_index.text.failed.notfound_member: 該当メンバーの「自動継続課金」の結果は存在しませんでした。
+
+remise_payment4.ac.admin_import_index.label.table.count: '自動継続課金結果通知 %count% 件'
+remise_payment4.ac.admin_import_index.label.table.th.column1: 課金成功件数(件)
+remise_payment4.ac.admin_import_index.label.table.th.column2: 課金成功金額(円)
+remise_payment4.ac.admin_import_index.label.table.th.column3: 課金失敗件数(件)
+remise_payment4.ac.admin_import_index.label.table.th.column4: 課金失敗金額(円)
+remise_payment4.ac.admin_import_index.label.table.th.column5: 処理総件数(件)
+remise_payment4.ac.admin_import_index.label.table.th.column6: 処理総額(円)
+remise_payment4.ac.admin_import_index.label.table.th.column7: 課金日時
+remise_payment4.ac.admin_import_index.label.table.th.column8: 取込状況
+remise_payment4.ac.admin_import_index.label.table.th.column9: 取込総件数(件)
+remise_payment4.ac.admin_import_index.label.table.th.column10: 取込日時
+remise_payment4.ac.admin_import_index.label.table.td.column11: 取込条件へ設定
+
+### 画面表示: 定期購買取込結果一覧画面
+remise_payment4.ac.admin_import_result.label.table.title: 取込結果
+remise_payment4.ac.admin_import_result.label.table.th.column1: メンバーID
+remise_payment4.ac.admin_import_result.label.table.th.column2: 会員番号
+remise_payment4.ac.admin_import_result.label.table.th.column3: 注文番号
+remise_payment4.ac.admin_import_result.label.table.th.column4: 定期購買金額(円)
+remise_payment4.ac.admin_import_result.label.table.th.column5: 課金結果
+remise_payment4.ac.admin_import_result.label.table.th.column6: 取込状況
+remise_payment4.ac.admin_import_result.label.table.th.column7: 備考
+remise_payment4.ac.admin_import_result.text.s_kaiin_no.null: 非会員
+remise_payment4.ac.admin_import_result.text.import.key: 1
+remise_payment4.ac.admin_import_result.text.import.value: 取込済み
+remise_payment4.ac.admin_import_result.text.not_import.key: 0
+remise_payment4.ac.admin_import_result.text.not_import.value: 未取込
+remise_payment4.ac.admin_import_result.text.note.captured: 該当メンバーの受注情報は取込済みです。
+remise_payment4.ac.admin_import_result.text.note.member_notimport: '該当メンバーの自動継続課金情報が取得できませんでした。(%rcode%)'
+remise_payment4.ac.admin_import_result.text.note.member_notfound: 該当メンバーの「自動継続課金」の結果は存在しませんでした。
+remise_payment4.ac.admin_import_result.text.note.member_notupdate: 'EC-CUBEとルミーズの定期購買情報に差異があるため、定期購買情報の最新化ができませんでした。(差異のある項目：%errMsg%)<br>EC-CUBEまたはルミーズの定期購買情報の設定値を見直してください。'
+remise_payment4.ac.admin_import_result.text.note.member_difference: EC-CUBEの合計金額と、ルミーズの「自動継続課金」の定期購買金額に差額が発生しています。<br>受注情報の明細を見直してください。
+remise_payment4.ac.admin_import_result.text.success: 自動継続課金の結果を取り込みました。
+remise_payment4.ac.admin_import_result.text.failure: 自動継続課金の結果取込に失敗しました。
+
+### 画面表示: 定期購買設定一覧画面
+remise_payment4.ac.admin_type_edit_index.label.title: ルミーズ定期購買設定一覧
+remise_payment4.ac.admin_type_edit_index.label.sub_title: 店舗設定
+remise_payment4.ac.admin_type_edit_index.label.table.colname1: ID
+remise_payment4.ac.admin_type_edit_index.label.table.colname2: 名称
+remise_payment4.ac.admin_type_edit_index.label.table.colname3: 購買回数
+remise_payment4.ac.admin_type_edit_index.label.table.colname4: 課金間隔
+remise_payment4.ac.admin_type_edit_index.label.table.colname5: 課金日
+remise_payment4.ac.admin_type_edit_index.label.table.colname6: 開始時期
+remise_payment4.ac.admin_type_edit_index.text.count.limit: 回
+remise_payment4.ac.admin_type_edit_index.text.count.limitless: 無制限
+remise_payment4.ac.admin_type_edit_index.text.day_of_month.day: 日
+remise_payment4.ac.admin_type_edit_index.text.error.delete: 対象の定期購買設定は既に商品管理で使用されているため削除できません。
+
+### 画面表示: 定期購買登録・編集画面
+remise_payment4.ac.admin_type_edit.label.title: ルミーズ定期購買設定
+remise_payment4.ac.admin_type_edit.label.sub_title: 店舗設定
+remise_payment4.ac.admin_type_edit.label.block.edit.title: 定期購買登録・編集
+remise_payment4.ac.admin_type_edit.label.block.edit.name.caption: 名称
+remise_payment4.ac.admin_type_edit.text.block.edit.name.blank: 「名称」を入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.name.unmatch.length: 「名称」は255byte以内で入力してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.count.caption1: 購買回数
+remise_payment4.ac.admin_type_edit.label.block.edit.count.caption2: 回、継続して購入します。
+remise_payment4.ac.admin_type_edit.label.block.edit.count.caption3: 回数を指定せず、無制限とする
+remise_payment4.ac.admin_type_edit.label.block.edit.count.caption4: 回数を指定する
+remise_payment4.ac.admin_type_edit.text.block.edit.count.explain: ※初回購入分は上記回数に含まれません。
+remise_payment4.ac.admin_type_edit.text.block.edit.count.blank: 「購買回数」を入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.count.unmatch.length: 「購買回数」は1以上999以下で入力してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.interval.caption1: 課金間隔
+remise_payment4.ac.admin_type_edit.label.block.edit.interval.caption2: に課金を行います。
+remise_payment4.ac.admin_type_edit.text.block.edit.interval.blank1: 「課金間隔」を入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.interval.blank2: 「課金間隔」の単位を選択してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.interval.unmatch.length: 「課金間隔」は1以上999以下で入力してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption1: 課金日
+remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption2: 毎月
+remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption3: 日
+remise_payment4.ac.admin_type_edit.text.block.edit.day_of_month.explain1: ※月単位で決済を行う場合の課金日となります。
+remise_payment4.ac.admin_type_edit.text.block.edit.day_of_month.explain2: ※課金日が 28 ～ 30 日となる場合、月によっては設定された日付で課金が行われない可能性がございます。 詳しくは<a href="http://www.remise.jp/data/ec-cube/" target="_blank">マニュアル</a>をご覧ください。
+remise_payment4.ac.admin_type_edit.text.block.edit.day_of_month.blank: 「課金日」の日付を選択してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.after.caption1: 開始時期
+remise_payment4.ac.admin_type_edit.label.block.edit.after.caption2: 購入後、
+remise_payment4.ac.admin_type_edit.label.block.edit.after.caption3: より、課金を開始します。
+remise_payment4.ac.admin_type_edit.text.block.edit.after.blank1: 「開始時期」を入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.after.blank2: 「開始時期」の単位を選択してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.after.unmatch.length: 「開始時期」は1以上999以下で入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.after.month_select_error: 月単位の課金間隔を指定した場合は、月単位「ヵ月後」を選択してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.skip.caption: スキップ
+remise_payment4.ac.admin_type_edit.text.block.edit.skip.explain: ※スキップは、会員がマイページのご注文履歴詳細から次回購入分をスキップすることが可能となる機能です。
+remise_payment4.ac.admin_type_edit.text.block.edit.skip.blank: 「スキップ」の種別を選択してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.stop.caption: 定期購買の解約
+remise_payment4.ac.admin_type_edit.text.block.edit.stop.explain: ※定期購買の解約は、会員がマイページのご注文履歴詳細から定期購買の解約をすることが可能となる機能です。
+remise_payment4.ac.admin_type_edit.text.block.edit.stop.blank: 「定期購買の解約」のリストを選択してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.stop_display.caption: 解約不許可の表示内容
+remise_payment4.ac.admin_type_edit.text.block.edit.stop_display.explain: ※「解約を不許可」の場合、ご注文手続き、ご注文内容のご確認ページの表示内容を指定できます。
+remise_payment4.ac.admin_type_edit.text.block.edit.stop_display.blank: 「解約不許可の表示内容」を入力してください。
+remise_payment4.ac.admin_type_edit.label.block.edit.usage.caption1: 最低利用期間
+remise_payment4.ac.admin_type_edit.label.block.edit.usage.caption2: の間、解約をできなくします。
+remise_payment4.ac.admin_type_edit.text.block.edit.usage.blank1: 「最低利用期間」を入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.usage.blank2: 「最低利用期間」の単位を選択してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.usage.unmatch.length: 「最低利用期間」は0以上999以下で入力してください。
+remise_payment4.ac.admin_type_edit.text.block.edit.free_area.caption: 補足説明
+remise_payment4.ac.admin_type_edit.tooltip.free_area: ご注文手続き、ご注文内容のご確認ページに入力内容が表示されます。
+remise_payment4.ac.admin_type_edit.text.block.edit.free_area.sample: |
+    例：ご注文完了後の解約について<br />
+    ご解約される場合には、商品発送のn日前（*1）までに、マイページからお手続きを行っていただくか、以下に記載の電話番号（*2）へご連絡ください。<br />
+    （*1）前回発送日からnか月後が次の発送日となります。<br />
+    （*2）解約手続用ご連絡窓口：11-2222-3333
+remise_payment4.ac.admin_type_edit.text.block.edit.free_area.explain: ※返品や解約の連絡方法・連絡先、返品や解約の条件等についての補足説明を表示できます。
+
+remise_payment4.ac.admin_type_edit.label.block.simulation.title: 購入シミュレーション
+remise_payment4.ac.admin_type_edit.text.block.simulation.title.explain: 上記設定値を用い、入力された購入日から初回課金日を算出します。
+remise_payment4.ac.admin_type_edit.label.block.simulation.purchase date.caption: 課金日
+remise_payment4.ac.admin_type_edit.text.block.simulation.purchase date.notformat: 「課金日」を正しく入力してください。
+remise_payment4.ac.admin_type_edit.label.block.simulation.initial_billing_date.caption: 初回課金日
+remise_payment4.ac.admin_type_edit.label.block.simulation.final_billing_due_date.caption: 最終課金予定日
+remise_payment4.ac.admin_type_edit.text.block.simulation.default_date: ----/--/--
+
+### 画面表示: 商品登録画面
+remise_payment4.ac.admin_product.label.title: ルミーズ定期購買設定
+remise_payment4.ac.admin_product.text.tooltip: 対象商品が定期購買商品の場合のみ表示されます。
+remise_payment4.ac.admin_product.label.amount.caption: 定期購買金額
+remise_payment4.ac.admin_product.text.amount.blank: 「定期購買金額」を入力してください。
+remise_payment4.ac.admin_product.text.amount.error: 販売種別に定期購買商品以外が選択されているため、入力できません。
+remise_payment4.ac.admin_product.text.amount.unmatch.length: 「定期購買金額」は1以上99999999以下で入力してください。
+remise_payment4.ac.admin_product.label.actype.caption: 定期購買設定
+remise_payment4.ac.admin_product.text.actype.blank: 「定期購買設定」を選択してください。
+remise_payment4.ac.admin_product.text.actype.error: 販売種別に定期購買商品以外が選択されているため、入力できません。
+remise_payment4.ac.admin_product.label.acpoint.caption: 定期購買ポイント設定
+remise_payment4.ac.admin_product.text.acpoint.note: EC-CUBEのポイント機能が有効の場合、定期購買取込時にポイントが付与されます。<br>※無効にしても、初回購入時はポイントが付与されます。
+
+### 画面表示: 商品規格登録画面
+remise_payment4.ac.admin_product_class.label.thead.th.amount.title: ルミーズ<br>定期購買金額
+remise_payment4.ac.admin_product_class.label.thead.th.actype.title: ルミーズ<br>定期購買設定
+remise_payment4.ac.admin_product_class.label.thead.th.acpoint.title: ルミーズ<br>ポイント設定
+
+### 画面表示: 会員一覧
+remise_payment4.ac.admin_customer_index.text.alert_msg: 定期購買継続中の会員のため、削除ができません。定期購買の解約を先に行ってください。
+
+### 画面表示: 配送方法設定
+remise_payment4.ac.admin_delivery_edit.text.payments_err: クレジットカード決済が指定されていない、もしくはクレジットカード決済以外の支払方法が指定されています。
+
+### 画面表示: ショッピングカート画面
+remise_payment4.ac.front.cart.duplicate.text: 恐れ入りますが、定期購買の商品を含む場合は１商品ずつの購入をお願い致します。
+
+### 画面表示: ご注文内容のご確認画面
+remise_payment4.ac.front.shopping.acinfo.title: 定期購買情報
+remise_payment4.ac.front.shopping.acinfo.skip.true.value: マイページからスキップ可能
+remise_payment4.ac.front.shopping.acinfo.skip.false.value: マイページからスキップ不可
+remise_payment4.ac.front.shopping.acinfo.skip.explain: ※スキップは、マイページのご注文履歴詳細から次回購入分をスキップすることが可能となる機能です。
+remise_payment4.ac.front.shopping.acinfo.stop.true.value: マイページから解約可能
+remise_payment4.ac.front.shopping.acinfo.stop.false.value: マイページから解約不可
+remise_payment4.ac.front.shopping.acinfo.stop.usage.value: 最低利用期間中はマイページから解約不可
+remise_payment4.ac.front.shopping.acinfo.stop.explain: ※解約は、マイページのご注文履歴詳細から定期購買の解約をすることが可能となる機能です。
+
+### コントローラ: 決済画面リダイレクト
+remise_payment4.ac.front.payment.senddata.autocharge: 1
+remise_payment4.ac.front.payment.senddata.autocharge.stop: 0
+remise_payment4.ac.front.payment.senddata.ac_tax: 0
+remise_payment4.ac.front.payment.senddata.job.check: CHECK
+
+### コントローラ: 自動継続課金結果通知
+remise_payment4.ac.remise_payment4_ac_result.error: 自動継続課金結果通知にてエラーが発生しました。
+
+### 画面表示: マイページ詳細履歴画面
+remise_payment4.ac.front.mypage_history_autocharge.label.title: 定期購買情報
+remise_payment4.ac.front.mypage_history_autocharge.label.sub_title.autocharge_info: 購買情報
+remise_payment4.ac.front.mypage_history_autocharge.label.member_id: メンバーID：
+remise_payment4.ac.front.mypage_history_autocharge.label.total: 定期購買金額：
+remise_payment4.ac.front.mypage_history_autocharge.label.start_date: 課金開始日：
+remise_payment4.ac.front.mypage_history_autocharge.label.count: 購買回数：
+remise_payment4.ac.front.mypage_history_autocharge.label.interval: 課金間隔：
+remise_payment4.ac.front.mypage_history_autocharge.label.next_date: 次回課金日：
+remise_payment4.ac.front.mypage_history_autocharge.label.stop_date: 課金停止予定日：
+remise_payment4.ac.front.mypage_history_autocharge.label.usage: 最低利用期間：
+remise_payment4.ac.front.mypage_history_autocharge.label.skip: スキップ：
+remise_payment4.ac.front.mypage_history_autocharge.label.skip_button: スキップを行う
+remise_payment4.ac.front.mypage_history_autocharge.label.stop: 解約について：
+remise_payment4.ac.front.mypage_history_autocharge.label.status: 状態：
+remise_payment4.ac.front.mypage_history_autocharge.label.stoped: 解約済み
+remise_payment4.ac.front.mypage_history_autocharge.label.stop_button: 解約を行う
+remise_payment4.ac.front.mypage_history_autocharge.label.sub_title.card_info: カード情報
+remise_payment4.ac.front.mypage_history_autocharge.label.cardparts: カード番号：
+remise_payment4.ac.front.mypage_history_autocharge.label.expire: 有効期限：
+remise_payment4.ac.front.mypage_history_autocharge.label.card_update_button: カード情報を更新する
+
+### 画面表示: マイページ-登録カード情報更新画面
+remise_payment4.ac.front.sub_mypage_ac_card_update.label.title: マイページ/ご注文履歴詳細/登録カード情報更新
+remise_payment4.ac.front.sub_mypage_ac_card_update.label.cardparts: カード番号
+remise_payment4.ac.front.sub_mypage_ac_card_update.label.expire: 有効期限
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.card_info: 現在のご登録のカード情報は以下の通りです。
+remise_payment4.ac.front.sub_mypage_ac_card_update.label.update: 更新する
+remise_payment4.ac.front.sub_mypage_ac_card_update.label.back: 戻る
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.warning.plugin: 登録カード情報の更新に失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.warning.plugin.card_url: 登録カード情報の更新に失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.error: 登録カード情報の更新に失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.error_else: 登録カード情報の更新処理にて想定外のエラーが発生。
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.success: 登録カード情報の更新に成功しました。
+remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.success2: 今後ともご愛顧賜りますよう、よろしくお願い申し上げます。
+
+### 画面表示: マイページ-スキップ画面
+remise_payment4.ac.front.sub_mypage_ac_skip.label.title: マイページ/ご注文履歴詳細/定期購買スキップ
+remise_payment4.ac.front.sub_mypage_ac_skip.label.member_id: 定期購買　メンバーID
+remise_payment4.ac.front.sub_mypage_ac_skip.label.total: 定期購買金額
+remise_payment4.ac.front.sub_mypage_ac_skip.label.skip_next_date_before: スキップする次回課金日
+remise_payment4.ac.front.sub_mypage_ac_skip.label.skip_next_date_after: スキップ後の次回課金日
+remise_payment4.ac.front.sub_mypage_ac_skip.label.next_date: 次回課金日
+remise_payment4.ac.front.sub_mypage_ac_skip.label.skip: スキップする
+remise_payment4.ac.front.sub_mypage_ac_skip.label.back: 戻る
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip_info: 以下の定期購買のご注文を１回分スキップします。<br>一度スキップすると、次回課金日までスキップはできなくなります。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skipped_info: 以下の定期購買のご注文につきまして、１回分スキップしました。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip_confirm: 以上の内容でよろしければ、「スキップする」ボタンをクリックしてください。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.warning.not_keizoku_edit_extend: 自動継続課金APIの設定が無いため、スキップできません。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.warning.skipped: この定期購買のご注文は既にスキップ処理済みです。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.error: 定期購買のスキップ処理に失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_skip.text.skip.success: 定期購買のスキップ処理が完了いたしました。
+
+### 画面表示: マイページ-解約画面
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.title: マイページ/ご注文履歴詳細/定期購買解約
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.member_id: 定期購買　メンバーID
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.total: 定期購買金額
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.mail: 登録メールアドレス
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.cancel: 解約する
+remise_payment4.ac.front.sub_mypage_ac_cancel.label.back: 戻る
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.cancel_info: 以下の定期購買のご注文を解約します。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.canceled_info: 以下の定期購買のご注文につきまして、解約処理が完了いたしました。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.cancel_confirm: 定期購買を解約されますと、今後はサービスを受けられなくなります。<br>以上の内容で間違いなければ、「解約する」ボタンをクリックしてください。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.cancel.error: 定期購買の解約手続きに失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.cancel.error_else: 定期購買の解約処理にて想定外のエラーが発生。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.canlel.success: 定期購買の解約手続きが完了いたしました。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.canlel.success2: 定期購買サービスをご利用いただき誠にありがとうございました。<br>またのご利用を心よりお待ち申し上げます。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.canlel.warning.plugin: 定期購買の解約手続きに失敗しました。
+remise_payment4.ac.front.sub_mypage_ac_cancel.text.canlel.warning.plugin.card_url: 定期購買の解約手続きに失敗しました。
+
+### 画面表示: マイページ-退会画面
+remise_payment4.ac.front.sub_mypage_withdraw.text.info1: 退会手続きができません。
+remise_payment4.ac.front.sub_mypage_withdraw.text.info2: 定期購買継続中のご注文情報があるため、退会手続きができません。<br>下記に表示されているご注文情報の解約手続きを先に行っていただく必要があります。
+remise_payment4.ac.front.sub_mypage_withdraw.text.info3: 定期購買の解約は「マイページ」＞「ご注文履歴」＞「詳細を見る」ボタン＞「定期購買情報」欄の「解約を行う」ボタンから行えます。
+remise_payment4.ac.front.sub_mypage_withdraw.text.table.th1: ご注文番号
+remise_payment4.ac.front.sub_mypage_withdraw.text.table.th2: 商品名
+
+# CSV項目：定期購買(有効)
+remise_payment4.ac.csv_items.active.1.disp_name: 会員番号
+remise_payment4.ac.csv_items.active.1.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.active.1.field_name: customer_id
+remise_payment4.ac.csv_items.active.1.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.2.disp_name: お名前(姓)
+remise_payment4.ac.csv_items.active.2.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.active.2.field_name: name01
+remise_payment4.ac.csv_items.active.2.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.3.disp_name: お名前(名)
+remise_payment4.ac.csv_items.active.3.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.active.3.field_name: name02
+remise_payment4.ac.csv_items.active.3.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.4.disp_name: 商品名
+remise_payment4.ac.csv_items.active.4.entity_name: Eccube\\Entity\\OrderItem
+remise_payment4.ac.csv_items.active.4.field_name: product_name
+remise_payment4.ac.csv_items.active.4.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.5.disp_name: 初回注文番号
+remise_payment4.ac.csv_items.active.5.entity_name: Eccube\Entity\Order
+remise_payment4.ac.csv_items.active.5.field_name: first_order_id
+remise_payment4.ac.csv_items.active.5.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.6.disp_name: 最新注文番号
+remise_payment4.ac.csv_items.active.6.entity_name: Eccube\Entity\Order
+remise_payment4.ac.csv_items.active.6.field_name: latest_order_id
+remise_payment4.ac.csv_items.active.6.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.7.disp_name: 定期購買金額
+remise_payment4.ac.csv_items.active.7.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.active.7.field_name: total
+remise_payment4.ac.csv_items.active.7.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.8.disp_name: 次回課金日
+remise_payment4.ac.csv_items.active.8.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.active.8.field_name: next_date
+remise_payment4.ac.csv_items.active.8.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.9.disp_name: 状態
+remise_payment4.ac.csv_items.active.9.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.active.9.field_name: status
+remise_payment4.ac.csv_items.active.9.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.10.disp_name: メンバーID
+remise_payment4.ac.csv_items.active.10.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.active.10.field_name: member_id
+remise_payment4.ac.csv_items.active.10.reference_field_name: NULL
+remise_payment4.ac.csv_items.active.11.disp_name: 備考
+remise_payment4.ac.csv_items.active.11.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.active.11.field_name: note
+remise_payment4.ac.csv_items.active.11.reference_field_name: NULL
+# CSV項目：定期購買(無効)
+remise_payment4.ac.csv_items.nonactive.1.disp_name: お名前(セイ)
+remise_payment4.ac.csv_items.nonactive.1.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.1.field_name: kana01
+remise_payment4.ac.csv_items.nonactive.1.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.2.disp_name: お名前(メイ)
+remise_payment4.ac.csv_items.nonactive.2.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.2.field_name: kana02
+remise_payment4.ac.csv_items.nonactive.2.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.3.disp_name: 会社名
+remise_payment4.ac.csv_items.nonactive.3.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.3.field_name: company_name
+remise_payment4.ac.csv_items.nonactive.3.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.4.disp_name: 郵便番号
+remise_payment4.ac.csv_items.nonactive.4.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.4.field_name: postal_code
+remise_payment4.ac.csv_items.nonactive.4.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.5.disp_name: 都道府県
+remise_payment4.ac.csv_items.nonactive.5.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.5.field_name: pref
+remise_payment4.ac.csv_items.nonactive.5.reference_field_name: name
+remise_payment4.ac.csv_items.nonactive.6.disp_name: 住所1
+remise_payment4.ac.csv_items.nonactive.6.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.6.field_name: addr01
+remise_payment4.ac.csv_items.nonactive.6.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.7.disp_name: 住所2
+remise_payment4.ac.csv_items.nonactive.7.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.7.field_name: addr02
+remise_payment4.ac.csv_items.nonactive.7.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.8.disp_name: メールアドレス
+remise_payment4.ac.csv_items.nonactive.8.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.8.field_name: email
+remise_payment4.ac.csv_items.nonactive.8.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.9.disp_name: TEL
+remise_payment4.ac.csv_items.nonactive.9.entity_name: Eccube\Entity\Customer
+remise_payment4.ac.csv_items.nonactive.9.field_name: phone_number
+remise_payment4.ac.csv_items.nonactive.9.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.10.disp_name: 課金回数
+remise_payment4.ac.csv_items.nonactive.10.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.10.field_name: count
+remise_payment4.ac.csv_items.nonactive.10.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.11.disp_name: 課金間隔
+remise_payment4.ac.csv_items.nonactive.11.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.11.field_name: interval
+remise_payment4.ac.csv_items.nonactive.11.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.12.disp_name: 課金日
+remise_payment4.ac.csv_items.nonactive.12.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.12.field_name: day_of_month
+remise_payment4.ac.csv_items.nonactive.12.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.13.disp_name: 開始時期
+remise_payment4.ac.csv_items.nonactive.13.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.13.field_name: after
+remise_payment4.ac.csv_items.nonactive.13.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.14.disp_name: スキップ
+remise_payment4.ac.csv_items.nonactive.14.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.14.field_name: skip_flg
+remise_payment4.ac.csv_items.nonactive.14.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.15.disp_name: 解約
+remise_payment4.ac.csv_items.nonactive.15.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.15.field_name: stop_flg
+remise_payment4.ac.csv_items.nonactive.15.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.16.disp_name: 最低利用期間
+remise_payment4.ac.csv_items.nonactive.16.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.16.field_name: usage
+remise_payment4.ac.csv_items.nonactive.16.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.17.disp_name: 課金開始日
+remise_payment4.ac.csv_items.nonactive.17.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.17.field_name: start_date
+remise_payment4.ac.csv_items.nonactive.17.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.18.disp_name: 課金停止予定日
+remise_payment4.ac.csv_items.nonactive.18.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.18.field_name: stop_date
+remise_payment4.ac.csv_items.nonactive.18.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.19.disp_name: 作成日時
+remise_payment4.ac.csv_items.nonactive.19.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.19.field_name: create_date
+remise_payment4.ac.csv_items.nonactive.19.reference_field_name: NULL
+remise_payment4.ac.csv_items.nonactive.20.disp_name: 更新日時
+remise_payment4.ac.csv_items.nonactive.20.entity_name: Plugin\RemisePayment42\Entity\RemiseACMember
+remise_payment4.ac.csv_items.nonactive.20.field_name: update_date
+remise_payment4.ac.csv_items.nonactive.20.reference_field_name: NULL
+# CSV項目：自動継続課金結果取込(有効)
+remise_payment4.ac.csv_ac_result_items.active.1.disp_name: 注文番号
+remise_payment4.ac.csv_ac_result_items.active.1.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.1.field_name: order_id
+remise_payment4.ac.csv_ac_result_items.active.1.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.2.disp_name: メンバーID
+remise_payment4.ac.csv_ac_result_items.active.2.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.2.field_name: member_id
+remise_payment4.ac.csv_ac_result_items.active.2.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.3.disp_name: 会員番号
+remise_payment4.ac.csv_ac_result_items.active.3.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.3.field_name: s_kaiin_no
+remise_payment4.ac.csv_ac_result_items.active.3.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.4.disp_name: 定期購買金額
+remise_payment4.ac.csv_ac_result_items.active.4.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.4.field_name: ac_amount
+remise_payment4.ac.csv_ac_result_items.active.4.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.5.disp_name: 課金結果
+remise_payment4.ac.csv_ac_result_items.active.5.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.5.field_name: ac_result
+remise_payment4.ac.csv_ac_result_items.active.5.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.6.disp_name: 取込状況
+remise_payment4.ac.csv_ac_result_items.active.6.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.6.field_name: status
+remise_payment4.ac.csv_ac_result_items.active.6.reference_field_name: NULL
+remise_payment4.ac.csv_ac_result_items.active.7.disp_name: 備考
+remise_payment4.ac.csv_ac_result_items.active.7.entity_name: Plugin\RemisePayment42\Entity\RemiseACImportInfo
+remise_payment4.ac.csv_ac_result_items.active.7.field_name: note
+remise_payment4.ac.csv_ac_result_items.active.7.reference_field_name: NULL

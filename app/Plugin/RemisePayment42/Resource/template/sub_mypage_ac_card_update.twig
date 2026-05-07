@@ -1,0 +1,75 @@
+{% extends 'default_frame.twig' %}
+
+{% set mypageno = 'index' %}
+
+{% set body_class = 'mypage' %}
+
+{% block main %}
+    <div class="ec-layoutRole__main">
+        <div class="ec-mypageRole">
+            <div class="ec-pageHeader">
+                <h1>{{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.label.title'|trans }}</h1>
+            </div>
+            {% include 'Mypage/navi.twig' %}
+        </div>
+        <div class="ec-mypageRole">
+            <div class="ec-editRole">
+                <div class="ec-off1Grid">
+                    <div class="ec-off1Grid__cell">
+                        <form method="post" action="{{ url('remise_payment4_ac_mypage_card_update_redirect',{order_id:Order.getId}) }}" novalidate class="h-adr">
+                            {% if process == "complete" %}
+                                <div style="text-align:center;">
+                                {% if dispErrMsg %}
+                                    <h1 style="font-weight: bold;">{{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.error'|trans }}</h1>
+                                    <p style="color:#ff0000;">{{ dispErrMsg|nl2br }}</p>
+                                {% else %}
+                                    <h1 style="font-weight: bold;">{{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.success'|trans }}</h1>
+                                {% endif %}
+                                </div>
+                            {% endif %}
+                            {% if remiseACMember.cardparts != "" %}
+                                {{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.text.card_info'|trans }}
+                                <div class="ec-borderedDefs">
+                                    <dl>
+                                        <dt>
+                                            {{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.label.cardparts'|trans }}
+                                        </dt>
+                                        <dd>
+                                            {{ remiseACMember.getCardpartsProcessing }}
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>
+                                            {{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.label.expire'|trans }}
+                                        </dt>
+                                        <dd>
+                                            {{ remiseACMember.getExpireProcessing }}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            {% endif %}
+                            {% if process == "init" %}
+                                <br>
+                                <div class="ec-RegisterRole__actions">
+                                    <div class="ec-off4Grid">
+                                        <div class="ec-off4Grid__cell">
+                                            <button type="submit"
+                                                    class="ec-blockBtn--cancel">{{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.label.update'|trans }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elseif process == "complete" and not dispErrMsg %}
+                                <div style="text-align:center;">
+                                {{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.text.update.success2'|trans }}
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ec-role">
+            <a href="{{ url('mypage_history',{order_no:Order.getOrderNo}) }}" class="ec-inlineBtn">{{ 'remise_payment4.ac.front.sub_mypage_ac_card_update.label.back'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

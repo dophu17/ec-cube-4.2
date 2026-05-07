@@ -1,0 +1,62 @@
+<script>
+    $(function(){
+        $('.c-primaryCol > div').first().after($('#remise_payment4_payquick'));
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment4_payquick" class="card rounded border-0 mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-inline-block">
+                        <span class="card-title">
+                            {{ 'remise_payment4.admin_customer_edit.label.payquick'|trans }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-4 text-end">
+                    <a data-bs-toggle="collapse" href="#remise_payment4_payquick_list" aria-expanded="false" aria-controls="remise_payment4_payquick_list">
+                        <i class="fa fa-angle-up fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show ec-cardCollapse" id="remise_payment4_payquick_list">
+            <div class="card-body">
+                <div id="admin_payquick_info">
+                    <div>
+                        <label>{{ 'remise_payment4.common.label.card'|trans }}</label>
+                        <span class="form-control">{{ Payquick.getDispCardParts }}</span>
+                    </div>
+                    <div>
+                        <label>{{ 'remise_payment4.common.label.expire'|trans }}</label>
+                        <span class="form-control">{{ Payquick.getDispExpire }}</span>
+                    </div>
+
+                    <div id="remise_payment4_admin_payquick_delete_button">
+                        <a class="btn btn btn-ec-regular" data-bs-toggle="modal" data-bs-target="#remise_payment4_admin_payquick_delete">
+                            {{ 'common.delete'|trans }}
+                        </a>
+                        <div class="modal fade" id="remise_payment4_admin_payquick_delete" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_admin_payquick_delete" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title font-weight-bold">{{ 'remise_payment4.front.label.card_info.delete'|trans }}</h5>
+                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <p class="text-start">{{ 'remise_payment4.front.text.card_info.delete'|trans }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">{{ 'common.cancel'|trans }}</button>
+                                        <a class="btn btn-danger" href="{{ url('remise_payment4_admin_delete_payquick', {'pid': Payquick.id, 'cid': Customer.id}) }}" data-method="delete" data-confirm="false">{{ 'common.delete'|trans }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

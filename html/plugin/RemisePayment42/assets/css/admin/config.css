@@ -1,0 +1,23 @@
+#config_shopco, #config_hostid, #config_extset_hostid {
+    width: 120px;
+}
+#config_use_payment div.form-check,
+#config_use_option div.form-check,
+#config_job div.form-check,
+#config_payquick_flag div.form-check,
+#config_use_method div.form-check,
+#config_ptimes div.form-check,
+#config_acpt_mail_flag div.form-check,
+#config_ac_acquisition_method div.form-check {
+    float: left;
+    padding-right: 20px;
+}
+#config_pay_date {
+    width: 60px;
+}
+.clearboth {
+    clear: both;
+}
+.refurl {
+    background-color: #f9f89f !important;
+}

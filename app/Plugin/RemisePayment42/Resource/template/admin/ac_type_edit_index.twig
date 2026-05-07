@@ -1,0 +1,238 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'shop', 'remisePayment4AcNavTypeEdit'] %}
+
+{% block title %}{{ 'remise_payment4.ac.admin_type_edit_index.label.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.ac.admin_type_edit_index.label.sub_title'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        li.list-group-item {
+            z-index: inherit !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.core.min.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.widget.min.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.mouse.min.js', 'admin') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery.ui/jquery.ui.sortable.min.js', 'admin') }}"></script>
+    <script>
+        $(function() {
+            // 初期表示時のsort noを保持.
+            var oldSortNos = [];
+            $('.sortable-item').each(function() {
+                oldSortNos.push(this.dataset.sortNo);
+            });
+            oldSortNos.sort(function(a, b) {
+                return a - b;
+            }).reverse();
+
+            // 並び替え後にsort noを更新
+            var updateSortNo = function() {
+                var newSortNos = {};
+                var i = 0;
+                $('.sortable-item').each(function() {
+                    newSortNos[this.dataset.id] = oldSortNos[i];
+                    i++;
+                });
+
+                $.ajax({
+                    url: '{{ url('remise_payment4_ac_type_edit_move') }}',
+                    type: 'POST',
+                    data: newSortNos
+                }).always(function() {
+                    $(".modal-backdrop").remove();
+                });
+            };
+
+            // 最初と最後の↑↓を再描画
+            var redrawDisableAllows = function() {
+                var items = $('.sortable-item');
+                items.find('a').removeClass('disabled');
+                items.first().find('a.action-up').addClass('disabled');
+                items.last().find('a.action-down').addClass('disabled');
+            };
+
+            // オーバレイ後, 表示順の更新を行う
+            var moveSortNo = function() {
+                $('body').append($('<div class="modal-backdrop show"></div>'));
+                updateSortNo();
+                redrawDisableAllows();
+            };
+
+            // Drag and Drop
+            $(".sortable-container").sortable({
+                items: '> .sortable-item',
+                cursor: 'move',
+                update: function(e, ui) {
+                    moveSortNo();
+                }
+            });
+
+            // Up
+            $('.sortable-item').on('click', 'a.action-up', function(e) {
+                e.preventDefault();
+                var current = $(this).parents('li');
+
+                if (current.prev().hasClass('sortable-item')) {
+                    current.prev().before(current);
+                    moveSortNo();
+                }
+            });
+
+            // Down
+            $('.sortable-item').on('click', 'a.action-down', function(e) {
+                e.preventDefault();
+                var current = $(this).parents('li');
+
+                if (current.next().hasClass('sortable-item')) {
+                    current.next().after(current);
+                    moveSortNo();
+                }
+            });
+
+            // 表示・非表示
+            $('.check-display').click(function(){
+                var id = $(this).attr('id');
+                if($('.display-show-toggle-' + id).hasClass('fa-eye')){
+                    $('.display-show-toggle-' + id).addClass('fa-eye-slash');
+                    $('.display-show-toggle-' + id).removeClass('fa-eye');
+                    $('#' + id).css('background-color','#FAF1F1');
+                }else{
+                    $('.display-show-toggle-' + id).addClass('fa-eye');
+                    $('.display-show-toggle-' + id).removeClass('fa-eye-slash');
+                    $('#' + id).css('background-color','');
+                }
+            });
+
+            // 削除モーダルのhrefとmessageの変更
+            $('#DeleteModal').on('shown.bs.modal', function(event) {
+                var target = $(event.relatedTarget);
+                // hrefの変更
+                $(this).find('[data-method="delete"]').attr('href', target.data('url'));
+
+                // messageの変更
+                $(this).find('p.modal-message').text(target.data('message'));
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="d-block mb-3">
+                    <a class="btn btn-ec-regular" href="{{ url('remise_payment4_ac_type_edit_new') }}">{{ 'admin.common.create__new'|trans }}</a>
+                </div>
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush sortable-container">
+                            <li class="list-group-item">
+                                <div class="row justify-content-around">
+                                    <div class="col-auto"><strong>&nbsp;</strong></div>
+                                    <div class="col-auto"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname1'|trans }}</strong></div>
+                                    <div class="col-2"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname2'|trans }}</strong></div>
+                                    <div class="col-1"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname3'|trans }}</strong></div>
+                                    <div class="col-1"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname4'|trans }}</strong></div>
+                                    <div class="col-1"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname5'|trans }}</strong></div>
+                                    <div class="col"><strong>{{ 'remise_payment4.ac.admin_type_edit_index.label.table.colname6'|trans }}</strong></div>
+                                </div>
+                            </li>
+                            {% for remiseACType in remiseACTypes %}
+                                <li id="ex-actype-{{ remiseACType.id }}" class="list-group-item sortable-item" data-id="{{ remiseACType.id }}" data-sort-no="{{ remiseACType.sortNo }}">
+                                    <div class="row justify-content-around">
+                                        <div class="col-auto d-flex align-items-center"><i class="fa fa-bars text-ec-gray"></i></div>
+                                        <div class="col-auto d-flex align-items-center">{{ remiseACType.id }}</div>
+                                        <div class="col-2 d-flex align-items-center"><a href="{{ url('remise_payment4_ac_type_edit', { id: remiseACType.id}) }}">{{ remiseACType.name }}</a></div>
+                                        {% if remiseACType.isLimitless == false and remiseACType.getCount != null and remiseACType.getCount != "" %}
+                                        <div class="col-1 d-flex align-items-center"><span>{{ remiseACType.getCount }}{{ 'remise_payment4.ac.admin_type_edit_index.text.count.limit'|trans }}</span></div>
+                                        {% elseif remiseACType.isLimitless == true %}
+                                        <div class="col-1 d-flex align-items-center"><span>{{ 'remise_payment4.ac.admin_type_edit_index.text.count.limitless'|trans }}</span></div>
+                                        {% else %}
+                                        <div class="col-1 d-flex align-items-center"><span>－</span></div>
+                                        {% endif %}
+                                        {% if remiseACType.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.key'|trans %}
+                                        <div class="col-1 d-flex align-items-center"><span>{{ remiseACType.getIntervalValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.m.value'|trans }}</span></div>
+                                        {% elseif remiseACType.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.key'|trans %}
+                                        <div class="col-1 d-flex align-items-center"><span>{{ remiseACType.getIntervalValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.interval_marks.d.value'|trans }}</span></div>
+                                        {% else %}
+                                        <div class="col-1 d-flex align-items-center"><span>－</span></div>
+                                        {% endif %}
+                                        {% if remiseACType.getDayOfMonth != null and remiseACType.getDayOfMonth != "" %}
+                                            {% if remiseACType.getDayOfMonth == "99" %}
+                                                <div class="col-1 d-flex align-items-center"><span>{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.day_of_month.99.value'|trans }}{{ 'remise_payment4.ac.admin_type_edit_index.text.day_of_month.day'|trans }}</span></div>
+                                            {% else %}
+                                                <div class="col-1 d-flex align-items-center"><span>{{ remiseACType.getDayOfMonth }}{{ 'remise_payment4.ac.admin_type_edit_index.text.day_of_month.day'|trans }}</span></div>
+                                            {% endif %}
+                                        {% else %}
+                                        <div class="col-1 d-flex align-items-center"><span>－</span></div>
+                                        {% endif %}
+                                        {% if remiseACType.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.m.key'|trans %}
+                                        <div class="col d-flex align-items-center"><span>{{ remiseACType.getAfterValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.m.value'|trans }}</span></div>
+                                        {% elseif remiseACType.getIntervalMark == 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.d.key'|trans %}
+                                        <div class="col d-flex align-items-center"><span>{{ remiseACType.getAfterValue }}{{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.after_marks.d.value'|trans }}</span></div>
+                                        {% else %}
+                                        <div class="col-1 d-flex align-items-center"><span>－</span></div>
+                                        {% endif %}
+                                        <div class="col-3 text-end">
+                                            <a class="btn btn-ec-actionIcon mr-2 action-up{{ loop.first ? ' disabled' }}" data-tooltip="true" data-placement="top" title="{{ 'admin.common.up'|trans }}">
+                                                <i class="fa fa-arrow-up fa-lg text-secondary"></i>
+                                            </a>
+                                            <a class="btn btn-ec-actionIcon mr-2 action-down{{ loop.last ? ' disabled' }}" data-tooltip="true" data-placement="top" title="{{ 'admin.common.down'|trans }}">
+                                                <i class="fa fa-arrow-down fa-lg text-secondary"></i>
+                                            </a>
+                                            <a class="btn btn-ec-actionIcon mr-2 action-visible" href="{{ url('remise_payment4_ac_type_edit_visible', {'id': remiseACType.id }) }}"
+                                               data-tooltip="true" data-placement="top" title="{{ remiseACType.visible ? 'admin.common.to_hide'|trans : 'admin.common.to_show'|trans }}"
+                                               data-confirm="false" data-method="put" {{ csrf_token_for_anchor() }} >
+                                                <i class="fa fa-toggle-{{ remiseACType.visible ? 'on' : 'off' }} fa-lg text-secondary" aria-hidden="true"></i>
+                                            </a>
+                                            <div class="d-inline-block mr-2" data-tooltip="true" data-placement="top"
+                                                 title="{{ 'admin.common.delete'|trans }}">
+                                                <a class="btn btn-ec-actionIcon" data-bs-toggle="modal" data-bs-target="#DeleteModal"
+                                                   data-url="{{ url('remise_payment4_ac_type_edit_delete', {'id' : remiseACType.id}) }}"
+                                                   data-message="{{ 'admin.common.delete_modal__message'|trans({ "%name%" : remiseACType.name }) }}">
+                                                    <i class="fa fa-close fa-lg text-secondary"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <!-- 削除モーダル -->
+                        <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog"
+                             aria-labelledby="DeleteModal" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title font-weight-bold">
+                                            {{ 'admin.common.delete_modal__title'|trans }}
+                                        </h5>
+                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <p class="text-start modal-message"><!-- jsでメッセージを挿入 --></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">
+                                            {{ 'admin.common.cancel'|trans }}
+                                        </button>
+                                        <a class="btn btn-ec-delete" href="#" {{ csrf_token_for_anchor() }}
+                                           data-method="delete" data-confirm="false">
+                                            {{ 'admin.common.delete'|trans }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>{{ 'admin.common.drag_and_drop_description'|trans }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

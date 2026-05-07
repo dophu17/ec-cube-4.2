@@ -1,0 +1,352 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'shop', 'remisePayment4AcNavTypeEdit'] %}
+
+{% block title %}{{ 'remise_payment4.ac.admin_type_edit.label.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.ac.admin_type_edit.label.sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+
+{% block stylesheet %}
+<style type="text/css">
+{{ include('RemisePayment42/Resource/assets/css/admin/acTypeEdit.css') }}
+
+.datepicker-days th.dow:first-child,
+.datepicker-days td:first-child {
+    color: #f00;
+}
+
+.datepicker-days th.dow:last-child,
+.datepicker-days td:last-child {
+    color: #00f;
+}
+
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script type="text/javascript">
+{{ include('RemisePayment42/Resource/assets/js/admin/acTypeEdit.js') }}
+
+$(function() {
+    if ($('[type="date"]').prop('type') != 'date') {
+        // input type属性でdateが利用できるかどうか(カレンダー表示できないブラウザ対応)
+        $.when(
+            $.getScript("{{ asset('assets/js/vendor/moment.min.js', 'admin') }}"),
+            $.getScript("{{ asset('assets/js/vendor/moment-with-locales.min.js', 'admin') }}"),
+            $.getScript("{{ asset('assets/js/vendor/tempusdominus-bootstrap-4.min.js', 'admin') }}")
+        ).done(function() {
+            $('#ac_type_edit_order_date').datetimepicker({
+                locale: '{{ eccube_config.locale }}',
+                format: 'YYYY/MM/DD',
+                useCurrent: false,
+                buttons: {
+                    showToday: true,
+                    showClose: true
+                }
+            });
+        });
+    }
+});
+
+</script>
+{% endblock javascript %}
+
+{% block main %}
+    <form role="form" method="post">
+
+        {{ form_widget(form._token) }}
+        <input type="hidden" id="mode" name="mode" value="" />
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.title'|trans }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="basic_setting_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.name.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_errors(form.name) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.count.caption1'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <table>
+                                        <tr>
+                                        <td>
+                                        {{ form_widget(form.limitless) }}
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <td>
+                                            <span style="float:left;">{{ form_widget(form.count) }}</span>
+                                            <span style="position:relative;top:5px;">&nbsp;{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.count.caption2'|trans }}</span>
+                                        </td>
+                                        <tr>
+                                        <td>
+                                            <div class="small clearboth">
+                                                {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.count.explain'|trans }}
+                                            </div>
+                                        </td>
+                                        </tr>
+                                        </table>
+                                        {{ form_errors(form.count) }}
+                                        {{ form_errors(form.limitless) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.interval.caption1'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(form.interval_value) }}</td>
+                                            <td>{{ form_widget(form.interval_mark) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.interval.caption2'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        {{ form_errors(form.interval_value) }}
+                                        {{ form_errors(form.interval_mark) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption1'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption2'|trans }}</td>
+                                            <td>{{ form_widget(form.day_of_month) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.day_of_month.caption3'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.day_of_month.explain1'|trans }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.day_of_month.explain2'|trans|raw }}
+                                        </div>
+                                        {{ form_errors(form.day_of_month) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.after.caption1'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.after.caption2'|trans }}</td>
+                                            <td>{{ form_widget(form.after_value) }}</td>
+                                            <td>{{ form_widget(form.after_mark) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.after.caption3'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        {{ form_errors(form.after_value) }}
+                                        {{ form_errors(form.after_mark) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.skip.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                        {{ form_widget(form.skip) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.skip.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.skip) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.stop.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                        {{ form_widget(form.stop) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.stop.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.stop) }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.stop_display.caption'|trans }}</span>
+                                        <span class="badge badge-primary ml-1">{{ 'remise_payment4.admin_config.label.required'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                        {{ form_widget(form.stop_display) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.stop_display.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.stop_display) }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.usage.caption1'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(form.usage_value) }}</td>
+                                            <td>{{ form_widget(form.usage_mark) }}</td>
+                                            <td>{{ 'remise_payment4.ac.admin_type_edit.label.block.edit.usage.caption2'|trans }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        {{ form_errors(form.usage_value) }}
+                                        {{ form_errors(form.usage_mark) }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="d-inline-block" data-tooltip="true" data-placement="top"
+                                            title="{{ 'remise_payment4.ac.admin_type_edit.tooltip.free_area'|trans }}">
+                                            <span>{{ 'remise_payment4.ac.admin_type_edit.text.block.edit.free_area.caption'|trans }}</span>
+                                            <i class="fa fa-question-circle fa-lg ml-1"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <div id="ac_type_edit_free_area">
+                                            {{ form_widget(form.free_area, {id: 'wysiwyg-area', attr : { rows : "8"} }) }}
+                                        </div>
+                                        <div class="small clearboth">
+                                            {{ 'remise_payment4.ac.admin_type_edit.text.block.edit.free_area.explain'|trans }}
+                                        </div>
+                                        {{ form_errors(form.free_area) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="top"><span class="card-title">{{ 'remise_payment4.ac.admin_type_edit.label.block.simulation.title'|trans }}</span></div>
+                                    <div>{{ 'remise_payment4.ac.admin_type_edit.text.block.simulation.title.explain'|trans }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="simulation_contents">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-1">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.simulation.purchase date.caption'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <table>
+                                        <tr>
+                                            <td>
+                                                {{ form_widget(form.order_date) }}
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-ec-regular" href="javascript:simulation();">初回課金日算出</a>
+                                            </td>
+                                        </tr>
+                                        </table>
+                                        {% if errorMsg is defined and errorMsg != null and  errorMsg != "" %}
+                                        <span class="invalid-feedback d-block">
+                                            <span class="d-block">
+                                               <span class="form-error-icon badge badge-danger text-uppercase">エラー</span> <span class="form-error-message">{{ errorMsg }}</span>
+                                            </span>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-1">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.simulation.initial_billing_date.caption'|trans }}</span>
+                                    </div>
+                                    <div class="col-2 mb-2">
+                                        {% if nextDate is defined and nextDate != null and  nextDate != "" %}
+                                        <span id = "initial_billing_date">{{ nextDate }}</span>
+                                        {% else %}
+                                        <span id = "initial_billing_date">{{ 'remise_payment4.ac.admin_type_edit.text.block.simulation.default_date'|trans }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-1">
+                                        <span>{{ 'remise_payment4.ac.admin_type_edit.label.block.simulation.final_billing_due_date.caption'|trans }}</span>
+                                    </div>
+                                    <div class="col-2 mb-2">
+                                        {% if stopDate is defined and stopDate != null and  stopDate != "" %}
+                                        <span id = "final_billing_due_date">{{ stopDate }}</span>
+                                        {% else %}
+                                        <span id = "final_billing_due_date">{{ 'remise_payment4.ac.admin_type_edit.text.block.simulation.default_date'|trans }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('remise_payment4_ac_type_edit_index') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'remise_payment4.ac.admin_type_edit_index.label.title'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" id="submit_button">{{ 'admin.common.registration'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

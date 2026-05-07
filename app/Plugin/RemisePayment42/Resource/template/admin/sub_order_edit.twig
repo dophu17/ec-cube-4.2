@@ -1,0 +1,273 @@
+{% block stylesheet %}
+<style type="text/css">
+{{ include('RemisePayment42/Resource/assets/css/remise_wait_screen.css') }}
+.btn-ec-conversion_remise:hover {
+    color: #fff;
+    background-color: #d2691e;
+    border-color: transparent;
+}
+.btn-ec-conversion_remise {
+    color: #fff;
+    font-weight:bold;
+    background-color: #ff8c00;
+    border-color: transparent;
+    cursor: pointer;
+}
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script type="text/javascript">
+{{ include('RemisePayment42/Resource/assets/js/remise_wait_screen.js') }}
+{% if OptionExtset is defined and OptionExtset is not null %}
+    {{ include('RemisePayment42/Resource/assets/js/admin/sub_payment_edit_extset.js') }}
+{% endif %}
+function remiseSubmit(submitURL){
+    $('form').attr('action', submitURL);
+    remise_waitscreen();
+    $('form').submit();
+}
+</script>
+{% endblock javascript %}
+<script>
+    $(function(){
+        $('#form1 > div.c-contentsArea__cols > div > div > div').first().after($('#remise_payment4_payinfo'));
+        {% if OptionExtset is defined and OptionExtset is not null %}
+            $('button[name="mode"][value="register"]').before($('#remise_payment4_submit'));
+            $('#form1').append($('#remise_payment4_submit_data'));
+        {% endif %}
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment4_payinfo" class="card rounded border-0 mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <span class="card-title">{{ 'remise_payment4.admin_order_edit.label.payment'|trans }}</span>
+                </div>
+                <div class="col-4 text-end"><a data-bs-toggle="collapse" href="#remise_payment4_payinfo_area" aria-expanded="false" aria-controls="remise_payment4_payinfo_area"><i class="fa fa-angle-up fa-lg"></i></a></div>
+            </div>
+        </div>
+        <div class="collapse show ec-cardCollapse" id="remise_payment4_payinfo_area">
+            <div class="card-body">
+            {% if OrderResultCard is defined and OrderResultCard is not null%}
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job'|trans }}</span>
+                            </div>
+                            <div class="col">
+                            {% if OrderResultCard.getJob == "CAPTURE" %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.capture'|trans }}</span>
+                            {% elseif OrderResultCard.getJob == "AUTH" %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.auth'|trans }}</span>
+                            {% elseif OrderResultCard.getJob == "SALES" %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.sales'|trans }}</span>
+                            {% elseif OrderResultCard.getJob == "VOID" %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.void'|trans }}</span>
+                            {% elseif OrderResultCard.getJob == "RETURN" %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.return'|trans }}</span>
+                            {% else %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.job.other'|trans }}</span>
+                            {% endif %}
+
+                            {% if OrderResultCard.getState == 'remise_payment4.common.label.card.state.result'|trans %}
+                                　(<div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'remise_payment4.admin_order_edit.text.card.state.result.help'|trans }}"><span style="color:#fe0000;">{{ 'remise_payment4.common.text.card.state.result'|trans }}</span><i class="fa fa-question-circle fa-lg ml-1"></i></div>)
+                                &nbsp;
+                                <a class="btn btn-danger" style="color:#FFFFFF;" data-bs-toggle="modal" data-bs-target="#remise_payment4_card_state_result">
+                                    {{ 'remise_payment4.admin_order_edit.label.card.state.result.delete'|trans }}
+                                </a>
+                                <div class="modal fade" id="remise_payment4_card_state_result" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_card_state_result" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title font-weight-bold">{{ 'remise_payment4.admin_order_edit.label.card.state.result.delete'|trans }}</h5>
+                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                <p class="text-start">{{ 'remise_payment4.admin_order_edit.text.card.state.result.delete'|trans|nl2br }}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
+                                                <a class="btn btn-danger" href="#" onClick="remiseSubmit('{{ url('remise_payment4_admin_delete_result_state', {'id': OrderResultCard.getId}) }}')" data-method="delete" data-confirm="false">{{ 'admin.common.execute'|trans }}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="_token" value="{{ csrf_token('_token') }}">
+                            {% elseif OrderResultCard.getState == 'remise_payment4.common.label.card.state.result.ac.failed'|trans %}
+                                　(<div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'remise_payment4.admin_order_edit.text.card.state.result.ac.failed.help'|trans }}"><span style="color:#fe0000;">{{ 'remise_payment4.common.text.card.state.result.ac.failed'|trans }}</span><i class="fa fa-question-circle fa-lg ml-1"></i></div>)
+                                &nbsp;
+                                <a class="btn btn-danger" style="color:#FFFFFF;" data-bs-toggle="modal" data-bs-target="#remise_payment4_card_state_result">
+                                    {{ 'remise_payment4.admin_order_edit.label.card.state.result.ac.failed'|trans }}
+                                </a>
+                                <div class="modal fade" id="remise_payment4_card_state_result" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_card_state_result" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title font-weight-bold">{{ 'remise_payment4.admin_order_edit.label.card.state.result.ac.failed'|trans }}</h5>
+                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-start">
+                                                <p class="text-start">{{ 'remise_payment4.admin_order_edit.text.card.state.result.ac.failed'|trans|nl2br }}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">{{ 'admin.common.cancel'|trans }}</button>
+                                                <a class="btn btn-danger" href="#" onClick="remiseSubmit('{{ url('remise_payment4_admin_ac_state_change_success', {'id': OrderResultCard.getId}) }}')" data-method="delete" data-confirm="false">{{ 'admin.common.execute'|trans }}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="_token" value="{{ csrf_token('_token') }}">
+                            {% elseif OrderResultCard.getState == 'remise_payment4.common.label.card.state.result.deleted'|trans %}
+                                　(<span>{{ 'remise_payment4.common.text.card.state.result.deleted'|trans }}</span>)
+                            {% elseif OrderResultCard.getState == 'remise_payment4.common.label.card.state.result.ac.success'|trans %}
+                                　(<span>{{ 'remise_payment4.common.text.card.state.result.ac.success'|trans }}</span>)
+                            {% endif %}
+                            </div>
+                        </div>
+                        {% if OrderResultCard.getJob == "SALES" %}
+                            {% if OrderResultCard.getSalesDate is defined and OrderResultCard.getSalesDate is not null %}
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.salesdate'|trans }}</span>
+                            </div>
+                            <div class="col">
+                                <span>{{ OrderResultCard.getSalesDate|date('Y/m/d') }}</span>
+                            </div>
+                        </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if OrderResultCard.getJob == "VOID" or OrderResultCard.getJob == "RETURN" %}
+                            {% if OrderResultCard.getCancelDate is defined and OrderResultCard.getCancelDate is not null %}
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.canceldate'|trans }}</span>
+                            </div>
+                            <div class="col">
+                                <span>{{ OrderResultCard.getCancelDate|date('Y/m/d') }}</span>
+                            </div>
+                        </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.card.tranid'|trans }}</span>
+                            </div>
+                            <div class="col">
+                                <span>{{ OrderResultCard.getTranid }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if OrderResultCvs is defined and OrderResultCvs is not null%}
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.cvs.acpt_state'|trans }}</span>
+                            </div>
+                            <div class="col">
+                            {% if OrderResultCvs.getRecDate is defined and OrderResultCvs.getRecDate is not null%}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.cvs.acpt_state.done'|trans }}</span>
+                            {% else %}
+                                <span>{{ 'remise_payment4.admin_order_edit.label.cvs.acpt_state.notyet'|trans }}</span>
+                            {% endif %}
+                            </div>
+                        </div>
+                        {% if OrderResultCvs.getRecDate is defined and OrderResultCvs.getRecDate is not null%}
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.cvs.recdate'|trans }}</span>
+                            </div>
+                            <div class="col">
+                                <span>{{ OrderResultCvs.getRecDate|date('Y/m/d') }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <div class="row mb-3">
+                            <div class="col-3">
+                                <span>{{ 'remise_payment4.admin_order_edit.label.cvs.jobid'|trans }}</span>
+                            </div>
+                            <div class="col">
+                                <span>{{ OrderResultCvs.getJobid }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a class="btn btn-ec-regular text-primary" data-bs-toggle="modal" data-bs-target="#remise_payment4_payinfo_cvs_detail">{{ 'remise_payment4.admin_order_edit.button.cvs.detail'|trans }}</a>
+                        <div class="modal fade" id="remise_payment4_payinfo_cvs_detail" tabindex="-1" role="dialog" aria-labelledby="remise_payment4_payinfo_cvs_detail" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-end"><span>{{ 'remise_payment4.common.label.cvs_name'|trans }}</span></div>
+                                            <div class="col text-start"><span>{{ CvsInfo.cvs_name|raw }}</span></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-end"><span>{{ 'remise_payment4.common.label.cvs_paydate'|trans }}</span></div>
+                                            <div class="col text-start"><span>{{ CvsInfo.cvs_paydate|raw }}</span></div>
+                                        </div>
+                                        {% for key, item in CvsInfo.cvs_others %}
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-end"><span><label>{{ item[0]|raw }}</span></div>
+                                            <div class="col text-start"><span>{{ item[1]|raw }}</span></div>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="row mb-2">
+                                            <div class="col text-start"><p>{{ CvsInfo.cvs_msg|nl2br }}</p></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-ec-regular" type="button" data-bs-dismiss="modal">{{ 'common.close'|trans }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if OptionExtset is defined and OptionExtset is not null %}
+         <span id="remise_payment4_submit" class="pr-3" >
+             {% if OrderResultCard.getJob == "CAPTURE" or OrderResultCard.getJob == "SALES"%}
+                 <button type="submit" id="remise_option_extset_job_return" class="btn btn-ec-conversion_remise px-5">{{ 'remise_payment4.extset.admin_order_edit.label.button.cancel'|trans }}</button>
+                 <button type="submit" id="remise_option_extset_job_change" class="btn btn-ec-conversion_remise px-5">{{ 'remise_payment4.extset.admin_order_edit.label.button.change'|trans }}{% if Order.payment_total != OrderResult.getPaymentTotal %}({{ OrderResult.getPaymentTotal|price }} → {{ Order.payment_total|price }}){% endif %}</button>
+             {% elseif OrderResultCard.getJob == "AUTH" %}
+                 <button type="submit" id="remise_option_extset_job_sales" class="btn btn-ec-conversion_remise px-5">{{ 'remise_payment4.extset.admin_order_edit.label.button.sales'|trans }}</button>
+                 <button type="submit" id="remise_option_extset_job_return" class="btn btn-ec-conversion_remise px-5">{{ 'remise_payment4.extset.admin_order_edit.label.button.cancel'|trans }}</button>
+                 <button type="submit" id="remise_option_extset_job_change" class="btn btn-ec-conversion_remise px-5">{{ 'remise_payment4.extset.admin_order_edit.label.button.change'|trans }}{% if Order.payment_total != OrderResult.getPaymentTotal %}({{ OrderResult.getPaymentTotal|price }} → {{ Order.payment_total|price }}){% endif %}</button>
+             {% endif %}
+         </span>
+         <div id="remise_payment4_submit_data" class="card rounded border-0 mb-4">
+            <input type="hidden" id="url_remise_payment_extset4_sub_order_edit" value="{{ url('remise_payment_extset4_sub_order_edit') }}">
+            <input type="hidden" id="remise_option_extset_order_id" name="remise_option_extset[order_id]" value="{{ Order.id }}">
+            <input type="hidden" id="remise_option_extset_job" name="remise_option_extset[job]" class="form-control" value="">
+            <input type="hidden" id="remise_option_extset_payment_total" name="remise_option_extset[payment_total]" class="form-control" value="{{ Order.payment_total }}">
+            <input type="hidden" id="remise_option_extset_payment_total_change" name="remise_option_extset[payment_total_change]" class="form-control" value="{{ (Order.payment_total != OrderResult.getPaymentTotal) ? 1 : 0 }}">
+            <div id="dialog-area">
+                <div id="dialog-overlay"></div>
+                <div id="dialog-box">
+                   <div class="dialog-content">
+                      <div id="dialog-message">{{ 'remise_payment4.front.text.processing'|trans|raw }}</div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>

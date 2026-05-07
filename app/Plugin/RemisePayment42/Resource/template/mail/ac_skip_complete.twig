@@ -1,0 +1,16 @@
+{{ Order.name01 }} {{ Order.name02 }} 様
+
+以下の定期購買のご注文につきまして、スキップ処理が完了いたしました。
+今後ともご愛顧賜りますよう、よろしくお願い申し上げます。
+
+************************************************
+　定期購買情報
+************************************************
+
+メンバーID　：{{ RemiseACMember.id }}
+定期購買金額：{{ RemiseACMember.total|number_format }}円
+次回課金日　：{{ RemiseACMember.getNextDate|date("Y年m月d日") }}
+商品名　　　：{{ OrderItem.product_name }} {% if OrderItem.class_category_name1 is not empty %}{{ OrderItem.class_category_name1 }}{% endif %}{% if OrderItem.class_category_name2 is not empty %} / {{ OrderItem.class_category_name2 }}{% endif %}
+
+
+なお、詳細につきましては、マイページにてご確認ください。

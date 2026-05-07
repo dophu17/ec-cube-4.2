@@ -1,0 +1,280 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['order', 'remisePayment4AcNavImport'] %}
+
+{% block title %}{{ 'remise_payment4.ac.admin_import_index.label.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'remise_payment4.ac.admin_import_index.label.sub_title'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+    <style type="text/css">
+        {{ include('RemisePayment42/Resource/assets/css/remise_wait_screen.css') }}
+        {{ include('RemisePayment42/Resource/assets/css/admin/acImportIndex.css') }}
+
+        .datepicker-days th.dow:first-child,
+        .datepicker-days td:first-child {
+            color: #f00;
+        }
+
+        .datepicker-days th.dow:last-child,
+        .datepicker-days td:last-child {
+            color: #00f;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script>
+    {{ include('RemisePayment42/Resource/assets/js/remise_wait_screen.js') }}
+    {{ include('RemisePayment42/Resource/assets/js/admin/acImportIndex.js') }}
+
+    $(function() {
+        if ($('[type="date"]').prop('type') != 'date') {
+            // input type属性でdateが利用できるかどうか(カレンダー表示できないブラウザ対応)
+            $.when(
+                $.getScript("{{ asset('assets/js/vendor/moment.min.js', 'admin') }}"),
+                $.getScript("{{ asset('assets/js/vendor/moment-with-locales.min.js', 'admin') }}"),
+                $.getScript("{{ asset('assets/js/vendor/tempusdominus-bootstrap-4.min.js', 'admin') }}")
+            ).done(function() {
+                $('#ac_import_import_date').datetimepicker({
+                    locale: '{{ eccube_config.locale }}',
+                    format: 'YYYY/MM/DD',
+                    useCurrent: false,
+                    buttons: {
+                        showToday: true,
+                        showClose: true
+                    }
+                });
+            });
+        }
+    });
+
+    function setValue(execDate) {
+        $('#ac_import_import_date').val(execDate);
+    }
+</script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+
+            <!--取込条件設定テーブルここから-->
+            <div class="c-primaryCol">
+                <form name="import_form" id="import_form" method="POST" action="{{ url('remise_payment4_ac_import_index') }}">
+                   {{ form_widget(importForm._token) }}
+                     <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block"><span class="card-title">{{ 'remise_payment4.ac.admin_import_index.label.import_form.title'|trans }}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="import_contents">
+                             <div class="card-body">
+                                 <div class="row" style="margin-bottom:5px">
+                                     <div class="col-3">
+                                         {{ 'remise_payment4.ac.admin_import_index.label.import_form.member_id'|trans }}
+                                     </div>
+                                     <div class="col mb-2">
+                                        {{ form_widget(importForm.member_id) }}
+                                        {{ form_errors(importForm.member_id) }}
+                                     </div>
+                                 </div>
+                                 <div class="row" style="margin-bottom:5px">
+                                     <div class="col-3">
+                                         {{ 'remise_payment4.ac.admin_import_index.label.import_form.import_date'|trans }}
+                                     </div>
+                                     <div class="col-2 mb-2">
+                                        {{ form_widget(importForm.import_date) }}
+                                        {{ form_errors(importForm.import_date) }}
+                                     </div>
+                                 </div>
+
+                                 <div class="row" style="margin-bottom:5px">
+                                     <div class="col-3">
+                                        {{ 'remise_payment4.ac.admin_import_index.label.import_form.import_count'|trans }}
+                                     </div>
+                                    <div class="col-2 mb-2">
+                                        <div id="import_count">
+                                            {{ form_widget(importForm.import_count_choice) }}
+                                        </div>
+
+                                    </div>
+                                 </div>
+
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_import_index.label.import_form.import_count_start'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(importForm.import_count_start) }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        <div>{{ form_errors(importForm.import_count_start) }}</div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom:5px">
+                                    <div class="col-3">
+                                        <span>{{ 'remise_payment4.ac.admin_import_index.label.import_form.import_count_end'|trans }}</span>
+                                    </div>
+                                    <div class="col mb-2">
+                                        <div>
+                                            <table>
+                                            <tr>
+                                            <td>{{ form_widget(importForm.import_count_end) }}</td>
+                                            </tr>
+                                            </table>
+                                        </div>
+                                        <div>{{ form_errors(importForm.import_count_end) }}</div>
+                                    </div>
+                                </div>
+
+                             </div>
+                         </div>
+                         <div class="card-footer text-center">
+                             <div class="row">
+                                 <div class="col">
+                                    <button class="btn btn-ec-conversion" id="import_button" {% if not useKeizokuResultExtend %}disabled{% endif %}>{{ 'remise_payment4.ac.admin_import_index.label.import_form.import_button'|trans }}</button>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                </form>
+            </div>
+            <!--取込条件設定テーブルここまで-->
+
+            <div class="c-primaryCol">
+                <form id="form_bulk" method="POST" action="">
+                    <div class="row justify-content-between mb-2">
+                        <div class="col-6"></div>
+                        <div class="col-5 text-end">
+                            <div class="d-inline-block mr-2">
+                                <div>
+                                    <select class="custom-select" onchange="location = this.value;">
+                                        {% for pageMax in pageMaxis %}
+                                        <option {% if pageMax.name== page_count %}selected=""
+                                            {% endif %} value="{{ path('remise_payment4_ac_import_index_page', {'page_no': 1, 'page_count': pageMax.name}) }}">{{
+                                            'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option> {%
+                                        endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block">
+                                        {% if pagination %}
+                                            <span class="card-title">{{ 'remise_payment4.ac.admin_import_index.label.table.count'|trans({"%count%":pagination.totalItemCount})|raw }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="import_contents">
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th class="border-top-0 pl-3 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column1'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column2'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column3'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column4'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column5'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column6'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column7'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column8'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column9'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2">{{ 'remise_payment4.ac.admin_import_index.label.table.th.column10'|trans }}</th>
+                                            <th class="border-top-0 pt-2 pb-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for remiseACImport in pagination %}
+                                        <tr id="ex-remise-ac-import-{{ remiseACImport.getId }}">
+                                            <td class="align-middle pl-3">
+                                            {{ remiseACImport.getSuccessCnt }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getSuccessAmount|price }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getFailCnt }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getFailAmount|price }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getTotalCnt }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getTotalAmount|price }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getExecDate|date("Y/m/d H:i:s") }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {% if remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_ini'|trans %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_ini.value'|trans }}
+                                            {% elseif remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_cmp'|trans %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_cmp.value'|trans }}
+                                            {% elseif remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_prs'|trans %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_prs.value'|trans }}
+                                            {% elseif remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_failure'|trans %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_failure.value'|trans }}
+                                            {% elseif remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_err'|trans %}
+                                                {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_err.value'|trans }}
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getImportCnt }}
+                                            </td>
+                                            <td class="align-middle">
+                                            {{ remiseACImport.getImportDate is empty ? "" : remiseACImport.getImportDate|date("Y/m/d H:i:s") }}
+                                            </td>
+                                            <td>
+                                            <button type="button" class="btn btn-ec-regular" style="padding:2px 8px;"
+                                            {% if not useKeizokuResultExtend or remiseACImport.getImportFlg == 'remise_payment4.ac.plg_remise_payment4_remise_ac_import.import_flg_cmp'|trans %}
+                                            disabled
+                                            {% else %}
+                                            onclick="setValue('{{ remiseACImport.getExecDate|date("Y-m-d") }}');"
+                                            {% endif %}>
+                                            {{ 'remise_payment4.ac.admin_import_index.label.table.td.column11'|trans }}
+                                            </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4 d-block">
+                        <div class="card-body p-0"></div>
+                        <div class="row justify-content-md-center mb-4">
+                            {% if pagination and pagination.totalItemCount > 0 %}
+                                {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'remise_payment4_ac_management_index_page' } %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="dialog-area">
+        <div id="dialog-overlay"></div>
+        <div id="dialog-box">
+           <div class="dialog-content">
+              <div id="dialog-message">{{ 'remise_payment4.front.text.processing'|trans|raw }}</div>
+           </div>
+        </div>
+    </div>
+{% endblock %}

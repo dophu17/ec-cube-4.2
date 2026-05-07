@@ -1,0 +1,75 @@
+<script>
+    $(function(){
+        $('.ec-orderAccount').first().after($('#remise_payment4_autocharge'));
+    });
+</script>
+<div class="d-none">
+    <div id="remise_payment4_autocharge">
+        <div class="ec-rectHeading">
+            <h2>{{ 'remise_payment4.ac.front.shopping.acinfo.title'|trans }}</h2>
+        </div>
+        <div>
+            {% if Order.payment_total > 0 %}
+                <p>{{ '本取引では'|trans }} {{ Order.payment_total|number_format }} {{ '円を課金し、以下の内容で自動継続課金の登録を行います。'|trans }}</p>
+            {% else %}
+                <p>{{ '以下の内容で自動継続課金の登録を行います。'|trans }}</p>
+            {% endif %}
+            <div class="ec-select">
+                <div>
+                    <label>{{ '課金額'|trans }}</label>
+                    {{ remiseAcAmount|number_format }}円
+                </div>
+                <div>
+                    <label>{{ '次回課金日'|trans }}</label>
+                    {{ remiseAcFirstDate|date("Y年m月d日") }}
+                </div>
+                {% if RemiseAcType.getCount != 1 %}
+                    <div>
+                        <label>{{ '課金間隔'|trans }}</label>
+                        {{ remiseAcInterval }}
+                    </div>
+                {% endif %}
+                {% if RemiseAcType.getCount != null and RemiseAcType.getCount != "" and RemiseAcType.getCount > 0 %}
+                    <div>
+                        <label>{{ '課金回数'|trans }}</label>
+                        {{ remiseAcCount }}
+                    </div>
+                {% endif %}
+                <div>
+                    <label>{{ 'スキップ'|trans }}</label>
+                    {% if RemiseAcType.getSkip == '0' %}
+                        {{ 'remise_payment4.ac.front.shopping.acinfo.skip.false.value'|trans }}
+                    {% elseif RemiseAcType.getSkip == '1' %}
+                        {{ 'remise_payment4.ac.front.shopping.acinfo.skip.true.value'|trans }}
+                    {% endif %}
+                </div>
+                <div>
+                    <label>{{ '解約'|trans }}</label>
+                    {% if RemiseAcType.getStop == '0' %}
+                        {{ 'remise_payment4.ac.front.shopping.acinfo.stop.true.value'|trans }}
+                    {% elseif RemiseAcType.getStop == '1' %}
+                        {{ RemiseAcType.getStopDisplay }}
+                    {% elseif RemiseAcType.getStop == '2' %}
+                        {{ 'remise_payment4.ac.front.shopping.acinfo.stop.usage.value'|trans }}
+                    {% endif %}
+                </div>
+                {% if RemiseAcType.getStop == '2' %}
+                    <div>
+                        <label>{{ '最低利用期間'|trans }}</label>
+                        {{ RemiseAcType.getUsageValue }}
+                        {% if RemiseAcType.getUsageMark == 'M' %}
+                            {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.m.value'|trans }}
+                        {% elseif RemiseAcType.getUsageMark == 'D' %}
+                            {{ 'remise_payment4.ac.plg_remise_payment4_remise_ac_type.usage_mark.d.value'|trans }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if RemiseAcType.getFreeArea is not null %}
+                <div>
+                   {{ include(template_from_string(RemiseAcType.getFreeArea), sandboxed = true) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
