@@ -41,11 +41,11 @@ final class SubscriptionScheduler
         $offset = max(1, $retryDayOffsets[$nextIndex] ?? end($retryDayOffsets));
 
         if (Subscription::PLAN_TEST_MINUTE === $subscription->getPlanType()) {
-            $base = new \DateTime('now');
+            $base = new \DateTime('now', new \DateTimeZone('UTC'));
 
             return $base->modify('+'.max(2, min(60, $offset * 10)).' minutes');
         }
 
-        return (new \DateTime('now'))->modify('+'.$offset.' days');
+        return (new \DateTime('now', new \DateTimeZone('UTC')))->modify('+'.$offset.' days');
     }
 }

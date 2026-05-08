@@ -16,13 +16,12 @@ class SubscriptionRepository extends ServiceEntityRepository
     /**
      * @return Subscription[]
      */
-    public function findDueActive(\DateTimeInterface $now, int $limit): array
+    public function findDueActive(int $limit): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.status = :st')
-            ->andWhere('s.next_billing_at <= :now')
+            ->andWhere('s.next_billing_at <= CURRENT_TIMESTAMP()')
             ->setParameter('st', Subscription::STATUS_ACTIVE)
-            ->setParameter('now', $now)
             ->orderBy('s.next_billing_at', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()

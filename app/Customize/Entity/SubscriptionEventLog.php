@@ -47,7 +47,7 @@ class SubscriptionEventLog extends AbstractEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_date", type="datetime")
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 

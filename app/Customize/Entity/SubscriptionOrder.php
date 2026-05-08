@@ -58,14 +58,14 @@ class SubscriptionOrder extends AbstractEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="billing_scheduled_at", type="datetime")
+     * @ORM\Column(name="billing_scheduled_at", type="datetimetz")
      */
     private $billing_scheduled_at;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="billing_executed_at", type="datetime", nullable=true)
+     * @ORM\Column(name="billing_executed_at", type="datetimetz", nullable=true)
      */
     private $billing_executed_at;
 
@@ -135,14 +135,14 @@ class SubscriptionOrder extends AbstractEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_date", type="datetime")
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="update_date", type="datetime")
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 

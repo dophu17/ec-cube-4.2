@@ -78,21 +78,21 @@ class Subscription extends AbstractEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="next_billing_at", type="datetime")
+     * @ORM\Column(name="next_billing_at", type="datetimetz")
      */
     private $next_billing_at;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="last_billed_at", type="datetime", nullable=true)
+     * @ORM\Column(name="last_billed_at", type="datetimetz", nullable=true)
      */
     private $last_billed_at;
 
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="cancelled_at", type="datetime", nullable=true)
+     * @ORM\Column(name="cancelled_at", type="datetimetz", nullable=true)
      */
     private $cancelled_at;
 
@@ -176,14 +176,14 @@ class Subscription extends AbstractEntity
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_date", type="datetime")
+     * @ORM\Column(name="create_date", type="datetimetz")
      */
     private $create_date;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="update_date", type="datetime")
+     * @ORM\Column(name="update_date", type="datetimetz")
      */
     private $update_date;
 

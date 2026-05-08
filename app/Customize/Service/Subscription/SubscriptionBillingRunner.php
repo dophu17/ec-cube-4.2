@@ -48,7 +48,7 @@ final class SubscriptionBillingRunner
             return;
         }
 
-        $now = new \DateTime('now');
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
 
         // snapshot kỳ này
         /** @var \DateTimeInterface $billingAnchorDue */
@@ -59,7 +59,7 @@ final class SubscriptionBillingRunner
             $billingAnchorDue->format('YmdHis'),
             $subscription->getRetryCount()
         );
-        $billingKey = $this->resolveUniqueBillingKey($billingKey);
+        $billingKey = sprintf('%s_%s', $billingKey, bin2hex(random_bytes(3)));
 
         if ($dryRun) {
             log_info('[subscription] dry-run: skip charge', ['billing_key' => $billingKey, 'subscription_id' => $subscription->getId()]);
@@ -157,7 +157,7 @@ final class SubscriptionBillingRunner
                 $subscription->incrementRetryCount();
                 if ($subscription->getRetryCount() > $subscription->getMaxRetry()) {
                     $subscription->setStatus(Subscription::STATUS_PAST_DUE);
-                    $subscription->setNextBillingAt((new \DateTime())->modify('+365 days')); // không chạy sớm; vận hành vào tay
+                    $subscription->setNextBillingAt((new \DateTime('now', new \DateTimeZone('UTC')))->modify('+365 days')); // không chạy sớm; vận hành vào tay
                     log_alert('[subscription] past_due', ['subscription_id' => $subscription->getId()]);
                 } else {
                     $subscription->setNextBillingAt(
@@ -183,17 +183,4 @@ final class SubscriptionBillingRunner
         }
     }
 
-    private function resolveUniqueBillingKey(string $baseKey): string
-    {
-        $repo = $this->entityManager->getRepository(SubscriptionOrder::class);
-        $candidate = $baseKey;
-        $i = 0;
-
-        while (null !== $repo->findOneBy(['billing_cycle_key' => $candidate])) {
-            ++$i;
-            $candidate = sprintf('%s_rerun%d', $baseKey, $i);
-        }
-
-        return $candidate;
-    }
 }

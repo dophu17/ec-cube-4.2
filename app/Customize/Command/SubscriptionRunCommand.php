@@ -50,9 +50,7 @@ class SubscriptionRunCommand extends Command
 
         $limit = max(1, (int) $input->getOption('limit'));
         $dryRun = (bool) $input->getOption('dry-run');
-        $now = new \DateTime('now');
-
-        $due = $this->subscriptionRepository->findDueActive($now, $limit);
+        $due = $this->subscriptionRepository->findDueActive($limit);
         $output->writeln(sprintf('Tìm thấy %d subscription đến hạn.', count($due)));
 
         foreach ($due as $subscription) {

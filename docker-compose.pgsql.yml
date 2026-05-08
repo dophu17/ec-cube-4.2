@@ -19,6 +19,8 @@ services:
     environment:
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: secret
+      TZ: Asia/Tokyo
+      PGTZ: Asia/Tokyo
     ports:
       - 15432:5432
     volumes:

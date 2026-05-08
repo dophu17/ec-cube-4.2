@@ -39,7 +39,7 @@ final class SubscriptionActivator
         }
 
         [$planType, $intervalCount] = SubscriptionCycleParser::fromFormValue($cycleFormKey, $allowTestInterval);
-        $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
 
         $sub = new Subscription();
         $sub->setCustomer($Order->getCustomer());
