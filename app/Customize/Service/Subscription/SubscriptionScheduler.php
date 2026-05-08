@@ -6,7 +6,7 @@ use Customize\Entity\Subscription;
 
 final class SubscriptionScheduler
 {
-    public function computeNextBillingAfter(\DateTimeInterface $from, string $planType, int $intervalCount): \DateTime
+    public function computeNextFulfillmentAfter(\DateTimeInterface $from, string $planType, int $intervalCount): \DateTime
     {
         $mutable = $from instanceof \DateTime ? clone $from : new \DateTime($from->format('c'));
 
@@ -28,6 +28,19 @@ final class SubscriptionScheduler
         $out = \DateTime::createFromImmutable($nextImmutable);
 
         return $out instanceof \DateTime ? $out : new \DateTime($mutable->format('c'));
+    }
+
+    public function computePreBillingAt(\DateTimeInterface $fulfillmentAt): \DateTime
+    {
+        $billingAt = $fulfillmentAt instanceof \DateTime
+            ? clone $fulfillmentAt
+            : new \DateTime($fulfillmentAt->format('c'));
+
+        if ($billingAt === false) {
+            $billingAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        return $billingAt->modify('-1 day');
     }
 
     /**

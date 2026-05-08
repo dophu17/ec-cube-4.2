@@ -78,6 +78,30 @@ Hoặc để cron chạy theo cấu hình ổn định đã chốt: **5 phút + 
 - `base_order_id` của subscription test lấy từ subscription có sẵn đầu tiên; nếu không có thì lấy order mới nhất.
 - Chỉ chạy trên môi trường test/staging, không dùng trực tiếp trên production.
 
+## 6.1) Xem email subscription khi test local
+
+Trong môi trường local hiện tại, mail đang đi qua MailCatcher (ví dụ `MAILER_DSN=smtp://mailcatcher:1025`), nên email **không vào inbox thật** ngay.
+
+Cách xem email:
+
+1. Mở giao diện MailCatcher trên máy local (thường là):
+   - `http://localhost:1080`
+   - hoặc cổng đã map trong Docker Compose của bạn.
+2. Chạy batch/cron subscription.
+3. Refresh MailCatcher để thấy các email:
+   - gia hạn thành công (`renewal_success`)
+   - gia hạn thất bại (`renewal_failed`)
+   - tạm dừng sau khi vượt retry (`renewal_final_failed`)
+
+Kiểm tra nhanh cấu hình mail trong container:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.pgsql.yml \
+  exec -T ec-cube printenv MAILER_DSN
+```
+
+Nếu muốn gửi email ra hộp thư thật, cần đổi `MAILER_DSN` sang SMTP thực tế (SES/SendGrid/Gmail SMTP...), sau đó recreate service `ec-cube`.
+
 ---
 
 ## 7) Thống kê tiến độ / thời gian (mock vs GMO thật)

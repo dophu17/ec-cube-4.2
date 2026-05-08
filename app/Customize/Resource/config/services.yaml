@@ -11,6 +11,8 @@ parameters:
     env(SUBSCRIPTION_ALLOW_TEST_INTERVAL): '1'
     env(SUBSCRIPTION_MAX_RETRY): '3'
     env(SUBSCRIPTION_RETRY_DAYS): '1,3,7'
+    env(SUBSCRIPTION_MAIL_FROM_EMAIL): ''
+    env(SUBSCRIPTION_MAIL_FROM_NAME): 'Balocco'
 
 services:
     Customize\Form\Extension\ShoppingOrderTypeExtension:
@@ -38,6 +40,12 @@ services:
             $shoppingPurchaseFlow: '@eccube.purchase.flow.shopping'
             $retryDayOffsetsCsv: '%env(string:SUBSCRIPTION_RETRY_DAYS)%'
 
+    Customize\Service\Subscription\SubscriptionMailNotifier:
+        autowire: true
+        arguments:
+            $fromEmail: '%env(string:SUBSCRIPTION_MAIL_FROM_EMAIL)%'
+            $fromName: '%env(string:SUBSCRIPTION_MAIL_FROM_NAME)%'
+
     Customize\EventSubscriber\Subscription\SubscriptionShoppingCompleteSubscriber:
         autowire: true
         autoconfigure: true
@@ -51,3 +59,7 @@ services:
         autoconfigure: true
         arguments:
             $subscriptionEnabled: '%env(bool:SUBSCRIPTION_ENABLED)%'
+
+    Customize\Command\SubscriptionCancelCommand:
+        autowire: true
+        autoconfigure: true

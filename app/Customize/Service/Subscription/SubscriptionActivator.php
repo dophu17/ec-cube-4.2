@@ -61,8 +61,9 @@ final class SubscriptionActivator
         $sub->setGmoMemberId(null);
         $sub->setGmoCardSeq(null);
         $sub->setLastBilledAt($now);
-
-        $sub->setNextBillingAt($this->subscriptionScheduler->computeNextBillingAfter($now, $planType, $intervalCount));
+        $nextFulfillmentAt = $this->subscriptionScheduler->computeNextFulfillmentAfter($now, $planType, $intervalCount);
+        $sub->setNextFulfillmentAt($nextFulfillmentAt);
+        $sub->setNextBillingAt($this->subscriptionScheduler->computePreBillingAt($nextFulfillmentAt));
 
         $sub->setCreateDate($now);
         $sub->setUpdateDate($now);

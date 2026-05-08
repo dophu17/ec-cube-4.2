@@ -83,11 +83,25 @@ class Subscription extends AbstractEntity
     private $next_billing_at;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="next_fulfillment_at", type="datetimetz")
+     */
+    private $next_fulfillment_at;
+
+    /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="last_billed_at", type="datetimetz", nullable=true)
      */
     private $last_billed_at;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="last_fulfilled_at", type="datetimetz", nullable=true)
+     */
+    private $last_fulfilled_at;
 
     /**
      * @var \DateTime|null
@@ -279,6 +293,30 @@ class Subscription extends AbstractEntity
     public function setLastBilledAt(?\DateTime $lastBilledAt): self
     {
         $this->last_billed_at = $lastBilledAt;
+
+        return $this;
+    }
+
+    public function getNextFulfillmentAt(): \DateTime
+    {
+        return $this->next_fulfillment_at;
+    }
+
+    public function setNextFulfillmentAt(\DateTime $nextFulfillmentAt): self
+    {
+        $this->next_fulfillment_at = $nextFulfillmentAt;
+
+        return $this;
+    }
+
+    public function getLastFulfilledAt(): ?\DateTime
+    {
+        return $this->last_fulfilled_at;
+    }
+
+    public function setLastFulfilledAt(?\DateTime $lastFulfilledAt): self
+    {
+        $this->last_fulfilled_at = $lastFulfilledAt;
 
         return $this;
     }

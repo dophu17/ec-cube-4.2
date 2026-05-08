@@ -17,6 +17,7 @@ final class SubscriptionBillingRunner
     private PurchaseFlow $shoppingPurchaseFlow;
     private SubscriptionScheduler $subscriptionScheduler;
     private GmoApiClient $gmoApiClient;
+    private SubscriptionMailNotifier $subscriptionMailNotifier;
 
     /** @var int[] */
     private array $retryDayOffsets;
@@ -27,6 +28,7 @@ final class SubscriptionBillingRunner
         PurchaseFlow $shoppingPurchaseFlow,
         SubscriptionScheduler $subscriptionScheduler,
         GmoApiClient $gmoApiClient,
+        SubscriptionMailNotifier $subscriptionMailNotifier,
         string $retryDayOffsetsCsv
     ) {
         $this->entityManager = $entityManager;
@@ -35,6 +37,7 @@ final class SubscriptionBillingRunner
         $this->shoppingPurchaseFlow = $shoppingPurchaseFlow;
         $this->subscriptionScheduler = $subscriptionScheduler;
         $this->gmoApiClient = $gmoApiClient;
+        $this->subscriptionMailNotifier = $subscriptionMailNotifier;
 
         $this->retryDayOffsets = array_values(array_filter(array_map('intval', array_map('trim', explode(',', $retryDayOffsetsCsv))), static fn ($x) => $x > 0));
         if ([] === $this->retryDayOffsets) {
@@ -126,9 +129,15 @@ final class SubscriptionBillingRunner
             }
             $subscription->setRetryCount(0);
             $subscription->setLastBilledAt($now);
-            $subscription->setNextBillingAt(
-                $this->subscriptionScheduler->computeNextBillingAfter($now, $subscription->getPlanType(), $subscription->getIntervalCount())
+            $currentFulfillmentAt = $subscription->getNextFulfillmentAt();
+            $subscription->setLastFulfilledAt($currentFulfillmentAt);
+            $nextFulfillmentAt = $this->subscriptionScheduler->computeNextFulfillmentAfter(
+                $currentFulfillmentAt,
+                $subscription->getPlanType(),
+                $subscription->getIntervalCount()
             );
+            $subscription->setNextFulfillmentAt($nextFulfillmentAt);
+            $subscription->setNextBillingAt($this->subscriptionScheduler->computePreBillingAt($nextFulfillmentAt));
 
             $log = new SubscriptionEventLog();
             $log->setSubscription($subscription);
@@ -138,6 +147,7 @@ final class SubscriptionBillingRunner
             $this->entityManager->persist($log);
 
             $this->entityManager->flush();
+            $this->subscriptionMailNotifier->notifyRenewalSuccess($subscription, $newOrder);
             log_info('[subscription] renewal success', ['billing_key' => $billingKey, 'order_id' => $newOrder->getId()]);
         } catch (\Throwable $e) {
             log_error('[subscription] renewal failed '.$e->getMessage(), ['billing_key' => $billingKey, 'subscription_id' => $subscription->getId()]);
@@ -159,10 +169,12 @@ final class SubscriptionBillingRunner
                     $subscription->setStatus(Subscription::STATUS_PAST_DUE);
                     $subscription->setNextBillingAt((new \DateTime('now', new \DateTimeZone('UTC')))->modify('+365 days')); // không chạy sớm; vận hành vào tay
                     log_alert('[subscription] past_due', ['subscription_id' => $subscription->getId()]);
+                    $this->subscriptionMailNotifier->notifyRenewalFailed($subscription, $e->getMessage(), true);
                 } else {
                     $subscription->setNextBillingAt(
                         $this->subscriptionScheduler->computeRetryNextBilling($subscription, $this->retryDayOffsets)
                     );
+                    $this->subscriptionMailNotifier->notifyRenewalFailed($subscription, $e->getMessage(), false);
                 }
                 $subscription->setUpdateDate($now);
 
