@@ -70,7 +70,7 @@ tail -n 80 /tmp/subscription-cron.log
    - Apple Silicon (Homebrew): thường là `/opt/homebrew/bin`
    - Intel Mac: thường là `/usr/local/bin`
 
-3. Thêm dòng lịch. Ví dụ **mỗi phút** (phù hợp test chu kỳ 10 phút; tránh overlap quá nhiều job):
+3. Thêm dòng lịch. Ví dụ **mỗi phút** (phù hợp test chu kỳ 10 phút):
 
    ```cron
    * * * * * PATH=/usr/local/bin:/usr/bin:/bin /path/to/ec-cube-4.2/scripts/subscription-cron.sh
@@ -84,7 +84,49 @@ tail -n 80 /tmp/subscription-cron.log
 
 Thay `/path/to/ec-cube-4.2` bằng đường dẫn thật trên máy bạn.
 
-**Lưu ý:** Cron chỉ chạy khi máy bật và đồng hồ hệ thống chạy. Nếy tắt máy hoặc sleep, các lần chạy sẽ bị bỏ qua cho tới lần tới.
+**Lưu ý:** Cron chỉ chạy khi máy bật và đồng hồ hệ thống chạy. Nếu tắt máy hoặc sleep, các lần chạy sẽ bị bỏ qua cho tới lần tới.
+
+## Cấu hình khuyến nghị (an toàn, ổn định)
+
+Cho bài toán vận hành: **50.000 khách trong DB, có thể 1.000 subscription đến hạn trong 1 ngày**, cấu hình khuyến nghị là:
+
+- **Cron mỗi 5 phút**
+- **`--limit=5`**
+
+### Vì sao cấu hình này an tâm
+
+- Công suất lý thuyết theo ngày: `12 lần/giờ x 24 giờ x 5 = 1.440 subscription/ngày`.
+- Nhu cầu 1.000 subscription/ngày được đáp ứng, vẫn còn vùng đệm.
+- Mỗi lần chạy xử lý ít bản ghi, giảm rủi ro quá tải hoặc chồng nhiều job dài.
+
+### Cấu hình áp dụng nhanh
+
+1. Đặt trong `.env.local`:
+
+```dotenv
+SUBSCRIPTION_RUN_LIMIT=5
+```
+
+2. Thêm vào crontab:
+
+```cron
+*/5 * * * * PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin /path/to/ec-cube-4.2/scripts/subscription-cron.sh
+```
+
+3. Kiểm tra sau khi lưu:
+
+```bash
+crontab -l
+tail -n 100 /tmp/subscription-cron.log
+```
+
+### Khi nào cần tăng `limit`
+
+Giữ nguyên `5` trong giai đoạn đầu. Chỉ tăng lên `10` hoặc hơn khi:
+
+- Log cho thấy mỗi lần chạy luôn kết thúc ổn định.
+- Tỷ lệ timeout GMO thấp và không tăng đột biến.
+- Máy chủ vẫn dư CPU/RAM/DB connection trong giờ cao điểm.
 
 ## Điều kiện để cron thực sự “có việc”
 
