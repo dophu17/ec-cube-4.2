@@ -1,0 +1,61 @@
+# Customize — Admin Subscription (labels; locale file name follows EC-CUBE convention)
+admin:
+  order:
+    subscription_list: Subscription（定期購読）
+  subscription:
+    title_list: Danh sách Subscription
+    title_detail: Chi tiết Subscription
+    sub_title: Đơn hàng
+    filter:
+      status: Trạng thái
+      status_all: Tất cả
+      next_from: Next billing từ (YYYY-MM-DD)
+      next_to: Next billing đến (YYYY-MM-DD)
+      retry_count: Retry count
+      search: Lọc
+      reset: Xóa lọc
+    table:
+      id: ID
+      customer: Khách
+      status: Trạng thái
+      plan: Chu kỳ
+      next_billing: Next billing
+      retry: Retry
+      total: Tổng tiền
+      action: Chi tiết
+    detail:
+      base_order: Đơn gốc
+      plan: Plan / interval
+      amounts: Tiền (subtotal / ship / tax / total)
+      gateway: Cổng thanh toán
+      gmo: GMO (member / card seq / last order)
+      schedule: Lịch billing & fulfillment
+      items: Sản phẩm (snapshot)
+      billing_rows: Lịch sử billing (đơn gia hạn)
+      events: Event log
+      actions: Thao tác
+      warn_bill: Cảnh báo — Charge ngay có thể tạo đơn gia hân và thu tiền thật (GMO). Chỉ dùng khi hiểu rõ.
+    billing:
+      status: Trạng thái billing
+      scheduled: Lên lịch
+      executed: Thực thi
+      order_id: Order ID
+    item:
+      name: Tên
+      qty: SL
+      unit_price: Đơn giá
+    event:
+      type: Loại
+      time: Thời điểm
+      payload: Payload
+    btn:
+      retry: Retry charge ngay
+      force_bill: Force bill (charge ngay)
+      cancel: Hủy subscription
+      back_list: Về danh sách
+    flash:
+      retry: Đã gửi yêu cầu charge (retry).
+      force_bill: Đã gửi yêu cầu charge (force bill).
+      cancel: Đã hủy subscription theo quy tắc nghiệp vụ.
+      cancel_force: Đã hủy subscription (hủy admin — bỏ qua ràng buộc hủy thường).
+    disabled: SUBSCRIPTION_ENABLED=0 — chỉ xem, không chạy charge.

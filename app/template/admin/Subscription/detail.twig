@@ -1,0 +1,200 @@
+{#
+  Customize — Admin subscription detail
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['order', 'subscription_list'] %}
+
+{% block title %}{{ 'admin.subscription.title_detail'|trans }} #{{ Subscription.id }}{% endblock %}
+{% block sub_title %}{{ 'admin.subscription.sub_title'|trans }}{% endblock %}
+
+{% set can_bill = subscriptionEnabled and (Subscription.status == constant('Customize\\Entity\\Subscription::STATUS_ACTIVE') or Subscription.status == constant('Customize\\Entity\\Subscription::STATUS_PAST_DUE')) %}
+{% set is_terminal = Subscription.status == constant('Customize\\Entity\\Subscription::STATUS_CANCELLED') or Subscription.status == constant('Customize\\Entity\\Subscription::STATUS_EXPIRED') %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="mb-3">
+                    <a class="btn btn-ec-regular" href="{{ url('admin_subscription_index') }}"><i class="fa fa-backward me-1"></i>{{ 'admin.subscription.btn.back_list'|trans }}</a>
+                </div>
+
+                {% if not subscriptionEnabled %}
+                    <div class="alert alert-warning">{{ 'admin.subscription.disabled'|trans }}</div>
+                {% endif %}
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">{{ 'admin.subscription.title_detail'|trans }} #{{ Subscription.id }}</div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.table.status'|trans }}</div>
+                            <div class="col-md-9"><span class="badge bg-primary">{{ Subscription.status }}</span></div>
+                        </div>
+                        {% if Customer %}
+                            <div class="row mb-2">
+                                <div class="col-md-3 text-muted">{{ 'admin.subscription.table.customer'|trans }}</div>
+                                <div class="col-md-9">
+                                    <a href="{{ url('admin_customer_edit', { id: Customer.id }) }}">{{ Customer.id }} — {{ Customer.name01 }} {{ Customer.name02 }} ({{ Customer.email }})</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.base_order'|trans }}</div>
+                            <div class="col-md-9">
+                                <a href="{{ url('admin_order_edit', { id: Subscription.baseOrderId }) }}">#{{ Subscription.baseOrderId }}</a>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.plan'|trans }}</div>
+                            <div class="col-md-9">{{ Subscription.planType }} / interval {{ Subscription.intervalCount }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.amounts'|trans }}</div>
+                            <div class="col-md-9">
+                                {{ Subscription.subtotalAmount|price }} — ship {{ Subscription.shippingFee|price }} — tax {{ Subscription.taxAmount|price }} — <strong>{{ Subscription.totalAmount|price }}</strong>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.gateway'|trans }}</div>
+                            <div class="col-md-9">{{ Subscription.paymentGateway }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.gmo'|trans }}</div>
+                            <div class="col-md-9">
+                                member: {% if Subscription.gmoMemberId %}{{ Subscription.gmoMemberId|slice(0, 4) }}…{% else %}—{% endif %}
+                                / card seq: {{ Subscription.gmoCardSeq|default('—') }}
+                                / last order: {{ Subscription.gmoLastOrderId|default('—') }}
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3 text-muted">{{ 'admin.subscription.detail.schedule'|trans }}</div>
+                            <div class="col-md-9">
+                                next_billing: {{ Subscription.nextBillingAt|date_sec }}<br>
+                                next_fulfillment: {{ Subscription.nextFulfillmentAt|date_sec }}<br>
+                                last_billed: {% if Subscription.lastBilledAt %}{{ Subscription.lastBilledAt|date_sec }}{% else %}—{% endif %} /
+                                last_fulfilled: {% if Subscription.lastFulfilledAt %}{{ Subscription.lastFulfilledAt|date_sec }}{% else %}—{% endif %}<br>
+                                cancelled: {% if Subscription.cancelledAt %}{{ Subscription.cancelledAt|date_sec }}{% else %}—{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">{{ 'admin.subscription.detail.items'|trans }}</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'admin.subscription.item.name'|trans }}</th>
+                                    <th>{{ 'admin.subscription.item.qty'|trans }}</th>
+                                    <th class="text-end">{{ 'admin.subscription.item.unit_price'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for it in Items %}
+                                    <tr>
+                                        <td>{{ it.productNameSnapshot }}{% if it.isCombo %} (combo){% endif %}</td>
+                                        <td>{{ it.quantity }}</td>
+                                        <td class="text-end">{{ it.unitPriceSnapshot|price }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="3" class="text-center text-muted">—</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">{{ 'admin.subscription.detail.billing_rows'|trans }}</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>{{ 'admin.subscription.billing.order_id'|trans }}</th>
+                                    <th>{{ 'admin.subscription.billing.status'|trans }}</th>
+                                    <th>{{ 'admin.subscription.billing.scheduled'|trans }}</th>
+                                    <th>{{ 'admin.subscription.billing.executed'|trans }}</th>
+                                    <th>GMO Tran</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for so in SubscriptionOrders %}
+                                    <tr>
+                                        <td>{{ so.id }}</td>
+                                        <td>{% if so.orderId %}<a href="{{ url('admin_order_edit', { id: so.orderId }) }}">#{{ so.orderId }}</a>{% else %}—{% endif %}</td>
+                                        <td>{{ so.billingStatus }}</td>
+                                        <td>{{ so.billingScheduledAt|date_sec }}</td>
+                                        <td>{% if so.billingExecutedAt %}{{ so.billingExecutedAt|date_sec }}{% else %}—{% endif %}</td>
+                                        <td>{{ so.gmoTranId|default('—') }}</td>
+                                    </tr>
+                                    {% if so.errorMessage %}
+                                        <tr class="table-danger">
+                                            <td colspan="6"><small>{{ so.errorMessage|e }}</small></td>
+                                        </tr>
+                                    {% endif %}
+                                {% else %}
+                                    <tr><td colspan="6" class="text-center text-muted">—</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">{{ 'admin.subscription.detail.events'|trans }}</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'admin.subscription.event.time'|trans }}</th>
+                                    <th>{{ 'admin.subscription.event.type'|trans }}</th>
+                                    <th>{{ 'admin.subscription.event.payload'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ev in EventLogs %}
+                                    <tr>
+                                        <td>{{ ev.createDate|date_sec }}</td>
+                                        <td>{{ ev.eventType }}</td>
+                                        <td><code class="small">{% set p = ev.payload|default('') %}{{ p|slice(0, 240) }}{% if p|length > 240 %}…{% endif %}</code></td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="3" class="text-center text-muted">—</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">{{ 'admin.subscription.detail.actions'|trans }}</div>
+                    <div class="card-body">
+                        <p class="text-danger small">{{ 'admin.subscription.detail.warn_bill'|trans }}</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <form method="post" action="{{ url('admin_subscription_retry', { id: Subscription.id }) }}" class="d-inline">
+                                <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                                <button type="submit" class="btn btn-ec-regular" {% if not can_bill %}disabled{% endif %}>{{ 'admin.subscription.btn.retry'|trans }}</button>
+                            </form>
+                            <form method="post" action="{{ url('admin_subscription_force_bill', { id: Subscription.id }) }}" class="d-inline">
+                                <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                                <button type="submit" class="btn btn-ec-regular" {% if not can_bill %}disabled{% endif %}>{{ 'admin.subscription.btn.force_bill'|trans }}</button>
+                            </form>
+                            <form method="post" action="{{ url('admin_subscription_cancel', { id: Subscription.id }) }}" class="d-inline" onsubmit="return confirm('Hủy subscription #{{ Subscription.id }}?');">
+                                <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                                <button type="submit" class="btn btn-ec-delete" {% if is_terminal %}disabled{% endif %}>{{ 'admin.subscription.btn.cancel'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

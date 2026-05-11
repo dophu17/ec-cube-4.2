@@ -210,11 +210,13 @@ Tạo `Customize\Service\Payment\GmoPaymentService` với các hàm tối thiể
 
 ### Admin
 
-- `GET /admin/subscription`
-- `GET /admin/subscription/{id}`
-- `POST /admin/subscription/{id}/retry-now`
-- `POST /admin/subscription/{id}/force-bill`
-- `POST /admin/subscription/{id}/cancel`
+- `GET /admin/subscription` — danh sách + lọc (trạng thái, next billing theo ngày, retry_count), phân trang.
+- `GET /admin/subscription/{id}` — chi tiết (khách, đơn gốc, items, lịch sử billing, event log).
+- `POST /admin/subscription/{id}/retry-now` — charge ngay (cùng luồng `SubscriptionBillingRunner`, CSRF).
+- `POST /admin/subscription/{id}/force-bill` — tương đương retry-now (MVP).
+- `POST /admin/subscription/{id}/cancel` — hủy theo `SubscriptionCancellationService`; nếu không đủ điều kiện thì **hủy bắt buộc (admin)**.
+
+**Triển khai trong repo:** menu Admin **Đơn hàng** → **Subscription（定期購読）** (`eccube_nav`), controller `Customize\Controller\Admin\SubscriptionController`, Twig `app/template/admin/Subscription/`, bản dịch `app/Customize/Resource/locale/messages.ja.yaml` (khóa `admin.subscription.*`).
 
 ### Command
 
@@ -237,8 +239,8 @@ Tạo `Customize\Service\Payment\GmoPaymentService` với các hàm tối thiể
 
 ### Admin
 
-- Lọc theo trạng thái, next billing date, retry_count.
-- Hành động: retry now / force bill / cancel.
+- Màn danh sách + lọc theo trạng thái, khoảng **next billing** (ngày), **retry_count**; màn chi tiết có lịch sử billing và log sự kiện.
+- Hành động: **Retry charge / Force bill** (chỉ khi `SUBSCRIPTION_ENABLED=1` và trạng thái `active` hoặc `past_due` — `past_due` được kích hoạt lại rồi charge); **Hủy** (ưu tiên luật nghiệp vụ, không được thì hủy admin).
 
 ---
 

@@ -1,0 +1,107 @@
+{#
+  Customize — Admin subscription list
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['order', 'subscription_list'] %}
+
+{% block title %}{{ 'admin.subscription.title_list'|trans }}{% endblock %}
+{% block sub_title %}{{ 'admin.subscription.sub_title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                {% if not subscriptionEnabled %}
+                    <div class="alert alert-warning mb-3">{{ 'admin.subscription.disabled'|trans }}</div>
+                {% endif %}
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span>{{ 'admin.subscription.filter.status'|trans }}</span></div>
+                    <div class="card-body">
+                        <form method="get" action="{{ url('admin_subscription_index') }}" class="row g-3 align-items-end">
+                            <div class="col-md-2">
+                                <label class="form-label">{{ 'admin.subscription.filter.status'|trans }}</label>
+                                <select name="status" class="form-select">
+                                    {% for value, label in statusChoices %}
+                                        <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">{{ 'admin.subscription.filter.next_from'|trans }}</label>
+                                <input type="date" name="next_from" class="form-control" value="{{ filters.next_from|default('') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">{{ 'admin.subscription.filter.next_to'|trans }}</label>
+                                <input type="date" name="next_to" class="form-control" value="{{ filters.next_to|default('') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">{{ 'admin.subscription.filter.retry_count'|trans }}</label>
+                                <input type="number" min="0" max="255" name="retry_count" class="form-control" value="{{ filters.retry_count|default('') }}" placeholder="0">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-ec-conversion">{{ 'admin.subscription.filter.search'|trans }}</button>
+                                <a class="btn btn-ec-regular ms-1" href="{{ url('admin_subscription_index') }}">{{ 'admin.subscription.filter.reset'|trans }}</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'admin.subscription.table.id'|trans }}</th>
+                                    <th>{{ 'admin.subscription.table.customer'|trans }}</th>
+                                    <th>{{ 'admin.subscription.table.status'|trans }}</th>
+                                    <th>{{ 'admin.subscription.table.plan'|trans }}</th>
+                                    <th>{{ 'admin.subscription.table.next_billing'|trans }}</th>
+                                    <th>{{ 'admin.subscription.table.retry'|trans }}</th>
+                                    <th class="text-end">{{ 'admin.subscription.table.total'|trans }}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for Subscription in pagination %}
+                                    {% set C = Subscription.Customer %}
+                                    <tr>
+                                        <td>{{ Subscription.id }}</td>
+                                        <td>
+                                            {% if C %}
+                                                <a href="{{ url('admin_customer_edit', { id: C.id }) }}">{{ C.id }} — {{ C.name01 }} {{ C.name02 }}</a>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td><span class="badge bg-secondary">{{ Subscription.status }}</span></td>
+                                        <td>{{ Subscription.planType }} × {{ Subscription.intervalCount }}</td>
+                                        <td>{{ Subscription.nextBillingAt|date_sec }}</td>
+                                        <td>{{ Subscription.retryCount }} / {{ Subscription.maxRetry }}</td>
+                                        <td class="text-end">{{ Subscription.totalAmount|price }}</td>
+                                        <td class="text-end">
+                                            <a class="btn btn-ec-regular btn-sm" href="{{ url('admin_subscription_detail', { id: Subscription.id }) }}">{{ 'admin.subscription.table.action'|trans }}</a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-4">—</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if pagination.paginationData.pageCount > 1 %}
+                            <div class="row justify-content-md-center my-3">
+                                {% include '@admin/pager.twig' with { 'pages' : pagination.paginationData, 'routes' : 'admin_subscription_index_page' } %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

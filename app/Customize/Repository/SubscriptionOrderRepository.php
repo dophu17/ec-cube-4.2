@@ -14,6 +14,20 @@ class SubscriptionOrderRepository extends ServiceEntityRepository
         parent::__construct($registry, SubscriptionOrder::class);
     }
 
+    /**
+     * @return SubscriptionOrder[]
+     */
+    public function findRecentBySubscription(Subscription $subscription, int $limit = 40): array
+    {
+        return $this->createQueryBuilder('so')
+            ->where('so.Subscription = :sub')
+            ->setParameter('sub', $subscription)
+            ->orderBy('so.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function hasSuccessfulPreBillingForCurrentFulfillment(Subscription $subscription): bool
     {
         $fulfillmentAt = $subscription->getNextFulfillmentAt();

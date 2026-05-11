@@ -63,3 +63,14 @@ services:
     Customize\Command\SubscriptionCancelCommand:
         autowire: true
         autoconfigure: true
+
+    Customize\Service\Subscription\SubscriptionAdminService:
+        autowire: true
+        arguments:
+            $subscriptionEnabled: '%env(bool:SUBSCRIPTION_ENABLED)%'
+
+    Customize\Controller\Admin\SubscriptionController:
+        public: true
+        autowire: true
+        autoconfigure: true
+        tags: ['controller.service_arguments']

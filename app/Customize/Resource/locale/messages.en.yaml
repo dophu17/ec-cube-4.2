@@ -1,0 +1,60 @@
+admin:
+  order:
+    subscription_list: Subscriptions
+  subscription:
+    title_list: Subscriptions
+    title_detail: Subscription detail
+    sub_title: Orders
+    filter:
+      status: Status
+      status_all: All
+      next_from: Next billing from (YYYY-MM-DD)
+      next_to: Next billing to (YYYY-MM-DD)
+      retry_count: Retry count
+      search: Filter
+      reset: Reset
+    table:
+      id: ID
+      customer: Customer
+      status: Status
+      plan: Plan
+      next_billing: Next billing
+      retry: Retry
+      total: Total
+      action: Detail
+    detail:
+      base_order: Base order
+      plan: Plan / interval
+      amounts: Amounts (subtotal / ship / tax / total)
+      gateway: Payment gateway
+      gmo: GMO (member / card seq / last order)
+      schedule: Billing & fulfillment schedule
+      items: Line items (snapshot)
+      billing_rows: Billing history (renewal orders)
+      events: Event log
+      actions: Actions
+      warn_bill: Warning — charging now may create a renewal order and capture payment (GMO). Use only when you understand the impact.
+    billing:
+      status: Billing status
+      scheduled: Scheduled
+      executed: Executed
+      order_id: Order ID
+    item:
+      name: Name
+      qty: Qty
+      unit_price: Unit price
+    event:
+      type: Type
+      time: Time
+      payload: Payload
+    btn:
+      retry: Retry charge now
+      force_bill: Force bill (charge now)
+      cancel: Cancel subscription
+      back_list: Back to list
+    flash:
+      retry: Charge (retry) request was processed.
+      force_bill: Charge (force bill) request was processed.
+      cancel: Subscription cancelled per business rules.
+      cancel_force: Subscription cancelled (admin override).
+    disabled: SUBSCRIPTION_ENABLED=0 — view only; billing actions are disabled.
