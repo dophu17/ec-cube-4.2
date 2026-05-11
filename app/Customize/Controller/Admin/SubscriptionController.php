@@ -57,11 +57,15 @@ class SubscriptionController extends AbstractController
         $nextFrom = $this->parseDateBoundary($request->query->get('next_from'), false);
         $nextTo = $this->parseDateBoundary($request->query->get('next_to'), true);
 
+        $customerIdParam = (int) $request->query->get('customer_id', 0);
+        $filterCustomerId = $customerIdParam > 0 ? $customerIdParam : null;
+
         $qb = $this->subscriptionRepository->getAdminListQueryBuilder(
             '' !== $status ? $status : null,
             $nextFrom,
             $nextTo,
-            $retryExact
+            $retryExact,
+            $filterCustomerId
         );
 
         $pagination = $paginator->paginate(
@@ -77,6 +81,7 @@ class SubscriptionController extends AbstractController
                 'next_from' => $request->query->get('next_from'),
                 'next_to' => $request->query->get('next_to'),
                 'retry_count' => null !== $retryExact ? (string) $retryExact : '',
+                'customer_id' => $filterCustomerId,
             ],
             'statusChoices' => $this->getStatusChoices(),
             'subscriptionEnabled' => $this->subscriptionAdminService->isSubscriptionEnabled(),

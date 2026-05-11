@@ -18,7 +18,8 @@ class SubscriptionRepository extends ServiceEntityRepository
         ?string $status,
         ?\DateTimeInterface $nextBillingFrom,
         ?\DateTimeInterface $nextBillingTo,
-        ?int $retryExact
+        ?int $retryExact,
+        ?int $customerId = null
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.Customer', 'c')->addSelect('c')
@@ -36,8 +37,53 @@ class SubscriptionRepository extends ServiceEntityRepository
         if (null !== $retryExact) {
             $qb->andWhere('s.retry_count = :rc')->setParameter('rc', $retryExact);
         }
+        if (null !== $customerId && $customerId > 0) {
+            $qb->andWhere('c.id = :customerId')->setParameter('customerId', $customerId);
+        }
 
         return $qb;
+    }
+
+    /**
+     * @return Subscription[]
+     */
+    public function findByCustomerIdForAdmin(int $customerId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.Customer', 'cust')
+            ->where('cust.id = :cid')
+            ->setParameter('cid', $customerId)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param int[] $customerIds
+     *
+     * @return array<int, int> customer_id => subscription count
+     */
+    public function countGroupedByCustomerIds(array $customerIds): array
+    {
+        if ([] === $customerIds) {
+            return [];
+        }
+        $rows = $this->createQueryBuilder('s')
+            ->select('c.id AS cid')
+            ->addSelect('COUNT(s.id) AS cnt')
+            ->join('s.Customer', 'c')
+            ->where('c.id IN (:ids)')
+            ->groupBy('c.id')
+            ->setParameter('ids', $customerIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(int) $row['cid']] = (int) $row['cnt'];
+        }
+
+        return $out;
     }
 
     /**

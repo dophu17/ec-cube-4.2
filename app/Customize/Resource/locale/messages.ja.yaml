@@ -14,6 +14,8 @@ admin:
       retry_count: Retry count
       search: Lọc
       reset: Xóa lọc
+      customer_context: 'Đang lọc subscription theo khách hàng #%id%.'
+      open_customer: Mở hồ sơ khách
     table:
       id: ID
       customer: Khách
@@ -59,3 +61,10 @@ admin:
       cancel: Đã hủy subscription theo quy tắc nghiệp vụ.
       cancel_force: Đã hủy subscription (hủy admin — bỏ qua ràng buộc hủy thường).
     disabled: SUBSCRIPTION_ENABLED=0 — chỉ xem, không chạy charge.
+  customer:
+    subscription_heading: Subscription（定期購読）
+    subscription_list_link: Danh sách subscription của khách này
+    subscription_col_id: ID
+    subscription_open_detail: Chi tiết
+    subscription_empty: Khách chưa có subscription nào.
+    subscription_count_col: Subscription

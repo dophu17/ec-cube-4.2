@@ -16,10 +16,20 @@
                     <div class="alert alert-warning mb-3">{{ 'admin.subscription.disabled'|trans }}</div>
                 {% endif %}
 
+                {% if filters.customer_id %}
+                    <div class="alert alert-info mb-3">
+                        {{ 'admin.subscription.filter.customer_context'|trans({ '%id%': filters.customer_id }) }}
+                        <a href="{{ url('admin_customer_edit', { id: filters.customer_id }) }}" class="alert-link">{{ 'admin.subscription.filter.open_customer'|trans }}</a>
+                    </div>
+                {% endif %}
+
                 <div class="card rounded border-0 mb-4">
                     <div class="card-header"><span>{{ 'admin.subscription.filter.status'|trans }}</span></div>
                     <div class="card-body">
                         <form method="get" action="{{ url('admin_subscription_index') }}" class="row g-3 align-items-end">
+                            {% if filters.customer_id %}
+                                <input type="hidden" name="customer_id" value="{{ filters.customer_id }}">
+                            {% endif %}
                             <div class="col-md-2">
                                 <label class="form-label">{{ 'admin.subscription.filter.status'|trans }}</label>
                                 <select name="status" class="form-select">

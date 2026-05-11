@@ -1,6 +1,13 @@
 admin:
   order:
     subscription_list: Subscriptions
+  customer:
+    subscription_heading: Subscriptions
+    subscription_list_link: All subscriptions for this customer
+    subscription_col_id: ID
+    subscription_open_detail: Open
+    subscription_empty: No subscriptions yet.
+    subscription_count_col: Subscriptions
   subscription:
     title_list: Subscriptions
     title_detail: Subscription detail
@@ -13,6 +20,8 @@ admin:
       retry_count: Retry count
       search: Filter
       reset: Reset
+      customer_context: 'Filtering subscriptions for customer #%id%.'
+      open_customer: Open customer profile
     table:
       id: ID
       customer: Customer
