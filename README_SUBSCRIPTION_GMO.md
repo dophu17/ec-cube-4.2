@@ -208,15 +208,47 @@ Tạo `Customize\Service\Payment\GmoPaymentService` với các hàm tối thiể
 - `POST /mypage/subscriptions/{id}/resume`
 - `POST /mypage/subscriptions/{id}/cancel`
 
-### Admin
+### Admin — route
 
-- `GET /admin/subscription` — danh sách + lọc (trạng thái, next billing theo ngày, retry_count), phân trang.
-- `GET /admin/subscription/{id}` — chi tiết (khách, đơn gốc, items, lịch sử billing, event log).
-- `POST /admin/subscription/{id}/retry-now` — charge ngay (cùng luồng `SubscriptionBillingRunner`, CSRF).
-- `POST /admin/subscription/{id}/force-bill` — tương đương retry-now (MVP).
-- `POST /admin/subscription/{id}/cancel` — hủy theo `SubscriptionCancellationService`; nếu không đủ điều kiện thì **hủy bắt buộc (admin)**.
+- `GET /admin/subscription` — danh sách + lọc + phân trang (trang 1).
+- `GET /admin/subscription/page/{page_no}` — phân trang danh sách (cùng chức năng).
+- Query (GET) tùy chọn:
+  - `customer_id` — chỉ hiển thị subscription của khách đó; được giữ qua form lọc và thanh pager (deep-link từ màn khách).
+  - `status`, `next_from`, `next_to` (định dạng ngày `YYYY-MM-DD`), `retry_count`.
+- `GET /admin/subscription/{id}` — chi tiết một subscription (trang 2): khách, đơn gốc, sản phẩm snapshot, lịch sử `dtb_subscription_order`, event log `dtb_subscription_event_log`, nút thao tác (charge / hủy).
+- `POST /admin/subscription/{id}/retry-now` — charge ngay (CSRF `_token`; cùng luồng `SubscriptionBillingRunner` trong transaction).
+- `POST /admin/subscription/{id}/force-bill` — MVP giống **retry-now**.
+- `POST /admin/subscription/{id}/cancel` — thử `SubscriptionCancellationService`; nếu không hủy được theo luật nghiệp vụ → **hủy admin** (ghi đè).
 
-**Triển khai trong repo:** menu Admin **Đơn hàng** → **Subscription（定期購読）** (`eccube_nav`), controller `Customize\Controller\Admin\SubscriptionController`, Twig `app/template/admin/Subscription/`, bản dịch `app/Customize/Resource/locale/messages.ja.yaml` (khóa `admin.subscription.*`).
+### Admin — hai màn hình quản lý đã triển khai
+
+#### Trang 1 — Danh sách subscription
+
+- URL ví dụ: `http://localhost:8080/index.php/admin/subscription` (đường dẫn thực tế phụ thuộc `ECCUBE_ADMIN_ROUTE`, có hoặc không có `index.php`).
+- Menu: **Đơn hàng** (khu order management) → **Subscription（定期購読）** (khai báo trong `eccube_nav.yaml`).
+- Nội dung: bảng subscription (ID, khách có link chỉnh sửa khách, trạng thái, plan × interval, next billing, retry/max, tổng tiền, link chi tiết).
+- Form lọc GET + hidden `customer_id` khi đang xem theo một khách; có banner liên kết sang **Chỉnh sửa khách** (`admin_customer_edit`).
+
+#### Trang 2 — Chi tiết subscription
+
+- URL ví dụ: `/admin/subscription/{id}`.
+- Hiển thị: metadata subscription, GMO rút gọn trên UI, bảng line items snapshot, lịch sử billing rows (status, scheduled/executed, link order renewal), event log gần đây.
+- Cuối trang (khi được phép): **Retry charge** và **Force bill** (chỉ khi `SUBSCRIPTION_ENABLED=1`; trạng thái `active` hoặc `past_due` — với `past_due`, service admin reset về active + đặt `next_billing_at` hiện tại trước charge); **Hủy** (confirm), CSRF cho mọi POST.
+
+### Admin — tích hợp màn khách hàng
+
+- **Danh sách khách** (`GET /admin/customer`): thêm cột đếm số subscription; nếu &gt; 0 thì link tới `/admin/subscription?customer_id={id}`.
+- **Chi tiết / sửa khách** (`GET /admin/customer/{id}/edit`): card **Subscription** — bảng rút gọn mọi subscription của khách + nút đi danh sách đã lọc + nút chi tiết từng subscription.
+
+**File liên quan:**
+
+- Controller: `app/Customize/Controller/Admin/SubscriptionController.php`
+- Service admin charge/hủy: `app/Customize/Service/Subscription/SubscriptionAdminService.php`
+- Twig subscription: `app/template/admin/Subscription/` (`index.twig`, `detail.twig`)
+- Gắn dữ liệu subscription lên màn khách (không sửa core controller): `app/Customize/EventSubscriber/Admin/CustomerSubscriptionViewSubscriber.php` (sự kiện `kernel.view`)
+- Override template khách: `app/template/admin/Customer/index.twig`, `edit.twig` (cần đối chiếu khi nâng cấp EC-CUBE core)
+- Bản dịch Customize: `app/Customize/Resource/locale/messages.ja.yaml`, `messages.en.yaml` (`admin.subscription.*`, `admin.customer.subscription_*`)
+- Repo subscription: `app/Customize/Repository/SubscriptionRepository.php` (`getAdminListQueryBuilder` hỗ trợ `customer_id`, `findByCustomerIdForAdmin`, `countGroupedByCustomerIds`)
 
 ### Command
 
@@ -239,8 +271,20 @@ Tạo `Customize\Service\Payment\GmoPaymentService` với các hàm tối thiể
 
 ### Admin
 
-- Màn danh sách + lọc theo trạng thái, khoảng **next billing** (ngày), **retry_count**; màn chi tiết có lịch sử billing và log sự kiện.
-- Hành động: **Retry charge / Force bill** (chỉ khi `SUBSCRIPTION_ENABLED=1` và trạng thái `active` hoặc `past_due` — `past_due` được kích hoạt lại rồi charge); **Hủy** (ưu tiên luật nghiệp vụ, không được thì hủy admin).
+**Màn danh sách subscription**
+
+- Lọc: trạng thái, `next billing` khoảng ngày, `retry_count`, optional **theo khách** (`customer_id`).
+- Cảnh báo khi `SUBSCRIPTION_ENABLED=0`: chỉ xem, không bật charge từ UI.
+
+**Màn chi tiết subscription**
+
+- Độc lập các block: info, items, billing history, event log; GMO hiển thị cắt gọn để không lộ chi tiết thừa.
+- Hành động: **Retry charge / Force bill** (điều kiện như README mục 8); **Hủy** (ưu tiên luật nghiệp vụ, không được thì hủy admin).
+
+**Trên màn khách hàng**
+
+- Danh sách: cột số subscription + link danh sách đã filter.
+- Chi tiết khách: card subscription + link chi tiết từng bản ghi và link “tất cả subscription của khách”.
 
 ---
 
