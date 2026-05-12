@@ -1,631 +1,529 @@
-EC-CUBE My Page Create Subscription Spec (Updated)
-
-> Lean spec version for AI coding (kept sections 3 and 7 as requested).
-
-1. 概要 / Overview
-
-Mục đích:
-Màn hình cho phép customer tạo mới một 定期購入 (subscription course).
-
-User có thể:
-- Chọn sản phẩm muốn đăng ký recurring
-- Thiết lập chu kỳ giao hàng
-- Thiết lập ngày giao hàng
-- Chọn phương thức thanh toán
-- Xác nhận thông tin trước khi tạo subscription
-
-Vai trò trong hệ thống:
-My Page → Subscription Management → Create New Subscription → Subscription Confirmation → Subscription Complete
-
-User:
-- Logged-in customer
-- Guest: No
-- Admin: Out of scope
-
-2. スコープ / Scope
-
-✅ In Scope
-- Step wizard UI
-- Product selection
-- Selected product summary
-- Delivery cycle setup
-- Delivery date setup
-- Payment method selection
-- Confirmation step
-- Create subscription action
-- Responsive desktop/mobile
-- Ownership/login check
-- CSRF validation
-- Product stock/payment validation
-
-❌ Out of Scope
-- Guest subscription
-- One-time purchase checkout
-- Coupon campaign
-- Admin recurring setup
-- Auto recommendation engine
-- Payment method registration detail
-- Actual recurring batch execution
-
-3. 画面 / 機能構成
-
-Create Subscription Screen
-├─ Header
-├─ Breadcrumb
-├─ Side Menu
-├─ Step Wizard
-│ ├─ Step 1 Product Selection
-│ ├─ Step 2 Delivery Setup
-│ ├─ Step 3 Payment Setup
-│ └─ Step 4 Confirmation
-├─ Product List
-├─ Selected Product Panel
-├─ Delivery Setup Form
-├─ Payment Method Form
-├─ Confirmation Summary
-├─ Add Product CTA
-├─ Next / Previous Button
-├─ Notice Block
-└─ Footer
-
-4. パラメータ / Parameters
-
-| name | type | required | default | description |
-|---|---|---|---|---|
-| product_ids | array | no | [] | Selected products |
-| product_class_ids | array | no | [] | Selected product classes/SKUs |
-| quantities | object/array | no | {} | Quantity by product_class_id |
-| delivery_cycle_type | string | no | month | day / week / month |
-| delivery_cycle_value | integer | no | 1 | Cycle value |
-| delivery_date | date | no | null | Preferred delivery date |
-| payment_method_id | integer | no | null | Selected customer payment method |
-| shipping_address_id | integer | no | default | Selected customer address |
-| step | integer | no | 1 | Wizard step |
-| csrf_token | string | yes | - | CSRF token |
-| return_url | string | no | /mypage/subscriptions | Back URL |
-
-5. データソース / Data Source
-
-## 5.1 EC-CUBE Standard Tables
-
-| Table | Description | Usage |
-|---|---|---|
-| dtb_customer | Customer master | Login/ownership/customer data |
-| dtb_customer_address | Customer address | Select shipping address |
-| dtb_product | Product master | Subscription product list |
-| dtb_product_class | Product SKU/class | Price, stock, product code |
-| dtb_product_stock | Product stock | Stock validation |
-| dtb_product_image | Product image | Product thumbnail |
-| dtb_category | Category | Subscription product category/filter |
-| dtb_product_category | Product-category mapping | Filter subscription products |
-| dtb_payment | Payment method | Payment method label/settings |
-| dtb_delivery | Delivery method | Delivery/cycle relation if used |
-| dtb_shipping | Shipping | Generated order/shipping snapshot after create |
-| dtb_order | Order | First/generated order if create flow generates order |
-| dtb_order_item | Order items | First/generated order items |
-| mtb_pref | Prefecture master | Shipping address display |
-| mtb_order_status | Order status | Generated order status |
-
-Note:
-- EC-CUBE core thường không có subscription table chuẩn.
-- Nếu project dùng subscription plugin, ưu tiên dùng entity/table của plugin.
-- Không sửa trực tiếp core table.
-
-## 5.2 Existing Plugin Tables To Check
-
-| Table / Plugin | Note |
-|---|---|
-| Subscription plugin tables | Ưu tiên dùng nếu đã có: subscription contract, item, cycle, status |
-| GMO payment plugin tables | Saved card/payment reference |
-| PayPay payment plugin tables | PayPay linked account/payment reference |
-| Customer payment method tables | Đồng nhất với Payment Methods spec |
-| Shipping/delivery plugin tables | Nếu có delivery cycle/schedule riêng |
-| Subscription batch tables/log | Nếu plugin có batch recurring order log |
-
-## 5.3 Custom Tables - đề xuất nếu chưa có
-
-### dtb_customer_subscription
-
-Dùng đồng nhất với Subscription Management/Detail spec.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| customer_id | int | yes | FK → dtb_customer.id |
-| status | varchar | yes | active / paused / cancelled / payment_failed |
-| delivery_cycle_type | varchar | yes | day / week / month |
-| delivery_cycle_value | int | yes | e.g. 30 |
-| next_delivery_date | date | no | Next delivery date |
-| next_payment_date | date | no | Next payment date |
-| shipping_id | int | no | FK/snapshot reference |
-| payment_method_id | int | no | FK to customer payment method/plugin |
-| first_order_id | int | no | First generated order |
-| last_order_id | int | no | Last generated order |
-| create_date | datetime | yes | EC-CUBE convention |
-| update_date | datetime | yes | EC-CUBE convention |
-
-### dtb_customer_subscription_item
-
-Dùng cho selected products trong subscription.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| subscription_id | int | yes | FK → dtb_customer_subscription.id |
-| product_id | int | yes | FK → dtb_product.id |
-| product_class_id | int | yes | FK → dtb_product_class.id |
-| product_name | varchar | yes | Snapshot name |
-| product_code | varchar | no | Snapshot code |
-| unit_price | int | yes | Snapshot/current subscription unit price |
-| quantity | int | yes | Quantity |
-| discount_rate | decimal | no | Subscription discount |
-| status | varchar | yes | active / removed |
-| sort_no | int | no | Display order |
-| create_date | datetime | yes | EC-CUBE convention |
-| update_date | datetime | yes | EC-CUBE convention |
-
-### dtb_customer_subscription_shipping
-
-Dùng nếu cần snapshot địa chỉ nhận hàng riêng cho subscription.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| subscription_id | int | yes | FK → dtb_customer_subscription.id |
-| name01 | varchar | yes | Last name |
-| name02 | varchar | yes | First name |
-| postal_code | varchar | yes | Postal code |
-| pref_id | int | yes | FK → mtb_pref.id |
-| addr01 | varchar | yes | Address 1 |
-| addr02 | varchar | no | Address 2 |
-| phone_number | varchar | yes | Phone |
-| create_date | datetime | yes | EC-CUBE convention |
-| update_date | datetime | yes | EC-CUBE convention |
-
-### dtb_customer_subscription_payment
-
-Đồng nhất với Payment Methods/Subscription Detail spec.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| subscription_id | int | yes | FK → dtb_customer_subscription.id |
-| customer_id | int | yes | FK → dtb_customer.id |
-| customer_payment_method_id | int | no | FK → dtb_customer_payment_method.id |
-| payment_method | varchar | yes | credit_card / paypay / bank_transfer |
-| provider | varchar | no | gmo / paypay |
-| provider_payment_id | varchar | no | GMO card_seq / PayPay ref |
-| status | varchar | yes | active / expired / invalid |
-| create_date | datetime | yes | EC-CUBE convention |
-| update_date | datetime | yes | EC-CUBE convention |
-
-### dtb_customer_subscription_history
-
-Audit/history cho create/change subscription.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| subscription_id | int | yes | FK → dtb_customer_subscription.id |
-| customer_id | int | yes | FK → dtb_customer.id |
-| event | varchar | yes | created / product_added / payment_set / shipping_set |
-| before_data | json/text | no | Usually null on create |
-| after_data | json/text | no | Sanitized created values |
-| create_date | datetime | yes | EC-CUBE convention |
-
-### dtb_subscription_product_config
-
-Dùng nếu cần đánh dấu/config sản phẩm nào được bán theo subscription.
-
-| column | type | required | note |
-|---|---|---|---|
-| id | int | yes | PK |
-| product_id | int | yes | FK → dtb_product.id |
-| product_class_id | int | no | FK → dtb_product_class.id |
-| subscription_enabled | boolean | yes | Can be selected |
-| allowed_cycle_values | varchar/json | no | 30/60/90 or JSON |
-| discount_rate | decimal | no | Default discount |
-| min_quantity | int | no | Minimum quantity |
-| max_quantity | int | no | Maximum quantity |
-| sort_no | int | no | Display order |
-| create_date | datetime | yes | EC-CUBE convention |
-| update_date | datetime | yes | EC-CUBE convention |
-
-## 5.4 API / Routes
-
-| API / Route | Method | Auth | Description |
-|---|---|---|---|
-| /mypage/subscriptions/create | GET | Yes | Create subscription wizard |
-| /products/subscription | GET | No | Subscription product listing |
-| /mypage/subscriptions/create/products | GET | Yes | Product list for wizard, optional async |
-| /mypage/payment | GET | Yes | Payment methods screen |
-| /mypage/payment/cards | GET | Yes | Saved credit cards |
-| /mypage/subscriptions/create/confirm | POST | Yes | Confirm subscription input |
-| /mypage/subscriptions | POST | Yes | Create subscription |
-| /mypage/subscriptions/create/complete | GET | Yes | Create subscription complete page |
-| /mypage/subscriptions | GET | Yes | Back to subscription list |
-| /login?redirect_url=/mypage/subscriptions/create | GET | No | Redirect when session expired |
-
-Note:
-- Để đồng nhất với các tài liệu Subscription, dùng route plural `/mypage/subscriptions/create`.
-- Nếu project đang dùng `/mypage/subscription/create`, tạo alias route.
-- Tất cả write APIs cần CSRF validation.
-- Create action phải validate login customer, product stock/status, payment method ownership, shipping address ownership.
-
-## 5.5 Sample Response - Subscription Products
-
-{
-"products": [
-{
-"id": 11,
-"product_class_id": 101,
-"name": "おやすみサプリ（30日分）",
-"price": 3980,
-"stock_status": "in_stock",
-"thumbnail": "/img/sample.jpg",
-"subscription_enabled": true,
-"allowed_cycles": [30, 60, 90],
-"discount_rate": 10
-}
-]
-}
-
-6. 画面状態 / Screen States
-
-6.1 Initial State
-Condition:
-- Login success
-- Product API success
-- Payment/address data loaded
-
-UI:
-- Step 1 active
-- Product list
-- Empty selected panel
-- Disabled next button
-- Side menu
-- Notice block
-
-6.2 Loading State
-- Skeleton product rows
-- Disable step actions
-- Disable next button
-- Loading payment/address options
-- Loading overlay during final create
-
-6.3 Empty State
-Condition:
-- Không có product recurring
-
-UI:
-現在申し込み可能な定期商品はありません。
-
-6.4 Error States
-
-| Case | Condition | UI | Action |
-|---|---|---|---|
-| API Error | Product/payment API fail | 商品情報を取得できませんでした。 | Retry |
-| Unauthorized | 401/session expired | Redirect login | /login?redirect_url=/mypage/subscriptions/create |
-| Product Out Of Stock | stock unavailable | 在庫切れ | Disable selection |
-| Product Disabled | product not public | Hide or disabled | Reload |
-| Payment Method Missing | no valid payment | Payment warning | Go /mypage/payment |
-| Shipping Address Missing | no address | Address warning | Go address management |
-| CSRF Invalid | token invalid | Session error | Reload |
-| Double Submit | repeated create | Button disabled | Prevent duplicate |
-
-7. UIレイアウト / Layout
-
-7.1 画面イメージ / Layout Image
-- Desktop: side menu + wizard content
-- Mobile: single column, sticky wizard optional
-
-7.2 初期状態のレイアウト / Initial Layout
-
-| No. | Component | Description | Action |
-|---|---|---|---|
-| 1 | Breadcrumb | Current hierarchy | Navigation |
-| 2 | Side Menu | My Page menu | Navigate |
-| 3 | Page Title | 新しい定期コースを作成 | Static |
-| 4 | Step Wizard | Step progress | Display |
-| 5 | Product List | Available products | Select |
-| 6 | Product Checkbox | Product selection | Toggle |
-| 7 | Stock Status | 在庫あり / 在庫切れ | Display |
-| 8 | Selected Product Panel | Selected products | Summary |
-| 9 | Delivery Setup | Cycle/date form | Input |
-| 10 | Payment Setup | Payment method form | Select |
-| 11 | Confirmation Summary | Final review | Display |
-| 12 | Add Product CTA | 他の商品を追加する | Expand/list |
-| 13 | Next Button | 次へ進む | Next step |
-| 14 | Previous Button | 戻る | Previous step |
-| 15 | Notice Block | Subscription guide | Static |
-| 16 | Footer | Footer | Navigation |
-
-7.3 レイアウト構造 / Layout Structure
-
-Screen
-├─ Header
-├─ Breadcrumb
-├─ Main Container
-│ ├─ Side Menu
-│ └─ Content
-│ ├─ Step Wizard
-│ ├─ Product Selection Area
-│ │ ├─ Product List
-│ │ └─ Selected Product Panel
-│ ├─ Delivery Setup Area
-│ ├─ Payment Setup Area
-│ ├─ Confirmation Area
-│ ├─ CTA Area
-│ └─ Notice Block
-└─ Footer
-
-7.4 Responsive / Safe Area
-
-| Item | Value |
-|---|---|
-| Responsive | Yes |
-| Desktop | Two-column |
-| Mobile | Single-column |
-| Safe area | Yes |
-| Scroll | Yes |
-| Sticky step wizard | Optional |
-| CTA Mobile | Full width / sticky bottom optional |
-
-8. UIコンポーネント詳細 / Component Detail
-
-## Component: Step Wizard
-
-| element | description | type |
-|---|---|---|
-| step_1 | 商品を選ぶ | step |
-| step_2 | お届けサイクル・日付の設定 | step |
-| step_3 | お支払い方法の設定 | step |
-| step_4 | 内容確認 | step |
-
-## Component: Product List
-
-| element | description | type |
-|---|---|---|
-| product_image | Product thumbnail | image |
-| product_name | Product name | text |
-| product_price | Price | currency |
-| discount_badge | 定期割引 | badge |
-| stock_status | 在庫あり / 在庫切れ | badge/text |
-| select_checkbox | Product select | checkbox |
-| quantity | Quantity | stepper |
-
-## Component: Selected Product Panel
-
-| element | description | type |
-|---|---|---|
-| selected_products | Selected items | list |
-| selected_total | Current subtotal | currency |
-| empty_icon | Cart illustration | image |
-| empty_message | No product selected | text |
-
-## Component: Delivery Setup
-
-| element | description | type |
-|---|---|---|
-| delivery_cycle | 30日 / 60日 / 90日 | radio/select |
-| delivery_date | Preferred delivery date | date |
-| next_payment_date | Calculated payment date | readonly text |
-
-## Component: Payment Setup
-
-| element | description | type |
-|---|---|---|
-| payment_method | Saved payment method | radio/select |
-| add_payment_link | 決済方法を追加する | link/button |
-| payment_warning | Expired/missing payment | warning |
-
-## Component: Action Area
-
-| element | description | type |
-|---|---|---|
-| add_product_button | 他の商品を追加する | secondary button |
-| previous_button | 戻る | secondary button |
-| next_button | 次へ進む | primary button |
-| create_button | 定期コースを作成する | primary button |
-
-9. ビジネスロジック / Business Logic
-
-Product Selection:
-Checkbox ON
-↓
-Validate product subscription_enabled and stock
-↓
-Add product to selected panel
-↓
-Enable next button
-
-Product Deselection:
-Checkbox OFF
-↓
-Remove product from selected panel
-if selected_products is empty:
-Disable next button
-
-Quantity:
-Minimum quantity = config min_quantity or 1
-Maximum quantity = stock / max_quantity / sale_limit
-
-Step Navigation:
-Step 1 complete
-↓
-Go Step 2
-↓
-Validate delivery setup
-↓
-Go Step 3
-↓
-Validate payment method ownership/status
-↓
-Go Step 4
-↓
-Confirm and create subscription
-
-Product Availability:
-| status | behavior |
-|---|---|
-| 在庫あり | selectable |
-| 在庫切れ | disabled |
-| Product disabled | hide or disabled |
-| subscription_enabled false | hide |
-
-Delivery Setup:
-Allowed cycles should come from config/plugin.
-If delivery_date is before allowed start date:
-reject
-If delivery_date conflicts with cutoff/deadline:
-reject
-
-Payment Setup:
-if no valid payment method:
-show warning and link /mypage/payment
-if selected payment belongs to another customer:
-reject
-if payment expired/invalid:
-reject
-
-Create Subscription:
-Confirm subscription
-↓
-Validate csrf_token
-↓
-Validate customer/payment/address/products again
-↓
-Create subscription record
-↓
-Create subscription items
-↓
-Create subscription shipping/payment records
-↓
-Optionally create first order
-↓
-Write subscription history
-↓
-Send notification mail if required
-↓
-Redirect complete page
-
-Duplicate Prevention:
-if create request is already processing:
-disable submit
-use transaction/lock where possible
-
-10. 権限 / Authorization
-
-| item | value |
-|---|---|
-| Login required | Yes |
-| Guest access | No |
-| Customer only | Yes |
-| Admin access | No |
-| CSRF required | Yes for write actions |
-| Ownership validation | Payment/address must belong to login customer |
-
-11. エッジケース / Edge Cases
-
-| Case | Handling |
-|---|---|
-| No product selected | Disable next |
-| Product out of stock | Disable select |
-| Product deleted during flow | Validation error |
-| Product disabled during flow | Validation error |
-| Quantity > stock | Validation error |
-| Payment method unavailable | Prevent next |
-| Payment method deleted during flow | Validation error |
-| Shipping address deleted during flow | Validation error |
-| API timeout | Retry |
-| Double click next | Debounce |
-| Double click create | Prevent duplicate |
-| Large product list | Scroll/pagination |
-| Mobile small width | Vertical collapse |
-| Browser back after complete | Do not duplicate subscription |
-
-12. テスト観点 / Test Cases
-
-Happy Path
-| ID | Case | Expected |
-|---|---|---|
-| TC-001 | Open page | Product list displayed |
-| TC-002 | Select product | Product added |
-| TC-003 | Change quantity | Selected summary updated |
-| TC-004 | Click next | Move next step |
-| TC-005 | Set delivery cycle/date | Validation OK |
-| TC-006 | Select payment method | Validation OK |
-| TC-007 | Complete all steps | Subscription created |
-| TC-008 | Mobile responsive | Layout OK |
-
-Error
-| ID | Case | Expected |
-|---|---|---|
-| TC-101 | API fail | Error UI |
-| TC-102 | Unauthorized | Redirect login |
-| TC-103 | No stock | Cannot select |
-| TC-104 | No product selected | Next disabled |
-| TC-105 | Invalid delivery date | Error message |
-| TC-106 | Invalid payment | Cannot proceed |
-| TC-107 | CSRF invalid | Error/reload |
-
-Edge
-| ID | Case | Expected |
-|---|---|---|
-| TC-201 | Double click next | Single transition |
-| TC-202 | Double click create | Single subscription |
-| TC-203 | Product removed during flow | Validation error |
-| TC-204 | Large product list | Scroll correctly |
-| TC-205 | Mobile small screen | Responsive layout |
-| TC-206 | Browser back after complete | No duplicate create |
-
-13. EC-CUBE 実装メモ
-
-Controller:
-- MypageSubscriptionController
-
-Methods:
-- create()
-- createProducts()
-- confirmCreate()
-- completeCreate()
-- store()
-
-Twig:
-- app/template/default/Mypage/subscription_create.twig
-- app/template/default/Mypage/subscription_create_confirm.twig
-- app/template/default/Mypage/subscription_create_complete.twig
-
-Entity:
-- CustomerSubscription
-- CustomerSubscriptionItem
-- CustomerSubscriptionShipping
-- CustomerSubscriptionPayment
-- CustomerSubscriptionHistory
-- SubscriptionProductConfig
-
-FormType:
-- SubscriptionProductSelectType
-- SubscriptionDeliverySettingType
-- SubscriptionPaymentType
-- SubscriptionConfirmType
-
-Route Example:
-@Route("/mypage/subscriptions/create", name="mypage_subscription_create")
-@Route("/mypage/subscriptions/create/confirm", name="mypage_subscription_create_confirm")
-@Route("/mypage/subscriptions/create/complete", name="mypage_subscription_create_complete")
-@Route("/mypage/subscriptions", name="mypage_subscriptions_store", methods={"POST"})
-
-Implementation Notes:
-- Ưu tiên dùng subscription plugin hiện có nếu project đã cài.
-- Không sửa core table trực tiếp.
-- Custom table phải tạo bằng migration/plugin/entity extension.
-- Đồng nhất route với Subscription Management/Detail: `/mypage/subscriptions`.
-- Nếu project hiện dùng `/mypage/subscription/create` thì tạo alias.
-- Tất cả write actions cần CSRF validation.
-- Payment method phải thuộc current customer.
-- Shipping address phải thuộc current customer.
-- Product/status/stock phải validate lại ở confirm/create.
-- Create subscription nên chạy trong transaction để tránh tạo thiếu item/payment/shipping.
-
-Generated at: 2026-05-10 17:36:19
+# EC-CUBE Luồng Tạo Subscription (Cập nhật)
+
+> Tài liệu mô tả luồng tạo subscription. Subscription được tạo qua **Shopping Checkout**, không phải MyPage wizard.
+
+---
+
+## 1. Tổng quan
+
+**Mục đích:**
+Mô tả luồng tạo mới một 定期購入 (subscription / mua hàng định kỳ) cho khách hàng.
+
+**Luồng tạo subscription:**
+
+```
+Trang sản phẩm → Giỏ hàng → Thanh toán (Checkout)
+  → ☑ subscription_enabled + chọn subscription_cycle
+  → Thanh toán GMO Credit Card
+  → Hoàn tất đơn hàng
+  → [Tự động] SubscriptionActivator tạo Subscription + SubscriptionItems từ Order
+```
+
+> **QUAN TRỌNG:** Subscription được tạo **tự động sau khi checkout thành công**, không phải từ một màn hình riêng trong MyPage. Không có MyPage wizard để tạo subscription.
+
+**Khách hàng có thể:**
+
+- Mua sản phẩm bình thường qua checkout
+- Tick checkbox 定期購入 tại trang xác nhận đơn hàng
+- Chọn chu kỳ giao hàng (subscription cycle)
+- Nhập thông tin thẻ GMO
+- Sau khi đơn hàng thành công → subscription tự động được tạo
+
+**Vai trò trong hệ thống:**
+
+```
+Sản phẩm → Giỏ hàng → Xác nhận đơn hàng [tuỳ chọn subscription] → Thanh toán → Hoàn tất → Subscription được tạo
+                                                                                                    ↓
+                                                                                MyPage → Quản lý Subscription → Chi tiết
+```
+
+**Người dùng:**
+
+- Khách hàng đã đăng nhập
+- Khách vãng lai: Không (subscription yêu cầu tài khoản)
+- Quản trị viên: Ngoài phạm vi (admin xem subscription qua admin panel)
+
+---
+
+## 2. Phạm vi
+
+### ✅ Trong phạm vi
+
+- Checkbox subscription trên trang xác nhận đơn hàng
+- Dropdown chọn chu kỳ subscription
+- Các trường nhập thẻ GMO (direct card / token)
+- Tạo đơn hàng kèm cờ subscription
+- Tự động tạo Subscription + SubscriptionItems sau khi thanh toán thành công
+- Tính toán lịch thanh toán lần đầu
+- Ghi log sự kiện kích hoạt subscription
+- Gửi email thông báo (nếu cấu hình)
+
+### ❌ Ngoài phạm vi
+
+- Wizard tạo subscription riêng trong MyPage (KHÔNG implement)
+- Subscription cho khách vãng lai
+- Thiết lập recurring từ admin
+- Hệ thống đề xuất sản phẩm tự động
+- Logic coupon/point cho subscription
+- Bảng cấu hình sản phẩm subscription (mọi sản phẩm đều có thể subscription)
+- PayPay / chuyển khoản (chỉ hỗ trợ GMO credit card)
+
+---
+
+## 3. Cấu trúc màn hình
+
+> Tạo subscription là **phần mở rộng của Shopping Checkout**, không phải màn hình riêng.
+
+```
+Trang xác nhận đơn hàng (Shopping Confirm - EC-CUBE có sẵn)
+├─ Tổng quan đơn hàng (có sẵn)
+├─ Thông tin giao hàng (có sẵn)
+├─ Thông tin thanh toán (có sẵn)
+├─ ★ Khối tuỳ chọn Subscription (thêm bởi ShoppingOrderTypeExtension)
+│   ├─ ☐ Checkbox subscription_enabled
+│   ├─ Dropdown subscription_cycle
+│   └─ Các trường thẻ GMO (nếu bật subscription)
+├─ Nút xác nhận (có sẵn)
+└─ ...
+```
+
+---
+
+## 4. Tham số
+
+### Các trường Subscription (thêm vào Shopping Order Form)
+
+| Tên | Kiểu | Bắt buộc | Mặc định | Mô tả |
+| --- | --- | --- | --- | --- |
+| `subscription_enabled` | boolean | không | `false` | Checkbox: 定期購入にする |
+| `subscription_cycle` | string | không | `monthly_1` | Dropdown chọn chu kỳ |
+| `gmo_card_no` | string | có điều kiện | — | Số thẻ GMO (khi subscription + direct card) |
+| `gmo_card_expire` | string | có điều kiện | — | Hạn thẻ GMO (MMYY) |
+| `gmo_card_security_code` | string | có điều kiện | — | Mã bảo mật GMO |
+
+### Giá trị chu kỳ Subscription
+
+Được parse bởi `SubscriptionCycleParser` → `plan_type` + `interval_count`:
+
+| Giá trị cycle | Plan Type | Interval Count | Nhãn hiển thị |
+| --- | --- | --- | --- |
+| `test_10m` | `test_minute` | 10 | テスト（10分） |
+| `weekly_1` | `weekly` | 1 | 毎週 |
+| `monthly_1` | `monthly` | 1 | 毎月 |
+| `monthly_3` | `monthly` | 3 | 3ヶ月ごと |
+
+---
+
+## 5. Nguồn dữ liệu
+
+### 5.1 Bảng chuẩn EC-CUBE
+
+| Bảng | Mô tả | Sử dụng |
+| --- | --- | --- |
+| `dtb_customer` | Master khách hàng | Tài khoản khách hàng (yêu cầu đăng nhập) |
+| `dtb_order` | Master đơn hàng | Đơn hàng gốc cho subscription |
+| `dtb_order_item` | Sản phẩm đơn hàng | Nguồn dữ liệu snapshot cho SubscriptionItem |
+| `dtb_shipping` | Giao hàng | Địa chỉ giao hàng của đơn gốc |
+| `dtb_payment` | Phương thức thanh toán | Tham chiếu phương thức thanh toán |
+| `dtb_product` | Master sản phẩm | Thông tin sản phẩm |
+| `dtb_product_class` | SKU sản phẩm | Giá, tồn kho, mã sản phẩm |
+| `dtb_product_stock` | Tồn kho | Kiểm tra tồn kho khi checkout |
+
+### 5.2 Bảng Subscription tuỳ chỉnh (Đã implement)
+
+> Được tạo tự động bởi `SubscriptionActivator` sau khi đơn hàng thành công.
+
+| Bảng | Entity | Tạo bởi |
+| --- | --- | --- |
+| `dtb_subscription` | `Customize\Entity\Subscription` | `SubscriptionActivator` |
+| `dtb_subscription_item` | `Customize\Entity\SubscriptionItem` | `SubscriptionActivator` |
+| `dtb_subscription_event_log` | `Customize\Entity\SubscriptionEventLog` | `SubscriptionActivator` |
+
+#### `dtb_subscription` — Các trường được điền khi tạo
+
+| Cột | Nguồn | Ghi chú |
+| --- | --- | --- |
+| `customer_id` | `Order.Customer.id` | Từ khách hàng đang đăng nhập |
+| `base_order_id` | `Order.id` | Đơn hàng checkout |
+| `status` | `pending_activation` | Trạng thái ban đầu |
+| `plan_type` | `SubscriptionCycleParser` → session payload | VD: `monthly` |
+| `interval_count` | `SubscriptionCycleParser` → session payload | VD: `1` |
+| `next_billing_at` | `SubscriptionScheduler::computeNext...()` | Tính toán từ plan |
+| `next_fulfillment_at` | `SubscriptionScheduler::computeNext...()` | Tính toán từ plan |
+| `subtotal_amount` | Tổng các order items | Snapshot từ đơn hàng |
+| `discount_amount` | Giảm giá đơn hàng | Snapshot từ đơn hàng |
+| `shipping_fee` | Phí vận chuyển | Snapshot từ đơn hàng |
+| `tax_amount` | Thuế đơn hàng | Snapshot từ đơn hàng |
+| `total_amount` | Tổng đơn hàng | Snapshot từ đơn hàng |
+| `payment_gateway` | `'gmo'` | Mặc định |
+| `gmo_member_id` | Đăng ký GMO | Từ thanh toán checkout |
+| `gmo_card_seq` | Đăng ký GMO | Từ thanh toán checkout |
+
+#### `dtb_subscription_item` — Các trường được điền khi tạo
+
+| Cột | Nguồn | Ghi chú |
+| --- | --- | --- |
+| `subscription_id` | Subscription.id mới tạo | FK |
+| `product_id` | `OrderItem.Product.id` | Từ sản phẩm đơn hàng |
+| `product_class_id` | `OrderItem.ProductClass.id` | Từ sản phẩm đơn hàng |
+| `product_name_snapshot` | `OrderItem.product_name` | Snapshot |
+| `product_code_snapshot` | `OrderItem.product_code` | Snapshot |
+| `quantity` | `OrderItem.quantity` | Snapshot |
+| `unit_price_snapshot` | `OrderItem.price` | Snapshot |
+| `tax_rate_snapshot` | `OrderItem.tax_rate` | Snapshot |
+
+### 5.3 Routes
+
+> Tạo subscription sử dụng các route Shopping có sẵn + tự động kích hoạt khi hoàn tất.
+
+| Route | Phương thức | Mô tả | Vai trò Subscription |
+| --- | --- | --- | --- |
+| `/shopping` | GET | Trang thanh toán | Route EC-CUBE có sẵn |
+| `/shopping/confirm` | GET | Trang xác nhận (hiển thị tuỳ chọn subscription) | Form extension thêm các trường subscription |
+| `/shopping/checkout` | POST | Thực hiện checkout | Payload subscription lưu vào session |
+| `/shopping/complete` | GET | Trang hoàn tất đơn hàng | `SubscriptionShoppingCompleteSubscriber` kích hoạt tạo subscription |
+| `/mypage/subscriptions` | GET | Danh sách subscription (sau khi tạo) | Khách hàng xem subscription mới tại đây |
+
+---
+
+## 6. Trạng thái màn hình
+
+### 6.1 Tuỳ chọn Subscription — Trạng thái mặc định
+
+**Điều kiện:** Khách hàng ở trang xác nhận đơn hàng
+
+**Giao diện:**
+
+- ☐ 定期購入にする (chưa tick)
+- Dropdown chu kỳ subscription (ẩn)
+- Các trường thẻ GMO (ẩn hoặc quản lý bởi phần thanh toán)
+
+### 6.2 Trạng thái bật Subscription
+
+**Điều kiện:** Khách hàng tick checkbox subscription_enabled
+
+**Giao diện:**
+
+- ☑ 定期購入にする (đã tick)
+- Dropdown chu kỳ subscription (hiển thị): 毎週 / 毎月 / 3ヶ月ごと
+- Các trường thẻ GMO: hiển thị nếu cần nhập thẻ trực tiếp
+
+### 6.3 Hoàn tất đơn hàng — Subscription đã tạo
+
+**Điều kiện:** Checkout thành công, `SubscriptionActivator` chạy thành công
+
+**Giao diện:**
+
+- Trang hoàn tất đơn hàng (có sẵn)
+- Tuỳ chọn: thông báo "定期購入が作成されました"
+- Liên kết đến quản lý subscription: `/mypage/subscriptions`
+
+### 6.4 Trạng thái lỗi
+
+| Trường hợp | Điều kiện | Giao diện | Hành động |
+| --- | --- | --- | --- |
+| Thanh toán GMO thất bại | Thẻ bị từ chối / không hợp lệ | Lỗi checkout (EC-CUBE có sẵn) | Thử lại thanh toán |
+| Kích hoạt subscription thất bại | Exception từ `SubscriptionActivator` | Đơn hàng tạo nhưng subscription KHÔNG tạo được | Admin cần kiểm tra / tạo thủ công |
+| Hết hàng | Tồn kho = 0 khi checkout | Lỗi validate giỏ hàng (có sẵn) | Xoá hoặc điều chỉnh số lượng |
+| Hết phiên đăng nhập | Payload subscription bị mất | Checkout không có subscription | Khách hàng cần tick lại |
+| Giá trị cycle không hợp lệ | `SubscriptionCycleParser` parse lỗi | Mặc định monthly_1 hoặc từ chối | Validate |
+
+---
+
+## 7. Bố cục giao diện
+
+> Tuỳ chọn subscription là **khối nhúng** trong trang xác nhận đơn hàng có sẵn.
+
+### 7.1 Bố cục khối tuỳ chọn Subscription
+
+| STT | Thành phần | Mô tả | Hành động |
+| --- | --- | --- | --- |
+| 1 | Checkbox Subscription | 定期購入にする | Bật/tắt chế độ subscription |
+| 2 | Dropdown chu kỳ | お届けサイクル | Chọn chu kỳ |
+| 3 | Mô tả chu kỳ | 選択したサイクルの説明 | Văn bản tĩnh |
+| 4 | Ngày giao hàng đầu tiên | 初回お届け予定日 | Hiển thị tính toán |
+| 5 | Ngày thanh toán đầu tiên | 初回お支払い予定日 | Hiển thị tính toán |
+| 6 | Lưu ý Subscription | 定期購入に関する注意事項 | Văn bản tĩnh |
+
+### 7.2 Vị trí trong trang Shopping
+
+```
+Trang xác nhận đơn hàng (Shopping Confirm)
+├─ ... (tổng quan đơn hàng, giao hàng, v.v. có sẵn)
+├─ ★ Khối tuỳ chọn Subscription ← thêm bởi ShoppingOrderTypeExtension
+│   ├─ ☐ 定期購入にする
+│   ├─ お届けサイクル: [毎月 ▼]
+│   └─ Văn bản lưu ý
+├─ ... (phần thanh toán, nút xác nhận có sẵn, v.v.)
+```
+
+### 7.3 Responsive
+
+| Mục | Giá trị |
+| --- | --- |
+| Responsive | Có (theo bố cục trang Shopping) |
+| Desktop | Inline trong form xác nhận |
+| Mobile | Full width, theo responsive Shopping có sẵn |
+
+---
+
+## 8. Chi tiết thành phần UI
+
+### Thành phần: Checkbox Subscription
+
+| Phần tử | Tên trường | Mô tả | Loại |
+| --- | --- | --- | --- |
+| `subscription_enabled` | `subscription_enabled` | 定期購入にする | checkbox |
+
+### Thành phần: Dropdown chu kỳ
+
+| Phần tử | Tên trường | Mô tả | Loại |
+| --- | --- | --- | --- |
+| `subscription_cycle` | `subscription_cycle` | お届けサイクル | select/dropdown |
+
+**Các tuỳ chọn:**
+
+| Giá trị | Nhãn | plan_type | interval_count |
+| --- | --- | --- | --- |
+| `weekly_1` | 毎週 | `weekly` | `1` |
+| `monthly_1` | 毎月 | `monthly` | `1` |
+| `monthly_3` | 3ヶ月ごと | `monthly` | `3` |
+| `test_10m` | テスト（10分） | `test_minute` | `10` |
+
+> `test_10m` chỉ hiển thị khi `SUBSCRIPTION_ALLOW_TEST_INTERVAL=true`.
+
+### Thành phần: Các trường thẻ GMO (có điều kiện)
+
+| Phần tử | Tên trường | Mô tả | Loại |
+| --- | --- | --- | --- |
+| `gmo_card_no` | `gmo_card_no` | カード番号 | text input |
+| `gmo_card_expire` | `gmo_card_expire` | 有効期限 (MMYY) | text input |
+| `gmo_card_security_code` | `gmo_card_security_code` | セキュリティコード | text input |
+
+> Các trường thẻ hiển thị tuỳ thuộc vào cấu hình phương thức thanh toán. Có thể dùng GMO token thay thế nhập thẻ trực tiếp.
+
+---
+
+## 9. Logic nghiệp vụ
+
+### Luồng Checkout với Subscription
+
+```
+1. Khách hàng tại trang xác nhận đơn hàng
+   ↓
+2. Tick ☑ subscription_enabled
+   ↓
+3. Chọn subscription_cycle (VD: monthly_1)
+   ↓
+4. Nhập/xác nhận thanh toán (thẻ GMO)
+   ↓
+5. Click 注文する (xác nhận đơn hàng)
+   ↓
+6. ShoppingOrderTypeExtension.onSubmit():
+   - Parse subscription_cycle → plan_type + interval_count (qua SubscriptionCycleParser)
+   - Lưu payload subscription vào session
+   ↓
+7. EC-CUBE thực hiện thanh toán + tạo Order
+   ↓
+8. SubscriptionShoppingCompleteSubscriber lắng nghe FRONT_SHOPPING_COMPLETE_INITIALIZE:
+   - Đọc payload subscription từ session
+   - Gọi SubscriptionActivator::activate(Order, payload)
+   ↓
+9. SubscriptionActivator:
+   - Tạo entity Subscription (status = pending_activation)
+   - Tạo các entity SubscriptionItem từ OrderItems
+   - Tính next_billing_at, next_fulfillment_at qua SubscriptionScheduler
+   - Lưu thông tin GMO (gmo_member_id, gmo_card_seq)
+   - Ghi log sự kiện kích hoạt vào SubscriptionEventLog
+   - Flush vào database
+   ↓
+10. Hiển thị trang hoàn tất đơn hàng
+    - Khách hàng có thể vào /mypage/subscriptions để xem subscription mới
+```
+
+### Trạng thái Subscription sau khi tạo
+
+| Thời điểm | Trạng thái |
+| --- | --- |
+| Ngay sau khi kích hoạt | `pending_activation` |
+| Sau khi chu kỳ thanh toán đầu tiên chạy (`subscription:run`) | `active` |
+| Nếu thanh toán đầu tiên thất bại | `past_due` |
+
+### Quy tắc Validate
+
+```
+Nếu subscription_enabled == true:
+    subscription_cycle phải hợp lệ (parse được bởi SubscriptionCycleParser)
+    Phương thức thanh toán phải là GMO credit card (subscription yêu cầu card-on-file)
+    Khách hàng phải đăng nhập (không phải khách vãng lai)
+
+Nếu SUBSCRIPTION_ALLOW_TEST_INTERVAL != true:
+    Chu kỳ test_10m không khả dụng
+
+Nếu SUBSCRIPTION_ENABLED != true:
+    Tuỳ chọn subscription ẩn khỏi checkout
+```
+
+### Snapshot số tiền
+
+> Tại thời điểm tạo, `SubscriptionActivator` snapshot toàn bộ số tiền từ Order:
+
+| Trường Subscription | Nguồn |
+| --- | --- |
+| `subtotal_amount` | Tổng `OrderItem.price × quantity` |
+| `discount_amount` | Giảm giá đơn hàng |
+| `shipping_fee` | Phí vận chuyển đơn hàng |
+| `tax_amount` | Thuế đơn hàng |
+| `total_amount` | Tổng đơn hàng |
+
+### Tính toán ngày
+
+> Xử lý bởi `SubscriptionScheduler`:
+
+| Trường ngày | Cách tính |
+| --- | --- |
+| `next_fulfillment_at` | Dựa trên `plan_type` + `interval_count` từ ngày đặt hàng |
+| `next_billing_at` | `next_fulfillment_at - 1 ngày` (mô hình pre-billing) |
+
+---
+
+## 10. Phân quyền
+
+| Mục | Giá trị |
+| --- | --- |
+| Yêu cầu đăng nhập | Có (subscription yêu cầu tài khoản khách hàng) |
+| Truy cập khách vãng lai | Không |
+| Vai trò khách hàng | Có |
+| Yêu cầu CSRF | Có (xử lý bởi form checkout Shopping) |
+| Validate thanh toán | Yêu cầu GMO credit card cho subscription |
+
+---
+
+## 11. Trường hợp biên
+
+| Trường hợp | Xử lý |
+| --- | --- |
+| Khách vãng lai thử dùng subscription | Ẩn tuỳ chọn subscription cho guest checkout |
+| Chọn phương thức thanh toán không phải GMO | Ẩn hoặc vô hiệu hoá tuỳ chọn subscription |
+| Sản phẩm hết hàng khi checkout | Validate giỏ hàng chặn checkout (EC-CUBE có sẵn) |
+| Mất session giữa xác nhận và hoàn tất | Payload subscription bị mất → đơn hàng tạo không có subscription |
+| Exception từ `SubscriptionActivator` | Đơn hàng thành công nhưng subscription KHÔNG tạo được → admin cần xử lý |
+| Gửi đơn trùng lặp (double submit) | Chống double-submit có sẵn của EC-CUBE |
+| `SUBSCRIPTION_ENABLED=false` | Khối tuỳ chọn subscription không render |
+| Giá trị cycle không hợp lệ | `SubscriptionCycleParser` trả về null → từ chối hoặc dùng mặc định |
+| Thanh toán GMO bị từ chối | Checkout thất bại hoàn toàn (không có đơn hàng, không có subscription) |
+| Khách hàng đã có subscription đang hoạt động | Cho phép — hỗ trợ nhiều subscription cho mỗi khách hàng |
+| Nhấn nút Back sau khi hoàn tất | EC-CUBE có sẵn ngăn chặn re-checkout |
+
+---
+
+## 12. Kịch bản kiểm thử
+
+### Luồng chính (Happy Path)
+
+| ID | Kịch bản | Kết quả mong đợi |
+| --- | --- | --- |
+| TC-001 | Checkout không có subscription | Đơn hàng bình thường, không tạo subscription |
+| TC-002 | Checkout có subscription (hàng tháng) | Đơn hàng + Subscription được tạo |
+| TC-003 | Checkout có subscription (hàng tuần) | Đơn hàng + Subscription với plan weekly |
+| TC-004 | Xác nhận subscription trong MyPage | Subscription mới hiển thị tại `/mypage/subscriptions` |
+| TC-005 | Xác nhận SubscriptionItems | Items khớp với OrderItems |
+| TC-006 | Xác nhận snapshot số tiền | Số tiền Subscription khớp với số tiền Order |
+| TC-007 | Xác nhận tính toán ngày | `next_billing_at` = `next_fulfillment_at - 1 ngày` |
+| TC-008 | Xác nhận SubscriptionEventLog | Sự kiện `activated` được ghi log |
+
+### Lỗi
+
+| ID | Kịch bản | Kết quả mong đợi |
+| --- | --- | --- |
+| TC-101 | Thanh toán GMO bị từ chối | Checkout thất bại, không tạo subscription |
+| TC-102 | Giá trị cycle không hợp lệ | Lỗi validate hoặc dùng mặc định |
+| TC-103 | Khách vãng lai checkout có subscription | Tuỳ chọn không khả dụng |
+| TC-104 | `SUBSCRIPTION_ENABLED=false` | Tuỳ chọn không hiển thị |
+| TC-105 | Hết phiên đăng nhập | Payload subscription bị mất |
+| TC-106 | Exception từ SubscriptionActivator | Đơn hàng OK, subscription thiếu → cảnh báo admin |
+
+### Trường hợp biên
+
+| ID | Kịch bản | Kết quả mong đợi |
+| --- | --- | --- |
+| TC-201 | Gửi đơn trùng lặp | Chỉ tạo một đơn hàng + subscription |
+| TC-202 | Nhiều subscription | Mỗi lần checkout tạo subscription riêng |
+| TC-203 | Chu kỳ test (test_10m) | Chỉ khả dụng khi `SUBSCRIPTION_ALLOW_TEST_INTERVAL=true` |
+| TC-204 | Đơn hàng lớn (nhiều sản phẩm) | Tất cả sản phẩm được snapshot vào SubscriptionItems |
+| TC-205 | Nhấn Back sau khi hoàn tất | Không tạo trùng |
+
+---
+
+## 13. Ghi chú triển khai EC-CUBE
+
+### 13.1 Phần đã triển khai (ĐÃ IMPLEMENT)
+
+#### Form Extension
+
+**File:** `app/Customize/Form/Extension/ShoppingOrderTypeExtension.php`
+
+| Trường | Kiểu | Mô tả |
+| --- | --- | --- |
+| `subscription_enabled` | CheckboxType | Checkbox 定期購入にする |
+| `subscription_cycle` | ChoiceType | Dropdown chu kỳ (monthly_1, weekly_1, test_10m, v.v.) |
+| `gmo_card_no` | TextType | Số thẻ GMO (có điều kiện) |
+| `gmo_card_expire` | TextType | Hạn thẻ GMO (có điều kiện) |
+| `gmo_card_security_code` | TextType | Mã bảo mật GMO (có điều kiện) |
+
+> Sự kiện `onSubmit`: parse cycle, lưu payload subscription vào session.
+
+#### Event Subscriber
+
+**File:** `app/Customize/EventSubscriber/Subscription/SubscriptionShoppingCompleteSubscriber.php`
+
+| Sự kiện | Hành động |
+| --- | --- |
+| `FRONT_SHOPPING_COMPLETE_INITIALIZE` | Đọc payload từ session → gọi `SubscriptionActivator::activate()` |
+
+#### Services
+
+| Service | File | Mô tả |
+| --- | --- | --- |
+| `SubscriptionActivator` | `app/Customize/Service/Subscription/SubscriptionActivator.php` | Tạo Subscription + SubscriptionItems từ Order |
+| `SubscriptionCycleParser` | `app/Customize/Service/Subscription/SubscriptionCycleParser.php` | Parse giá trị cycle → `plan_type` + `interval_count` |
+| `SubscriptionScheduler` | `app/Customize/Service/Subscription/SubscriptionScheduler.php` | Tính toán `next_billing_at`, `next_fulfillment_at` |
+
+#### Template
+
+**File:** `app/template/default/Shopping/confirm.twig` (đã sửa)
+
+> Dòng ~150-166: thêm checkbox subscription + dropdown chu kỳ vào trang xác nhận.
+
+#### Biến môi trường
+
+| Biến | Mô tả |
+| --- | --- |
+| `SUBSCRIPTION_ENABLED` | Bật/tắt tính năng subscription toàn hệ thống |
+| `SUBSCRIPTION_ALLOW_TEST_INTERVAL` | Hiển thị tuỳ chọn chu kỳ test_10m |
+| `SUBSCRIPTION_MAX_RETRY` | Số lần thử thanh toán tối đa |
+| `SUBSCRIPTION_RETRY_DAYS` | Lịch thử lại (VD: `1,3,7`) |
+
+### 13.2 Phần KHÔNG triển khai
+
+| Tính năng | Trạng thái | Ghi chú |
+| --- | --- | --- |
+| Wizard tạo subscription riêng trong MyPage | ❌ Không implement | Tạo subscription qua checkout |
+| Bảng cấu hình sản phẩm subscription | ❌ Không implement | Mọi sản phẩm đều có thể subscription |
+| Wizard chọn sản phẩm theo bước | ❌ Không implement | Dùng giỏ hàng/checkout bình thường |
+| Chọn phương thức thanh toán đã lưu | ❌ Không implement | Nhập thẻ GMO tại checkout |
+
+### 13.3 Tích hợp MyPage
+
+> Sau khi subscription được tạo, khách hàng xem/quản lý tại:
+
+| Màn hình | Route | Tài liệu |
+| --- | --- | --- |
+| Danh sách subscription | `/mypage/subscriptions` | `EC-CUBE_MyPage_Subscription_Management_Spec_Updated.md` |
+| Chi tiết subscription | `/mypage/subscriptions/{id}` | `EC-CUBE_MyPage_Subscription_Detail_Spec_Updated.md` |
+
+> CTA trên MyPage ("新しい定期コースを申し込む") nên điều hướng khách hàng về trang danh sách sản phẩm hoặc trang sản phẩm subscription cụ thể, **không phải** MyPage wizard.
+
+---
+
+*Cập nhật lần cuối: 2026-05-11 15:48:00*
